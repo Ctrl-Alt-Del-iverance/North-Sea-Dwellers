@@ -1,16 +1,57 @@
 import pygame
 import random
 
-pygame.init()
+# define all the game displays
 
-start_screen = pygame.image.load("images/start_screen.png")
-map_screen = pygame.image.load("images/map.png")
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("North Sea Dwellers")
-fonr = pygame.font.Font(None, 36)
+class Game:
+    def __init__(self, running = True, current_screen="start"):
+        pygame.init()
 
-class Animals:
+        self.screen = pygame.display.set_mode((800, 600))
+        self.start_screen = pygame.image.load("images/start_screen.png")
+        self.map_screen = pygame.image.load("images/map.png")
+        self.running = running
+        self.state = current_screen
+
+    def render_screen(self):
+        self.screen.fill((0, 0, 0)) # fill to black
+        if self.state == "start":
+            self.screen.blit(self.start_screen, (0, 0))
+        elif self.state == "map":
+            self.screen.blit(self.map_screen, (0, 0))
+        pygame.display.flip()
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                return "clicked"
+
+class Player:
+    def __init__(self, name="player", level=1, exp=0, coins=0):
+        self.name = name
+        self.level = level
+        self.exp = exp
+        self.coins = coins
+    
+    class Catalogue:
+        pass
+
+    def get_level(self):
+        return self.level
+    
+    def get_exp(self):
+        return self.exp
+    
+    def get_balance(self):
+        return self.coins
+    
+    def level_up(self):
+        self.level +=1
+        self.exp = 0
+
+class Animal:
     def __init__(self, name, rarity, base_chance, sprite, exp, shells):
         self.name = name
         self.rarity = rarity
@@ -31,9 +72,30 @@ class Animals:
         pass
 
 def main():
-    pass
+    game = Game()
+    player = Player()
+    animals = generate_animals()
+    
+    while game.running:
+        user_action = game.handle_events()
+        # here we want to add control for the start button
+        if game.state == "start" and user_action == "clicked":
+            game.state = "map"
+        elif game.state == "map" and user_action == "clicked":
+            # here we want to transfer to the screem of where the clicked pin is
+            pass
+        game.draw_screen()
+
+    pygame.quit()
 
 def generate_animals():
+    return [
+        Animal("harbour seal", 1, 40.0, "harbour_seal_image", 10, 2),
+        Animal("harbour seal", 1, 5.0, "grey_seal_image", 25, 5)
+    ]
+
+
+def encounter():
     pass
 
 if __name__ == "__main__":
