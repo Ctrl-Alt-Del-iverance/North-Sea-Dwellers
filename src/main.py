@@ -1,23 +1,35 @@
-from src.player import Player
+from player import Player
 import pygame
 import random
 
 class Game:
-    def __init__(self, running = True, current_screen="start"):
+    def __init__(self, is_running = True, current_screen="start"):
         pygame.init()
 
-        self.screen = pygame.display.set_mode((800, 600))
-        self.start_screen = pygame.image.load("images/start_screen.png")
-        self.map_screen = pygame.image.load("images/map.png")
-        self.running = running
+        self.screen = pygame.display.set_mode((1000, 500)) # dimentions of the window
+        self.running = is_running
         self.state = current_screen
+        self.clock = pygame.time.Clock()
 
-    def render_screen(self):
+        self.title_img = pygame.image.load("images/start_layers/title3.png") # title text for start screen
+        self.layers = [] # layers for the start screen
+        self.loop_positions = [0] * 7 # positions for the start screen layers
+
+        # load the layers of the start screen
+        for i in range(1, 8):
+            img = pygame.image.load(f"images/start_layers/pixil-layer-{i}.png")
+            self.layers.append(img)  
+
+    def set_display(self):
+        """ Render an new screen. """
+
         self.screen.fill((0, 0, 0)) # fill to black
+
         if self.state == "start":
-            self.screen.blit(self.start_screen, (0, 0))
-        elif self.state == "map":
-            self.screen.blit(self.map_screen, (0, 0))
+            self.render_start_screen()
+        else:
+            pass
+
         pygame.display.flip()
 
     def handle_events(self):
@@ -26,6 +38,22 @@ class Game:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 return "clicked"
+            
+    def render_start_screen(self):
+        """ This will render all layers of the start screen and control the continuous loop. """
+        speeds = [6, 6, 6, 6, 4, 2, 1]
+
+        for i in range(len(self.layers)):
+            self.loop_positions[i] -= speeds[i]
+
+            if self.loop_positions[i] <= -1000:
+                self.loop_positions[i] = 0
+
+            self.screen.blit(self.layers[i], (self.loop_positions[i], 0))
+            self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 0))
+
+        self.screen.blit(self.title_img, (0, 0))
+
 
 class Animal:
     def __init__(self, name, rarity, base_chance, sprite, exp, shells):
@@ -75,7 +103,8 @@ def main():
         elif game.state == "map" and user_action == "clicked":
             # here we want to transfer to the screem of where the clicked pin is
             pass
-        game.draw_screen()
+        game.set_display()
+        game.clock.tick(30)
 
     pygame.quit()
 
