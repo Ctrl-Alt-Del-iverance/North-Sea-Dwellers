@@ -1,7 +1,6 @@
+from src.player import Player
 import pygame
 import random
-
-# define all the game displays
 
 class Game:
     def __init__(self, running = True, current_screen="start"):
@@ -28,29 +27,6 @@ class Game:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 return "clicked"
 
-class Player:
-    def __init__(self, name="player", level=1, exp=0, coins=0):
-        self.name = name
-        self.level = level
-        self.exp = exp
-        self.coins = coins
-    
-    class Catalogue:
-        pass
-
-    def get_level(self):
-        return self.level
-    
-    def get_exp(self):
-        return self.exp
-    
-    def get_balance(self):
-        return self.coins
-    
-    def level_up(self):
-        self.level +=1
-        self.exp = 0
-
 class Animal:
     def __init__(self, name, rarity, base_chance, sprite, exp, shells):
         self.name = name
@@ -60,8 +36,23 @@ class Animal:
         self.exp = exp
         self.shells = shells
 
-    def does_animal_escape(self, player_level):
-        pass
+    def animal_escapes(self, player_level):
+        base_chances = {1: 0.0, 2: 0.5, 3: 0.70, 4: 0.85, 5: 1.0} # starting chance of animal escaping for each level
+        min_chances = {1:0.0, 3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
+
+        if self.rarity == 2:
+            if player_level >= 10:
+                return False # rarity 2 animals will no longer escape
+            if player_level >= 5:
+                escape_chance = 0.1
+            else:
+                escape_chance = base_chances[2]
+
+        # the chance should go down by 0.15 every 5 levels
+        else:
+            escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.15 * ((player_level-1) // 5))
+        # returns true escape_chance% of the time
+        return random.random() <= escape_chance
 
     def get_exp(self):
         # fetches exp to give to player after rescue
@@ -89,13 +80,16 @@ def main():
     pygame.quit()
 
 def generate_animals():
-    return [
-        Animal("harbour seal", 1, 40.0, "harbour_seal_image", 10, 2),
-        Animal("harbour seal", 1, 5.0, "grey_seal_image", 25, 5)
-    ]
+    harbour_seal = Animal("harbour seal", 1, 40.0, "harbour_seal_image", 10, 2)
+    grey_seal = Animal("grey seal", 4, 5.0, "grey_seal_image", 25, 5)
+
+    return {harbour_seal, grey_seal}
 
 
-def encounter():
+def encounter(animals):
+    """ Select animal to spawn. """
+    random_chance = random.randint
+
     pass
 
 if __name__ == "__main__":
