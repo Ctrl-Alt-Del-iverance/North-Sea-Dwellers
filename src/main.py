@@ -64,7 +64,7 @@ class Animal:
         self.exp = exp
         self.shells = shells
 
-    def animal_escapes(self, player_level):
+    def escapes(self, player_level):
         base_chances = {1: 0.0, 2: 0.5, 3: 0.70, 4: 0.85, 5: 1.0} # starting chance of animal escaping for each level
         min_chances = {1:0.0, 3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
 
@@ -96,28 +96,44 @@ def main():
     animals = generate_animals()
     
     while game.running:
+        game.set_display()
         user_action = game.handle_events()
+ 
         # here we want to add control for the start button
         if game.state == "start" and user_action == "clicked":
             game.state = "map"
+            game.set
         elif game.state == "map" and user_action == "clicked":
             # here we want to transfer to the screem of where the clicked pin is
+            # game.state = "encounter"
             pass
-        game.set_display()
-        game.clock.tick(30)
+        elif game.state == "encounter":
+            encounter(animals, game)
+            game.state = "map"
+        game.clock.tick(30) # 30 frames per second
 
     pygame.quit()
 
 def generate_animals():
+    #change this to pygame.image.load
     harbour_seal = Animal("harbour seal", 1, 40.0, "harbour_seal_image", 10, 2)
     grey_seal = Animal("grey seal", 4, 5.0, "grey_seal_image", 25, 5)
 
     return {harbour_seal, grey_seal}
 
-
-def encounter(animals):
+def encounter(animals, game):
     """ Select animal to spawn. """
     random_chance = random.randint
+    # get the animal if there is one
+    # click the call button
+    # if no animal, return
+    # if rare, let it peak (common ones with no chance of running away, skip this stage)
+    #   # click again
+    #   # if animal.escapes()
+    #   #   # return
+    # spawn the animal
+    # dialogue and minigame
+    # return
 
     pass
 
