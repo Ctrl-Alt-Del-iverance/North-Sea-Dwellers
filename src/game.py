@@ -28,6 +28,8 @@ class Display:
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
         
+        self.transitioning = Transition() #to cahgne holly stuff
+        self.transition = False #TO CHANGE HOLLY STUFF
         # put map image here
         # put button images here
         # put encounter screen here
@@ -62,7 +64,6 @@ class Display:
                         print("New Game")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self.transition = True
-
                 if self.state == "map":
                     if self.pin_react.collidepoint(event.pos):
                         print("PIN")
