@@ -1,5 +1,5 @@
 from player import Player
-from game import Display, GetAnimals
+from game import Display, AnimalManager
 import random
 import pygame
 
@@ -28,16 +28,19 @@ def main():
 
     pygame.quit()
 
-def encounter(game, player):
+def encounter(game, player, location):
     """ Select animal to spawn. """
     
-    locations = ["seal beach", "puffin cave", "lighthouse", "deep ocean"]
-    weights = [15, 35, 20, 15, 10, 5]
+    weights = {"seal beach": [15, 40, 17, 13, 15, 0], 
+                "puffin cave": [15, 30, 15, 10, 5, 25],
+                "lighthouse": [15, 35, 25, 15, 10, 5],
+                "deep ocean": [15, 35, 20, 15, 10, 5]}
+
     rarities = [0, 1, 2, 3, 4, 5]
 
     # applies the probability of an animal spawning
-    selected_rarity = random.choices(rarities, weights, 1)[0]
-    animals = GetAnimals.generate_animals()
+    selected_rarity = random.choices(rarities, weights[location], 1)[0]
+    animals = AnimalManager.gets_animals()
     candidates = []
 
     # sees which animals are eligible to spawn
