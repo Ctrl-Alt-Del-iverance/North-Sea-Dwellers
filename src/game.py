@@ -12,7 +12,7 @@ class Display:
         self.running = is_running
         self.state = current_screen
         self.clock = pygame.time.Clock()
-        self.loop_positions = [0] * 7 # positions for the start screen layers  
+        self.loop_positions = [0] * 8 # positions for the start screen layers  
 
         """ Declare the displays here """
         self.layers = self.load_layers() # paralax layers for the start screens
@@ -24,7 +24,14 @@ class Display:
         """ Declare hit boxes here. """
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
+
         self.pin_react = pygame.Rect(190, 330, 375, 188)
+
+
+        self.map_rect = pygame.Rect(1000, 50, 800, 400)
+        self.transitioning = Transition() #to cahgne holly stuff
+        self.transition = False #TO CHANGE HOLLY STUFF
+
 
     def set_display(self):
         """ Render an new screen. """
@@ -53,32 +60,50 @@ class Display:
                         return "continue"
                     elif self.new_game_button_rect.collidepoint(event.pos):
                         print("New Game")
-
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                self.transition = True
                 if self.state == "map":
                     if self.pin_react.collidepoint(event.pos):
                         return "pin"         
 
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
-        speeds = [6, 6, 6, 6, 4, 2, 1]
+        speeds = [6, 6, 6, 6, 4, 2, 1, 6, 6]
+        if self.transition:
+            y_offset = self.transitioning.get_y_offset()
+            #y_offset = 0
+            coefficient = self.transitioning.get_x_coefficent(self.map_rect.x)
+            #coefficient = 1
+            speeds = [speed * coefficient for speed in speeds]
+        else:
+            y_offset = 0
+
         #y_offset
         for i in range(len(self.layers)):
             self.loop_positions[i] -= speeds[i]
 
             if self.loop_positions[i] <= -1000:
                 self.loop_positions[i] = 0
+            if i != 7:
+                self.screen.blit(self.layers[i], (self.loop_positions[i], 0-y_offset))
+                self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 0-y_offset))
+            else: 
+                self.screen.blit(self.layers[i], (self.loop_positions[i], 500-y_offset))
+                self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 500-y_offset))
 
-            self.screen.blit(self.layers[i], (self.loop_positions[i], 0))
-            self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 0))
-
-        self.screen.blit(self.title_img, (125, 20))
+        self.screen.blit(self.title_img, (125, 20-y_offset))
             # Use the rect positions for button rendering
-        self.screen.blit(self.continue_button_img, self.continue_button_rect.topleft)
-        self.screen.blit(self.new_game_button_img, self.new_game_button_rect.topleft)
+
+        self.screen.blit(self.continue_button_img, (self.continue_button_rect.topleft[0],int(self.continue_button_rect.topleft[1])-y_offset))
+        self.screen.blit(self.new_game_button_img, (self.new_game_button_rect.topleft[0],int(self.new_game_button_rect.topleft[1])-y_offset))
 
         # Visualize button hitboxes for debugging
         pygame.draw.rect(self.screen, (255, 0, 0), self.continue_button_rect, 2)
         pygame.draw.rect(self.screen, (0, 255, 0), self.new_game_button_rect, 2)
+        #map rect
+        if self.transition:
+            self.map_rect.x -= speeds[8]
+            pygame.draw.rect(self.screen, (0,0,0), self.map_rect)
 
     def render_map_screen(self):
         self.screen.blit(self.pin, (190, 330))
@@ -92,7 +117,7 @@ class Display:
 
     def load_layers(self):
         layers = []
-        for i in range(1, 8):
+        for i in range(1, 9):
             img = pygame.image.load(f"src/images/start_layers/pixil-layer-{i}.png")
             layers.append(img)
         return layers
@@ -158,4 +183,55 @@ class AnimalManager:
         puffin = Animal("puffin", 4, "src/images/animals/puffin.png")
 
         return {harbour_seal, grey_seal, minke_whale, bottlenose_dolphin, puffin}
-                                                 
+
+    def set_sprite(self, filepath):
+        return pygame.image.load(filepath)
+
+
+class Transition:
+    def __init__(self, height=500, width=1000):
+        self.y_offset = 0
+        self.speedy = 0
+        self.speedx = 6
+        self.height = height
+        self.width = width
+        self.halfwayy = height / 2
+        self.halfwayx = width / 2
+        self.finishedy = False
+        self.finishedx = False
+        self.coefficient = 1
+
+    def get_y_offset(self):
+        if self.finishedy:
+            return self.y_offset
+
+        if self.y_offset < 250:
+            self.speedy += 0.9877
+            self.y_offset += self.speedy
+        else:
+            self.speedy -= 0.9877
+            self.y_offset += self.speedy
+
+        if self.y_offset > 500:
+            self.finishedy = True
+
+        return self.y_offset
+    
+    def get_x_coefficent(self, x_location):
+        if self.finishedx:
+            print("I ran 1")
+            return self.coefficient
+        print(x_location, self.halfwayx)
+        if x_location > 566:
+            self.speedx += 1.567
+            self.coefficient = self.speedx/6
+            print("I ran 2")
+        else:
+            self.speedx -= 1.493
+            self.coefficient = self.speedx/6
+            print("I ran 3")
+        print("I ran 1")
+        if x_location < 108:
+            self.finishedx = True
+            self.coefficient = 0
+        return self.coefficient
