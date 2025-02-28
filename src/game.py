@@ -4,7 +4,7 @@ import random
 """ The Game class is an instance of pygame, which controls the state of the game, 
 display logic and user interaction logic. """
 
-class Game:
+class Display:
     def __init__(self, is_running = True, current_screen="start"):
         pygame.init()
 
@@ -79,17 +79,26 @@ class Game:
 and their corresponding minigames"""
 
 class Animal:
-    def __init__(self, name, rarity, sprite, exp, shells):
+    def __init__(self, name, rarity, sprite, minigame):
         self.name = name
         self.rarity = rarity
         self.sprite = sprite
-        self.exp = exp
-        self.shells = shells
-        #self.minigame = minigame
+        self.minigame = minigame
+
+    def run(self):
+        self.minigame()
+
+    def get_game_exp(self):
+        exp = {1: 5, 2: 10, 3: 15, 4: 25, 5: 40}
+        return exp.get(self.rarity)
+    
+    def get_reward(self):
+        shells = {1: 2, 2: 3, 3: 5, 4: 8, 5: 12}
+        return shells.get(self.rarity)
 
     def escapes(self, player_level):
-        base_chances = {1: 0.0, 3: 0.70, 4: 0.85, 5: 1.0} # starting chance of animal escaping for each level
-        min_chances = {1:0.0, 3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
+        base_chances = {3: 0.70, 4: 0.85, 5: 1.0} # starting chance of animal escaping for each level
+        min_chances = {3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
 
         if self.rarity == 2:
             if player_level >= 10:
@@ -98,7 +107,6 @@ class Animal:
                 escape_chance = 0.1
             else:
                 escape_chance = 0.5
-
         # the chance should go down by 0.15 every 5 levels
         # ensure it does not go bellow the minimum chance
         else:
@@ -106,21 +114,23 @@ class Animal:
         # returns true escape_chance% of the time
         return random.random() <= escape_chance
 
-    def get_exp(self):
-        # fetches exp to give to player after rescue
-        return self.exp
-    
-    def get_shells(self):
-        # fetches shells to give to player after rescue
-        return self.shells
     
 
-""" This class will return a list of animals available in the game. """
+""" This class will set up all the animals available in the game. """
 
-class GetAnimals:
-    def generate_animals():
-        #change this to pygame.image.load
-        harbour_seal = Animal("harbour seal", 1, "harbour_seal_image", 10, 2)
-        grey_seal = Animal("grey seal", 4, "grey_seal_image", 25, 5)
+class AnimalManager:
 
-        return {harbour_seal, grey_seal}
+    def get_animals(self):
+        """ Define all the animals for the game. """
+
+        harbour_seal = Animal("harbour seal", 1, self.set_sprite("images/animals/seal.png"))
+        grey_seal = Animal("grey seal", 4, self.set_sprite("images/animals/seal.png"))
+        minke_whale = Animal("minke whale", 3, self.set_sprite("images/animals/whale.png"))
+        bottlenose_dolphin = Animal("bottlenose dolphin", 2, self.set_sprite("images/animals/dolphin.png"))
+        puffin = Animal("puffin", 4, self.set_sprite("images/animals/puffin.png"))
+
+        return {harbour_seal, grey_seal, minke_whale, bottlenose_dolphin, puffin}
+
+    def set_sprite(self, filepath):
+        return pygame.image.load(filepath)
+                                                 

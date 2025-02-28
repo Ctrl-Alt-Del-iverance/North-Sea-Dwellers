@@ -1,14 +1,13 @@
 from player import Player
-from game import Game, Animal, GetAnimals
+from game import Display, AnimalManager
 import random
 import pygame
 
 """ This is the main logic for the game. """
 
 def main():
-    game = Game()
+    game = Display()
     player = Player()
-    animals = GetAnimals.generate_animals()
     
     while game.running:
         game.set_display()
@@ -29,26 +28,55 @@ def main():
 
     pygame.quit()
 
-def encounter(animals, game):
+def encounter(game, player, location):
     """ Select animal to spawn. """
-    random_chance = random.randint
-    # get the animal if there is one
-    # click the call button
-    # if no animal, return
-    # if rare, let it peak (common ones with no chance of running away, skip this stage)
-    #   # click again
-    #   # if animal.escapes()
-    #   #   # return
-    # spawn the animal
-    # dialogue
-    # if minigame()
-    #   # player.exp += animal.get_exp()
+    
+    weights = {"seal beach": [15, 40, 17, 13, 15, 0], 
+                "puffin cave": [15, 30, 15, 10, 5, 25],
+                "lighthouse": [15, 35, 25, 15, 10, 5],
+                "deep ocean": [15, 35, 20, 15, 10, 5]}
+
+    rarities = [0, 1, 2, 3, 4, 5]
+
+    # applies the probability of an animal spawning
+    selected_rarity = random.choices(rarities, weights[location], 1)[0]
+    animals = AnimalManager.gets_animals()
+    candidates = []
+
+    # sees which animals are eligible to spawn
+    for animal in animals:
+        if animal.rarity == selected_rarity:
+            candidates.append(animal)
+    
+    # selects an animal of the rarity
+    if candidates:
+        spawned_animal = random.choice(candidates)
+    else:
+        # "there is no animal here"
+        return
+    
+    # press the call button
+    if spawned_animal.rarity == 1:
+        # make animal appear
+        # success = spawned_animal.minigame()
+        pass
+    
+    # otherwise, the animal should "peek"
+    # press call button again
+    if spawned_animal.escapes(player.level):
+        # "oh no it ran away! maybe leveling up will help..."
+        return
+
+    # otherwise, make animal appear
+    # success = spawned_animal.minigame
+
+    # if success:
+    #   # player.exp += spawned_animal.get_exp()
     #   # check if level up
     #   #   # player.level_up()
-    #   # player.shells += animal.get_shells()
-    # return
+    #   # player.shells += spawned_animal.get_shells()
+    return
 
-    pass
 
 if __name__ == "__main__":
     main()
