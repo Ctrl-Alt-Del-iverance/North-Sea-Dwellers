@@ -59,7 +59,7 @@ class Display:
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
         speeds = [6, 6, 6, 6, 4, 2, 1]
-
+        #y_offset
         for i in range(len(self.layers)):
             self.loop_positions[i] -= speeds[i]
 
@@ -70,8 +70,13 @@ class Display:
             self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 0))
 
         self.screen.blit(self.title_img, (125, 20))
-        self.screen.blit(self.continue_button_img, (190, 330))
-        self.screen.blit(self.new_game_button_img, (420, 270))
+            # Use the rect positions for button rendering
+        self.screen.blit(self.continue_button_img, self.continue_button_rect.topleft)
+        self.screen.blit(self.new_game_button_img, self.new_game_button_rect.topleft)
+
+        # Visualize button hitboxes for debugging
+        pygame.draw.rect(self.screen, (255, 0, 0), self.continue_button_rect, 2)
+        pygame.draw.rect(self.screen, (0, 255, 0), self.new_game_button_rect, 2)
 
 
     def load_layers(self):
