@@ -52,13 +52,13 @@ class Cell:
         x, y = self.x * CELL_SIZE, self.y * CELL_SIZE
         
         if self.walls['top']:
-            pygame.draw.line(surface, BLACK, (x, y), (x + CELL_SIZE, y), 2)
+            pygame.draw.line(surface, WHITE, (x, y), (x + CELL_SIZE, y), 8)
         if self.walls['right']:
-            pygame.draw.line(surface, BLACK, (x + CELL_SIZE, y), (x + CELL_SIZE, y + CELL_SIZE), 2)
+            pygame.draw.line(surface, WHITE, (x + CELL_SIZE, y), (x + CELL_SIZE, y + CELL_SIZE), 8)
         if self.walls['bottom']:
-            pygame.draw.line(surface, BLACK, (x, y + CELL_SIZE), (x + CELL_SIZE, y + CELL_SIZE), 2)
+            pygame.draw.line(surface, WHITE, (x, y + CELL_SIZE), (x + CELL_SIZE, y + CELL_SIZE), 8)
         if self.walls['left']:
-            pygame.draw.line(surface, BLACK, (x, y), (x, y + CELL_SIZE), 2)
+            pygame.draw.line(surface, WHITE, (x, y), (x, y + CELL_SIZE), 8)
 
 def generate_maze(width, height):
     # Create grid of cells
