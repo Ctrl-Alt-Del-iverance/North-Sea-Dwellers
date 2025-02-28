@@ -16,7 +16,15 @@ class Game:
 
         """ Declare the displays here """
         self.layers = self.load_layers() # paralax layers for the start screen
-        self.title_img = pygame.image.load("images/start_layers/title3.png") # title text for start screen
+        self.title_img = pygame.image.load("src/images/start_layers/title7.png") # title text for start screen
+        self.title_img = pygame.transform.scale(self.title_img, (750, 375))
+
+        self.continue_button_img = pygame.image.load("src/images/continue_button.png") # title text for start screen
+        self.continue_button_img = pygame.transform.scale(self.continue_button_img, (375, 187.5))
+
+        self.new_game_button_img = pygame.image.load("src/images/new_game_button.png") # title text for start screen
+        self.new_game_button_img = pygame.transform.scale(self.new_game_button_img, (375, 187.5))
+        
         # put map image here
         # put button images here
         # put encounter screen here
@@ -54,12 +62,15 @@ class Game:
             self.screen.blit(self.layers[i], (self.loop_positions[i], 0))
             self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 0))
 
-        self.screen.blit(self.title_img, (0, 0))
+        self.screen.blit(self.title_img, (125, 20))
+        self.screen.blit(self.continue_button_img, (190, 330))
+        self.screen.blit(self.new_game_button_img, (420, 270))
+
 
     def load_layers(self):
         layers = []
         for i in range(1, 8):
-            img = pygame.image.load(f"images/start_layers/pixil-layer-{i}.png")
+            img = pygame.image.load(f"src/images/start_layers/pixil-layer-{i}.png")
             layers.append(img)
         return layers
 
