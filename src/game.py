@@ -15,21 +15,15 @@ class Display:
         self.loop_positions = [0] * 7 # positions for the start screen layers  
 
         """ Declare the displays here """
-        self.layers = self.load_layers() # paralax layers for the start screen
-        self.title_img = pygame.image.load("src/images/start_layers/title7.png") # title text for start screen
-        self.title_img = pygame.transform.scale(self.title_img, (750, 375))
+        self.layers = self.load_layers() # paralax layers for the start screens
+        self.title_img = self.scale("src/images/start_layers/title7.png", (750, 375))
+        self.continue_button_img = self.scale("src/images/continue_button.png", (375, 187.5))
+        self.new_game_button_img = self.scale("src/images/new_game_button.png", (375, 187.5))
+        self.pin = self.scale("src/images/map/Pin.png", (375, 187.5))
 
-        self.continue_button_img = pygame.image.load("src/images/continue_button.png") # title text for start screen
-        self.continue_button_img = pygame.transform.scale(self.continue_button_img, (375, 187.5))
-
-        self.new_game_button_img = pygame.image.load("src/images/new_game_button.png") # title text for start screen
-        self.new_game_button_img = pygame.transform.scale(self.new_game_button_img, (375, 187.5))
-
+        """ Declare hit boxes here. """
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
-        
-        self.pin = pygame.image.load("src/images/map/Pin.png")
-        self.pin = pygame.transform.scale(self.pin, (375, 187.5))
         self.pin_react = pygame.Rect(190, 330, 375, 188)
 
     def set_display(self):
@@ -56,16 +50,13 @@ class Display:
 
                 if self.state == "start":
                     if self.continue_button_rect.collidepoint(event.pos):
-                        print("continue")
                         return "continue"
                     elif self.new_game_button_rect.collidepoint(event.pos):
                         print("New Game")
 
                 if self.state == "map":
                     if self.pin_react.collidepoint(event.pos):
-                        print("PIN")
-                        return "pin"
-                
+                        return "pin"         
 
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
@@ -91,6 +82,13 @@ class Display:
 
     def render_map_screen(self):
         self.screen.blit(self.pin, (190, 330))
+        self.screen.blit(self.pin, (270, 130))
+        self.screen.blit(self.pin, (50, 100))
+        self.screen.blit(self.pin, (300, 50))
+
+    def render_sprite(self, animal_file):
+        self.screen.blit(self.scale(animal_file, (375, 187)), (270, 130))
+        pygame.display.flip()
 
     def load_layers(self):
         layers = []
@@ -98,13 +96,17 @@ class Display:
             img = pygame.image.load(f"src/images/start_layers/pixil-layer-{i}.png")
             layers.append(img)
         return layers
+    
+    def scale(self, file, scale):
+        img = pygame.image.load(file)
+        return pygame.transform.scale(img, scale)
 
 
 """ The animal class stores and manages the animal attributes
 and their corresponding minigames"""
 
 class Animal:
-    def __init__(self, name, rarity, sprite, minigame):
+    def __init__(self, name, rarity, sprite, minigame=None):
         self.name = name
         self.rarity = rarity
         self.sprite = sprite
@@ -145,17 +147,15 @@ class Animal:
 
 class AnimalManager:
 
-    def get_animals(self):
+    @classmethod
+    def get_animals(cls):
         """ Define all the animals for the game. """
 
-        harbour_seal = Animal("harbour seal", 1, self.set_sprite("images/animals/seal.png"))
-        grey_seal = Animal("grey seal", 4, self.set_sprite("images/animals/seal.png"))
-        minke_whale = Animal("minke whale", 3, self.set_sprite("images/animals/whale.png"))
-        bottlenose_dolphin = Animal("bottlenose dolphin", 2, self.set_sprite("images/animals/dolphin.png"))
-        puffin = Animal("puffin", 4, self.set_sprite("images/animals/puffin.png"))
+        harbour_seal = Animal("harbour seal", 1, "src/images/animals/seal.png")
+        grey_seal = Animal("grey seal", 4, "src/images/animals/seal.png")
+        minke_whale = Animal("minke whale", 3, "src/images/animals/whale.png")
+        bottlenose_dolphin = Animal("bottlenose dolphin", 2, "src/images/animals/dolphin.png")
+        puffin = Animal("puffin", 4, "src/images/animals/puffin.png")
 
         return {harbour_seal, grey_seal, minke_whale, bottlenose_dolphin, puffin}
-
-    def set_sprite(self, filepath):
-        return pygame.image.load(filepath)
                                                  
