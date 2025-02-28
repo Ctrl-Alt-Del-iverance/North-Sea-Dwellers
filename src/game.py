@@ -52,7 +52,7 @@ class Display:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 print("Clicked")
                 if self.continue_button_rect.collidepoint(event.pos):
-                    print("Continue")
+                    return "continue"
                 elif self.new_game_button_rect.collidepoint(event.pos):
                     print("New Game")
 
