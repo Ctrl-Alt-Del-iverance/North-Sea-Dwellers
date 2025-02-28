@@ -27,9 +27,11 @@ class Display:
 
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
-        
+
+        self.map_rect = pygame.Rect(1000, 50, 800, 400)
         self.transitioning = Transition() #to cahgne holly stuff
         self.transition = False #TO CHANGE HOLLY STUFF
+        
         # put map image here
         # put button images here
         # put encounter screen here
@@ -72,11 +74,16 @@ class Display:
 
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
-        speeds = [6, 6, 6, 6, 4, 2, 1, 6]
+        speeds = [6, 6, 6, 6, 4, 2, 1, 6, 6]
         if self.transition:
             y_offset = self.transitioning.get_y_offset()
+            #y_offset = 0
+            coefficient = self.transitioning.get_x_coefficent(self.map_rect.x)
+            #coefficient = 1
+            speeds = [speed * coefficient for speed in speeds]
         else:
             y_offset = 0
+
         #y_offset
         for i in range(len(self.layers)):
             self.loop_positions[i] -= speeds[i]
@@ -99,6 +106,10 @@ class Display:
         # Visualize button hitboxes for debugging
         pygame.draw.rect(self.screen, (255, 0, 0), self.continue_button_rect, 2)
         pygame.draw.rect(self.screen, (0, 255, 0), self.new_game_button_rect, 2)
+        #map rect
+        if self.transition:
+            self.map_rect.x -= speeds[8]
+            pygame.draw.rect(self.screen, (0,0,0), self.map_rect)
 
     def render_map_screen(self):
         self.screen.blit(self.pin, (190, 330))
@@ -172,25 +183,49 @@ class AnimalManager:
 
 
 class Transition:
-    def __init__(self, height=500):
+    def __init__(self, height=500, width=1000):
         self.y_offset = 0
-        self.speed = 0
+        self.speedy = 0
+        self.speedx = 6
         self.height = height
-        self.halfway = height / 2
-        self.finished = False
+        self.width = width
+        self.halfwayy = height / 2
+        self.halfwayx = width / 2
+        self.finishedy = False
+        self.finishedx = False
+        self.coefficient = 1
 
     def get_y_offset(self):
-        if self.finished:
+        if self.finishedy:
             return self.y_offset
 
-        if self.y_offset < self.halfway:
-            self.speed += 0.75
-            self.y_offset += self.speed
+        if self.y_offset < 250:
+            self.speedy += 0.9877
+            self.y_offset += self.speedy
         else:
-            self.speed -= 0.75
-            self.y_offset += self.speed
+            self.speedy -= 0.9877
+            self.y_offset += self.speedy
 
-        if self.y_offset > self.height - 20:
-            self.finished = True
+        if self.y_offset > 500:
+            self.finishedy = True
 
         return self.y_offset
+    
+    def get_x_coefficent(self, x_location):
+        if self.finishedx:
+            print("I ran 1")
+            return self.coefficient
+        print(x_location, self.halfwayx)
+        if x_location > 566:
+            self.speedx += 1.567
+            self.coefficient = self.speedx/6
+            print("I ran 2")
+        else:
+            self.speedx -= 1.493
+            self.coefficient = self.speedx/6
+            print("I ran 3")
+        print("I ran 1")
+        if x_location < 108:
+            self.finishedx = True
+            self.coefficient = 0
+        return self.coefficient
