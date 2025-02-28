@@ -16,13 +16,11 @@ def main():
         # here we want to add control for the start button
         if game.state == "start" and user_action == "continue":
             game.state = "map"
-        elif game.state == "map" and user_action == "click_pin":
-            # here we want to transfer to the screem of where the clicked pin is
-            # game.state = "encounter"
-            pass
-        elif game.state == "encounter":
-            encounter(game, player, location)
-            game.state = "map"
+        elif game.state == "map" and user_action == "pin":
+            game.state = "deep ocean"
+        #elif game.state == "deep ocean":
+            #encounter(game, player, game.state)
+            #game.state = "map"
         game.clock.tick(30) # 30 frames per second
 
     pygame.quit()
