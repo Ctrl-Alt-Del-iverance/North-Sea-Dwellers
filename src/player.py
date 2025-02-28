@@ -26,3 +26,21 @@ class Player:
         """ Update the player level. """
         self.level +=1
         self.exp = 0
+
+class LevelUpManager:
+    base_threshold = 15
+    thresh_multiplier = 1.5
+
+    @classmethod
+    def get_thresholds(cls, level):
+        return int(cls.base_threshold*cls.thresh_multiplier**(level-1))
+    
+    @classmethod
+    def add_exp(cls, player, exp):
+        player.exp+=exp
+        threshold = cls.get_thresholds(player.level)
+
+        while player.exp >= threshold:
+            excess = player.exp-threshold
+            player.level_up()
+            player.exp = excess

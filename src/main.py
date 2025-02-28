@@ -1,4 +1,4 @@
-from player import Player
+from player import Player, LevelUpManager
 from game import Display, AnimalManager
 import random
 import pygame
@@ -14,22 +14,20 @@ def main():
         user_action = game.handle_events()
  
         # here we want to add control for the start button
-        if game.state == "start" and user_action == "click_continue":
+        if game.state == "start" and user_action == "continue":
             game.state = "map"
-            game.set
-        elif game.state == "map" and user_action == "click_pin":
-            # here we want to transfer to the screem of where the clicked pin is
-            # game.state = "encounter"
-            pass
-        elif game.state == "encounter":
-            encounter(animals, game, player)
-            game.state = "map"
+        elif game.state == "map" and user_action == "pin":
+            game.state = "deep ocean"
+        #elif game.state == "deep ocean":
+            #encounter(game, player, game.state)
+            #game.state = "map"
         game.clock.tick(30) # 30 frames per second
 
     pygame.quit()
 
 def encounter(game, player, location):
     """ Select animal to spawn. """
+    success = False
     
     weights = {"seal beach": [15, 40, 17, 13, 15, 0], 
                 "puffin cave": [15, 30, 15, 10, 5, 25],
@@ -70,11 +68,10 @@ def encounter(game, player, location):
     # otherwise, make animal appear
     # success = spawned_animal.minigame
 
-    # if success:
-    #   # player.exp += spawned_animal.get_exp()
-    #   # check if level up
-    #   #   # player.level_up()
-    #   # player.shells += spawned_animal.get_shells()
+    if success:
+        # some messages here or something to celebrate
+        LevelUpManager.add_exp(player, spawned_animal.get_exp())
+        player.shells += spawned_animal.get_shells
     return
 
 

@@ -12,7 +12,7 @@ class Display:
         self.running = is_running
         self.state = current_screen
         self.clock = pygame.time.Clock()
-        self.loop_positions = [0] * 7 # positions for the start screen layers  
+        self.loop_positions = [0] * 8 # positions for the start screen layers  
 
         """ Declare the displays here """
         self.layers = self.load_layers() # paralax layers for the start screen
@@ -24,7 +24,12 @@ class Display:
 
         self.new_game_button_img = pygame.image.load("src/images/new_game_button.png") # title text for start screen
         self.new_game_button_img = pygame.transform.scale(self.new_game_button_img, (375, 187.5))
+
+        self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
+        self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
         
+        self.transitioning = Transition() #to cahgne holly stuff
+        self.transition = False #TO CHANGE HOLLY STUFF
         # put map image here
         # put button images here
         # put encounter screen here
@@ -34,11 +39,13 @@ class Display:
 
         self.screen.fill((0, 0, 0)) # fill to black
 
-        if self.state == "start":
-            self.render_start_screen()
-        elif self.state =="map":
-            # get map display from map class
-            pass
+        match self.state:
+            case "start":
+                self.render_start_screen()
+            case "map":
+                self.render_map_screen()
+            case "deep ocean":
+              self.screen.fill((50, 80, 20))  
 
         pygame.display.flip()
 
@@ -47,29 +54,58 @@ class Display:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                return "clicked"
-            
+                print("Clicked")
+
+                if self.state == "start":
+                    if self.continue_button_rect.collidepoint(event.pos):
+                        print("continue")
+                        return "continue"
+                    elif self.new_game_button_rect.collidepoint(event.pos):
+                        print("New Game")
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                self.transition = True
+                if self.state == "map":
+                    if self.pin_react.collidepoint(event.pos):
+                        print("PIN")
+                        return "pin"
+                
+
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
-        speeds = [6, 6, 6, 6, 4, 2, 1]
-
+        speeds = [6, 6, 6, 6, 4, 2, 1, 6]
+        if self.transition:
+            y_offset = self.transitioning.get_y_offset()
+        else:
+            y_offset = 0
+        #y_offset
         for i in range(len(self.layers)):
             self.loop_positions[i] -= speeds[i]
 
             if self.loop_positions[i] <= -1000:
                 self.loop_positions[i] = 0
+            if i != 7:
+                self.screen.blit(self.layers[i], (self.loop_positions[i], 0-y_offset))
+                self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 0-y_offset))
+            else: 
+                self.screen.blit(self.layers[i], (self.loop_positions[i], 500-y_offset))
+                self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 500-y_offset))
 
-            self.screen.blit(self.layers[i], (self.loop_positions[i], 0))
-            self.screen.blit(self.layers[i], (self.loop_positions[i] + 1000, 0))
+        self.screen.blit(self.title_img, (125, 20-y_offset))
+            # Use the rect positions for button rendering
 
-        self.screen.blit(self.title_img, (125, 20))
-        self.screen.blit(self.continue_button_img, (190, 330))
-        self.screen.blit(self.new_game_button_img, (420, 270))
+        self.screen.blit(self.continue_button_img, (self.continue_button_rect.topleft[0],int(self.continue_button_rect.topleft[1])-y_offset))
+        self.screen.blit(self.new_game_button_img, (self.new_game_button_rect.topleft[0],int(self.new_game_button_rect.topleft[1])-y_offset))
 
+        # Visualize button hitboxes for debugging
+        pygame.draw.rect(self.screen, (255, 0, 0), self.continue_button_rect, 2)
+        pygame.draw.rect(self.screen, (0, 255, 0), self.new_game_button_rect, 2)
+
+    def render_map_screen(self):
+        self.screen.blit(self.pin, (190, 330))
 
     def load_layers(self):
         layers = []
-        for i in range(1, 8):
+        for i in range(1, 9):
             img = pygame.image.load(f"src/images/start_layers/pixil-layer-{i}.png")
             layers.append(img)
         return layers
@@ -133,4 +169,28 @@ class AnimalManager:
 
     def set_sprite(self, filepath):
         return pygame.image.load(filepath)
-                                                 
+
+
+class Transition:
+    def __init__(self, height=500):
+        self.y_offset = 0
+        self.speed = 0
+        self.height = height
+        self.halfway = height / 2
+        self.finished = False
+
+    def get_y_offset(self):
+        if self.finished:
+            return self.y_offset
+
+        if self.y_offset < self.halfway:
+            self.speed += 0.75
+            self.y_offset += self.speed
+        else:
+            self.speed -= 0.75
+            self.y_offset += self.speed
+
+        if self.y_offset > self.height - 20:
+            self.finished = True
+
+        return self.y_offset
