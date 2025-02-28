@@ -27,10 +27,7 @@ class Display:
 
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
-        self.transitioning = Transition() #to cahgne holly stuff
-        self.transition = False #TO CHANGE HOLLY STUFF
-
-
+        
         # put map image here
         # put button images here
         # put encounter screen here
@@ -40,11 +37,13 @@ class Display:
 
         self.screen.fill((0, 0, 0)) # fill to black
 
-        if self.state == "start":
-            self.render_start_screen()
-        #elif self.state =="map":
-            # get map display from map class
-            #pass
+        match self.state:
+            case "start":
+                self.render_start_screen()
+            case "map":
+                self.render_map_screen()
+            case "deep ocean":
+              self.screen.fill((50, 80, 20))  
 
         pygame.display.flip()
 
@@ -54,12 +53,21 @@ class Display:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 print("Clicked")
-                if self.continue_button_rect.collidepoint(event.pos):
-                    return "continue"
-                elif self.new_game_button_rect.collidepoint(event.pos):
-                    print("New Game")
+
+                if self.state == "start":
+                    if self.continue_button_rect.collidepoint(event.pos):
+                        print("continue")
+                        return "continue"
+                    elif self.new_game_button_rect.collidepoint(event.pos):
+                        print("New Game")
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self.transition = True
+
+                if self.state == "map":
+                    if self.pin_react.collidepoint(event.pos):
+                        print("PIN")
+                        return "pin"
+                
 
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
@@ -91,6 +99,8 @@ class Display:
         pygame.draw.rect(self.screen, (255, 0, 0), self.continue_button_rect, 2)
         pygame.draw.rect(self.screen, (0, 255, 0), self.new_game_button_rect, 2)
 
+    def render_map_screen(self):
+        self.screen.blit(self.pin, (190, 330))
 
     def load_layers(self):
         layers = []
