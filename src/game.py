@@ -59,11 +59,12 @@ class Display:
                         return "continue"
                     elif self.new_game_button_rect.collidepoint(event.pos):
                         print("New Game")
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                self.transition = True
                 if self.state == "map":
                     if self.pin_react.collidepoint(event.pos):
-                        return "pin"         
+                        return "pin"      
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                self.transition = True
+                       
 
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
