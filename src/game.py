@@ -4,7 +4,7 @@ import random
 """ The Game class is an instance of pygame, which controls the state of the game, 
 display logic and user interaction logic. """
 
-class Game:
+class Display:
     def __init__(self, is_running = True, current_screen="start"):
         pygame.init()
 
@@ -68,17 +68,20 @@ class Game:
 and their corresponding minigames"""
 
 class Animal:
-    def __init__(self, name, rarity, sprite, exp, shells):
+    def __init__(self, name, rarity, sprite, exp, shells, minigame):
         self.name = name
         self.rarity = rarity
         self.sprite = sprite
         self.exp = exp
         self.shells = shells
-        #self.minigame = minigame
+        self.minigame = minigame
+
+    def run(self):
+        self.minigame()
 
     def escapes(self, player_level):
-        base_chances = {1: 0.0, 3: 0.70, 4: 0.85, 5: 1.0} # starting chance of animal escaping for each level
-        min_chances = {1:0.0, 3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
+        base_chances = {3: 0.70, 4: 0.85, 5: 1.0} # starting chance of animal escaping for each level
+        min_chances = {3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
 
         if self.rarity == 2:
             if player_level >= 10:
@@ -87,7 +90,6 @@ class Animal:
                 escape_chance = 0.1
             else:
                 escape_chance = 0.5
-
         # the chance should go down by 0.15 every 5 levels
         # ensure it does not go bellow the minimum chance
         else:
