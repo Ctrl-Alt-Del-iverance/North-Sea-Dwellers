@@ -25,9 +25,8 @@ class Display:
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
 
+
         self.pin_react = pygame.Rect(190, 330, 375, 188)
-
-
         self.map_rect = pygame.Rect(1000, 50, 800, 400)
         self.transitioning = Transition() #to cahgne holly stuff
         self.transition = False #TO CHANGE HOLLY STUFF
