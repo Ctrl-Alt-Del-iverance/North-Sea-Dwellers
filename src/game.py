@@ -24,6 +24,9 @@ class Display:
 
         self.new_game_button_img = pygame.image.load("src/images/new_game_button.png") # title text for start screen
         self.new_game_button_img = pygame.transform.scale(self.new_game_button_img, (375, 187.5))
+
+        self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
+        self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
         
         # put map image here
         # put button images here
@@ -47,8 +50,12 @@ class Display:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                return "clicked"
-            
+                print("Clicked")
+                if self.continue_button_rect.collidepoint(event.pos):
+                    print("Continue")
+                elif self.new_game_button_rect.collidepoint(event.pos):
+                    print("New Game")
+
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
         speeds = [6, 6, 6, 6, 4, 2, 1]
