@@ -39,9 +39,9 @@ class Display:
 
         if self.state == "start":
             self.render_start_screen()
-        elif self.state =="map":
+        #elif self.state =="map":
             # get map display from map class
-            pass
+            #pass
 
         pygame.display.flip()
 

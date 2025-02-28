@@ -1,4 +1,4 @@
-from player import Player
+from player import Player, LevelUpManager
 from game import Display, AnimalManager
 import random
 import pygame
@@ -21,7 +21,7 @@ def main():
             # game.state = "encounter"
             pass
         elif game.state == "encounter":
-            encounter(animals, game, player)
+            encounter(game, player, location)
             game.state = "map"
         game.clock.tick(30) # 30 frames per second
 
@@ -29,6 +29,7 @@ def main():
 
 def encounter(game, player, location):
     """ Select animal to spawn. """
+    success = False
     
     weights = {"seal beach": [15, 40, 17, 13, 15, 0], 
                 "puffin cave": [15, 30, 15, 10, 5, 25],
@@ -69,11 +70,10 @@ def encounter(game, player, location):
     # otherwise, make animal appear
     # success = spawned_animal.minigame
 
-    # if success:
-    #   # player.exp += spawned_animal.get_exp()
-    #   # check if level up
-    #   #   # player.level_up()
-    #   # player.shells += spawned_animal.get_shells()
+    if success:
+        # some messages here or something to celebrate
+        LevelUpManager.add_exp(player, spawned_animal.get_exp())
+        player.shells += spawned_animal.get_shells
     return
 
 
