@@ -58,6 +58,8 @@ class Game:
         self.transition = False #TO CHANGE HOLLY STUFF
 
     def handle_events(self):
+        """ Detect user input. """
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -67,42 +69,49 @@ class Game:
                 self.transition = True
 
     def handle_click(self, pos):
-        print(self.state)
+        """ Handle user input for buttons, and game logic """
 
         if self.state == "start":
             if self.continue_button_rect.collidepoint(pos):
                 self.state = "map"
 
+        # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
             if self.pin_react.collidepoint(pos):
                 self.location = "deep sea"
                 self.state = "location"
             #more pins here
 
+        # call for an animal:
         elif self.state == "location":
             if self.call_rect.collidepoint(pos):
-                self.encounter()
+                self.encounter() # encounter an animal if there is one
 
+        # if animal is hiding, call again:
         elif self.state == "peeking":
             if self.call_rect.collidepoint(pos):
                 if self.animal_ran:
                     self.encounter_result = self.display.ran_away
                 self.state = "encountered"
                     
-
+        # control for the back button:
         if self.state in ["location", "peeking", "encountered"]:
             if self.back_rect.collidepoint(pos):
                 self.state = "map"
 
     def set_display(self):
-        self.display.screen.fill((0, 0, 0))
+        """ Update the display based on the game state. """
 
+        self.display.screen.fill((0, 0, 0)) # erase
+
+        # while you are searching/encountering an animal:
         if self.state in ["location", "encountered", "peeking"]:
             # change the background from plain green here to 
             # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
             # uncomment locations_bg in Display
             self.display.screen.fill((50, 80, 20))
             self.display.screen.blit(self.display.back_button, (50, 50))
+            # lets display the player level here as well
 
         if self.state == "start":
             self.render_start_screen()
@@ -113,10 +122,12 @@ class Game:
         elif self.state == "location":
             self.display.screen.blit(self.display.call_button, (750, 350))
 
+        # let the animal "peak:"
         elif self.state == "peeking":
             self.display.screen.blit(self.display.call_button, (750, 350))
             self.render_sprite(self.encounter_result, 810, 150)
 
+        # display the results of the encounter:
         elif self.state == "encountered":
             self.render_sprite(self.encounter_result, 270, 130)
 
@@ -124,6 +135,7 @@ class Game:
                        
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
+
         speeds = [6, 6, 6, 6, 4, 2, 1, 6, 6]
         if self.transition:
             y_offset = self.transitioning.get_y_offset()
@@ -148,8 +160,7 @@ class Game:
                 self.display.screen.blit(self.display.layers[i], (self.loop_positions[i] + 1000, 500-y_offset))
 
         self.display.screen.blit(self.display.title_img, (125, 20-y_offset))
-            # Use the rect positions for button rendering
-
+        # Use the rect positions for button rendering
         self.display.screen.blit(self.display.continue_button_img, (self.continue_button_rect.topleft[0],int(self.continue_button_rect.topleft[1])-y_offset))
         self.display.screen.blit(self.display.new_game_button_img, (self.new_game_button_rect.topleft[0],int(self.new_game_button_rect.topleft[1])-y_offset))
 
@@ -169,14 +180,18 @@ class Game:
         self.display.screen.blit(self.display.pin, (300, 50))
 
     def render_sprite(self, file, x, y):
+        """ Add an object to the screen. """
         self.display.screen.blit(self.display.scale(file, (375, 187)), (x, y))
 
     def encounter(self):
+        """ Searching for an animal. """
+
+        # chance of each animal at each location
         weights = {"seal beach": [15, 40, 17, 13, 0, 15], 
                 "puffin cave": [15, 30, 15, 10, 25, 5],
                 "lighthouse": [15, 35, 25, 15, 0, 10],
                 "deep sea": [10, 30, 20, 15, 10, 15]}
-
+        # 0 is associated with no animal at all
         rarities = [0, 1, 2, 3, 4, 5]
 
         # applies the probability of an animal spawning
@@ -184,29 +199,25 @@ class Game:
         animals = AnimalManager.get_animals()
         candidates = []
 
-        # sees which animals are eligible to spawn
+        # sees which animals are eligible to spawn, based on selected rarity
         for animal in animals:
             if animal.rarity == selected_rarity:
                 candidates.append(animal)
-    
-        # selects an animal of the rarity
-        if candidates:
+
+        if candidates: # if there is any animal of that rarity
             spawned_animal = random.choice(candidates)
             print(spawned_animal.name)
 
-            # press the call button
-            if spawned_animal.rarity == 1:
-                self.state = "encountered"      
+            if spawned_animal.rarity == 1: # if the animal is common
+                self.state = "encountered" # encounter is done
             else: # animal is rare
-                self.state = "peeking"
-                if spawned_animal.escapes(self.player.level):
-                    self.animal_ran = True
-                else:
-                    self.animal_ran = False
+                self.state = "peeking" # animal hides
+                # determine if animal escapes based on player experience
+                self.animal_ran =  spawned_animal.escapes(self.player.level)
+            # display chosen animal
             self.encounter_result = spawned_animal.sprite
-        else:
-            # "looks like nobody is here...""
-            self.state = "encountered"
+        else: # there is no animal at that location right now
+            self.state = "encountered" # encounter is done
             self.encounter_result = self.display.no_animal
 
     def run(self):
