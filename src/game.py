@@ -3,8 +3,7 @@ import random
 from animals import Animal, AnimalManager
 from player import Player, LevelUpManager
 
-""" The Game class is an instance of pygame, which controls the state of the game, 
-display logic and user interaction logic. """
+""" The Display class initialises all graphics and controls what is visible on the screen . """
 
 class Display:
     def __init__(self):
@@ -19,6 +18,9 @@ class Display:
         self.call_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
         self.ran_away = "src/images/text/ran_away.png"
         self.no_animal = "src/images/text/no_animal.png"
+        self.map_bg = self.scale("src/images/map/Map.png", (1000, 500))
+        #self.locations_bg = {"deep sea": self.scale("filepathtodeapseabg", (1000, 500)),
+        #                  "lighthouse": self.scale("filepath", (1000, 500))} #etc...
 
     def scale(self, file, scale):
         img = pygame.image.load(file)
@@ -30,21 +32,18 @@ class Display:
             img = pygame.image.load(f"src/images/start_layers/pixil-layer-{i}.png")
             layers.append(img)
         return layers
-    
-    def draw_button(self):
-        pass
 
-    def draw_text(self):
-        pass
-        
+""" The Game class controls game logic and user interaction. """
+
 class Game:
     def __init__(self):
         self.running = True
         self.display = Display()
         self.player = Player()
         self.state = "start"
-        self.location = None
-        self.encounter_result = None
+        self.location = None # we will use this to swap out the different backgrounds
+        self.encounter_result = None # what animal spawned if any
+        self.animal_ran = False
         self.loop_positions = [0] * 8 # positions for the start screen layers  
 
         """ Declare hit boxes here. """
@@ -68,6 +67,8 @@ class Game:
                 self.transition = True
 
     def handle_click(self, pos):
+        print(self.state)
+
         if self.state == "start":
             if self.continue_button_rect.collidepoint(pos):
                 self.state = "map"
@@ -79,38 +80,48 @@ class Game:
             #more pins here
 
         elif self.state == "location":
-            if self.back_rect.collidepoint(pos):
-                self.state = "map"
-            elif self.call_rect.collidepoint(pos):
-                self.state = "encountering"
-                self.encounter_result = self.encounter()
+            if self.call_rect.collidepoint(pos):
+                self.encounter()
 
-        elif self.state == "encountering":
+        elif self.state == "peeking":
+            if self.call_rect.collidepoint(pos):
+                if self.animal_ran:
+                    self.encounter_result = self.display.ran_away
+                self.state = "encountered"
+                    
+
+        if self.state in ["location", "peeking", "encountered"]:
             if self.back_rect.collidepoint(pos):
                 self.state = "map"
 
     def set_display(self):
         self.display.screen.fill((0, 0, 0))
 
+        if self.state in ["location", "encountered", "peeking"]:
+            # change the background from plain green here to 
+            # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
+            # uncomment locations_bg in Display
+            self.display.screen.fill((50, 80, 20))
+            self.display.screen.blit(self.display.back_button, (50, 50))
+
         if self.state == "start":
             self.render_start_screen()
 
         elif self.state == "map":
             self.render_map_screen()
-
+        
         elif self.state == "location":
-            self.display.screen.fill((50, 80, 20))
-            self.display.screen.blit(self.display.back_button, (50, 50))
             self.display.screen.blit(self.display.call_button, (750, 350))
 
-        elif self.state == "encountering":
-            self.display.screen.fill((50, 80, 20))
-            self.display.screen.blit(self.display.back_button, (50, 50))
-            self.render_sprite(self.encounter_result)
+        elif self.state == "peeking":
+            self.display.screen.blit(self.display.call_button, (750, 350))
+            self.render_sprite(self.encounter_result, 810, 150)
+
+        elif self.state == "encountered":
+            self.render_sprite(self.encounter_result, 270, 130)
 
         pygame.display.flip()  # Update screen
                        
-
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
         speeds = [6, 6, 6, 6, 4, 2, 1, 6, 6]
@@ -151,14 +162,14 @@ class Game:
             pygame.draw.rect(self.display.screen, (0,0,0), self.map_rect)
 
     def render_map_screen(self):
+        self.display.screen.blit(self.display.map_bg, (0, 0))
         self.display.screen.blit(self.display.pin, (190, 330))
         self.display.screen.blit(self.display.pin, (270, 130))
         self.display.screen.blit(self.display.pin, (50, 100))
         self.display.screen.blit(self.display.pin, (300, 50))
 
-    def render_sprite(self, file):
-        self.display.screen.blit(self.display.scale(file, (375, 187)), (270, 130))
-        pygame.display.flip()
+    def render_sprite(self, file, x, y):
+        self.display.screen.blit(self.display.scale(file, (375, 187)), (x, y))
 
     def encounter(self):
         weights = {"seal beach": [15, 40, 17, 13, 0, 15], 
@@ -185,29 +196,25 @@ class Game:
 
             # press the call button
             if spawned_animal.rarity == 1:
-                return spawned_animal.sprite       
+                self.state = "encountered"      
             else: # animal is rare
-                # otherwise, the animal should "peek"
-                # press call button again
+                self.state = "peeking"
                 if spawned_animal.escapes(self.player.level):
-                    # "oh no it ran away! maybe leveling up will help..."
-                    return self.display.ran_away     
+                    self.animal_ran = True
                 else:
-                    return spawned_animal.sprite
+                    self.animal_ran = False
+            self.encounter_result = spawned_animal.sprite
         else:
             # "looks like nobody is here...""
-            return self.display.no_animal
+            self.state = "encountered"
+            self.encounter_result = self.display.no_animal
 
     def run(self):
-        pygame.init()
         clock = pygame.time.Clock()
         while self.running:
             self.handle_events()
             self.set_display()
             clock.tick(30)  
-
-
-
 
 
 class Transition:
@@ -257,7 +264,12 @@ class Transition:
             self.finishedx = True
             self.coefficient = 0
         return self.coefficient
-    
-game = Game()
-game.run()
-pygame.quit()
+
+def main():  
+    pygame.init() 
+    game = Game()
+    game.run()
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
