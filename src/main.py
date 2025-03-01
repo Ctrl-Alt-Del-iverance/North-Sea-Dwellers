@@ -8,10 +8,10 @@ import pygame
 def main():
     game = Display()
     player = Player()
-    locations = ["deep ocean", "lighthouse", "seal beach", "puffin cave"]
-    
+    prev_user_a = None
+
     while game.running:
-        if game.state != "exploring":
+        if game.state == "start":
             game.set_display()
         user_action = game.handle_events()
  
@@ -23,9 +23,13 @@ def main():
         # add other pins here
         elif user_action == "back":
             game.state = "map"
-
         elif user_action == "searching":
             encounter(game, player)
+
+        if prev_user_a is not user_action:
+            game.set_display()
+        prev_user_a = user_action
+
         game.clock.tick(30) # 30 frames per second
 
     pygame.quit()
