@@ -8,18 +8,23 @@ import pygame
 def main():
     game = Display()
     player = Player()
+    locations = ["deep ocean", "lighthouse", "seal beach", "puffin cave"]
     
     while game.running:
-        if game.state != "other":
+        if game.state != "exploring":
             game.set_display()
         user_action = game.handle_events()
  
         # here we want to add control for the start button
-        if game.state == "start" and user_action == "continue":
+        if user_action == "continue":
             game.state = "map"
-        elif game.state == "map" and user_action == "pin":
+        elif user_action == "pin":
             game.state = "deep ocean"
-        elif game.state == "deep ocean":
+        # add other pins here
+        elif user_action == "back":
+            game.state = "map"
+
+        elif user_action == "searching":
             encounter(game, player)
         game.clock.tick(30) # 30 frames per second
 
@@ -29,10 +34,10 @@ def encounter(game, player):
     """ Select animal to spawn. """
     success = False
     
-    weights = {"seal beach": [15, 40, 17, 13, 15, 0], 
-                "puffin cave": [15, 30, 15, 10, 5, 25],
-                "lighthouse": [15, 35, 25, 15, 10, 5],
-                "deep ocean": [15, 35, 20, 15, 10, 5]}
+    weights = {"seal beach": [15, 40, 17, 13, 0, 15], 
+                "puffin cave": [15, 30, 15, 10, 25, 5],
+                "lighthouse": [15, 35, 25, 15, 0, 10],
+                "deep ocean": [10, 30, 20, 15, 10, 15]}
 
     rarities = [0, 1, 2, 3, 4, 5]
 
@@ -49,38 +54,31 @@ def encounter(game, player):
     # selects an animal of the rarity
     if candidates:
         spawned_animal = random.choice(candidates)
+        print(spawned_animal.name)
+        # press the call button
+
+        if spawned_animal.rarity == 1:
+            game.render_sprite(spawned_animal.sprite)
+            # success = spawned_animal.minigame()       
+        else: # animal is rare
+            # otherwise, the animal should "peek"
+            # press call button again
+            if spawned_animal.escapes(player.level):
+                # "oh no it ran away! maybe leveling up will help..."
+                print("ran away")     
+            else:
+                print("spawning")
+                game.render_sprite(spawned_animal.sprite)
+                # success = spawned_animal.minigame
     else:
         print("there is no animal here")
-        game.state = "other"
-        return
-    
-    print(spawned_animal.rarity)
-    # press the call button
-
-    if spawned_animal.rarity == 1:
-        game.render_sprite(spawned_animal.sprite)
-        # success = spawned_animal.minigame()
-    
-    # otherwise, the animal should "peek"
-    # press call button again
-    else:
-        if spawned_animal.escapes(player.level):
-            # "oh no it ran away! maybe leveling up will help..."
-            print("ran away")
-            game.state = "other"
-            return
-        
-        print("spawning")
-        game.render_sprite(spawned_animal.sprite)
-        # success = spawned_animal.minigame
 
     if success:
         # some messages here or something to celebrate
         LevelUpManager.add_exp(player, spawned_animal.get_exp())
         player.shells += spawned_animal.get_shells
         game.state = "map"
-    else:
-        game.state = "other"
+    game.state = "exploring"
 
 
 if __name__ == "__main__":

@@ -17,14 +17,17 @@ class Display:
         """ Declare the displays here """
         self.layers = self.load_layers() # paralax layers for the start screens
         self.title_img = self.scale("src/images/start_layers/title7.png", (750, 375))
-        self.continue_button_img = self.scale("src/images/continue_button.png", (375, 187.5))
-        self.new_game_button_img = self.scale("src/images/new_game_button.png", (375, 187.5))
+        self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
+        self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
         self.pin = self.scale("src/images/map/Pin.png", (375, 187.5))
+        self.back_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
+        self.call_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
 
         """ Declare hit boxes here. """
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
-
+        self.back_rect = pygame.Rect(50, 50, 100, 100)
+        self.call_rect = pygame.Rect(750, 350, 100, 100)
 
         self.pin_react = pygame.Rect(190, 330, 375, 188)
         self.map_rect = pygame.Rect(1000, 50, 800, 400)
@@ -43,17 +46,21 @@ class Display:
             case "map":
                 self.render_map_screen()
             case "deep ocean":
-              self.screen.fill((50, 80, 20))  
+              self.screen.fill((50, 80, 20))
+              self.screen.blit(self.back_button, (50, 50))
+              self.screen.blit(self.call_button, (750, 350))
 
         pygame.display.flip()
 
     def handle_events(self):
+        locations = ["deep ocean", "lighthouse", "seal beach", "puffin cave", "exploring"]
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 print("Clicked")
-
+                print(self.state)
                 if self.state == "start":
                     if self.continue_button_rect.collidepoint(event.pos):
                         return "continue"
@@ -61,7 +68,12 @@ class Display:
                         print("New Game")
                 if self.state == "map":
                     if self.pin_react.collidepoint(event.pos):
-                        return "pin"      
+                        return "pin"
+                if self.state in locations:
+                    if self.back_rect.collidepoint(event.pos):
+                        return "back"
+                    if self.call_rect.collidepoint(event.pos):
+                        return "searching"
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self.transition = True
                        
@@ -177,7 +189,7 @@ class AnimalManager:
         """ Define all the animals for the game. """
 
         harbour_seal = Animal("harbour seal", 1, "src/images/animals/seal.png")
-        grey_seal = Animal("grey seal", 4, "src/images/animals/seal.png")
+        grey_seal = Animal("grey seal", 5, "src/images/animals/seal.png")
         minke_whale = Animal("minke whale", 3, "src/images/animals/whale.png")
         bottlenose_dolphin = Animal("bottlenose dolphin", 2, "src/images/animals/dolphin.png")
         puffin = Animal("puffin", 4, "src/images/animals/puffin.png")
