@@ -9,6 +9,7 @@ class Display:
     def __init__(self):
         self.screen = pygame.display.set_mode((1000, 500)) # dimensions of the window
         self.font = pygame.font.SysFont("arial", 25)
+        pygame.display.set_caption("North Sea Dwellers")
 
         """ Put backgrounds here. """
         self.layers = self.load_layers() # paralax layers for the start screens
@@ -105,7 +106,10 @@ class Game:
 
         elif self.state == "encountered":
             if self.begin_rect.collidepoint(pos):
-                self.state = "minigame"
+                success = self.cur_animal.run()
+                if success:
+                    LevelUpManager.add_exp(self.player, self.cur_animal.get_game_exp())
+                pygame.display.set_caption("North Sea Dwellers")
                     
         # control for the back button:
         if self.state in ["location", "peeking", "encountered", "no animal", "ran away"]:
@@ -144,11 +148,15 @@ class Game:
         elif self.state == "peeking":
             self.display.screen.blit(self.display.call_button, (750, 350))
             self.render_sprite(self.encounter_result, 810, 150)
+            cur_name = self.display.font.render(f"{self.cur_animal.name}", True, (0, 0,0))
+            self.display.screen.blit(cur_name, (450, 50))
 
         # display the results of the encounter:
         elif self.state == "encountered":
             self.render_sprite(self.encounter_result, 270, 130)
             self.display.screen.blit(self.display.begin_button, (450, 350))
+            cur_name = self.display.font.render(f"{self.cur_animal.name}", True, (0, 0,0))
+            self.display.screen.blit(cur_name, (450, 50))
 
         elif self.state == "no animal":
             self.display.screen.blit(self.display.no_animal_text, (270, 130))
@@ -231,7 +239,6 @@ class Game:
 
         if candidates: # if there is any animal of that rarity
             spawned_animal = random.choice(candidates)
-            print(spawned_animal.name)
 
             if spawned_animal.rarity == 1: # if the animal is common
                 self.state = "encountered" # encounter is done

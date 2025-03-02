@@ -1,4 +1,5 @@
 import random
+from minigame.seal_net import SealNetGame
 
 """ The animal class stores and manages the animal attributes
 and their corresponding minigames"""
@@ -11,7 +12,8 @@ class Animal:
         self.minigame = minigame
 
     def run(self):
-        self.minigame()
+        game = self.minigame()
+        return game.run()
 
     def get_game_exp(self):
         exp = {1: 5, 2: 10, 3: 15, 4: 25, 5: 40}
@@ -49,8 +51,8 @@ class AnimalManager:
     def get_animals(cls):
         """ Define all the animals for the game. """
 
-        harbour_seal = Animal("harbour seal", 1, "src/images/animals/seal.png")
-        grey_seal = Animal("grey seal", 5, "src/images/animals/seal.png")
+        harbour_seal = Animal("harbour seal", 1, "src/images/animals/seal.png", SealNetGame)
+        grey_seal = Animal("grey seal", 5, "src/images/animals/seal.png", SealNetGame)
         minke_whale = Animal("minke whale", 3, "src/images/animals/whale.png")
         bottlenose_dolphin = Animal("bottlenose dolphin", 2, "src/images/animals/dolphin.png")
         puffin = Animal("puffin", 4, "src/images/animals/puffin.png")
