@@ -4,21 +4,21 @@ import time
 from itertools import combinations
 
 class SealNetGame:
-    WIDTH, HEIGHT = 600, 600
+    WIDTH, HEIGHT = 1000, 500
     NODE_RADIUS = 10
-    #EDGE_COLOR = (0, 0, 0)
-    #NODE_COLOR = (0, 0, 255)
-    #BACKGROUND_COLOR = (230, 230, 230)
+    EDGE_COLOR = (0, 0, 0)
+    NODE_COLOR = (0, 0, 255)
+    BACKGROUND_COLOR = (230, 230, 230)
     TIME_LIMIT = 60  # seconds
 
     def __init__(self):
-        pygame.init()
+        #pygame.init()
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("Untangle the Net")
         self.font = pygame.font.Font(None, 30)
         
-        self.nodes = [(random.randint(50, self.WIDTH - 50), random.randint(50, self.HEIGHT - 50)) for _ in range(7)]
-        self.edges = list(combinations(range(7), 2))
+        self.nodes = [(random.randint(50, self.WIDTH - 50), random.randint(50, self.HEIGHT - 50)) for _ in range(4)]
+        self.edges = list(combinations(range(4), 2))
         self.running = True
         self.dragging = None
         self.start_time = time.time()
@@ -38,6 +38,7 @@ class SealNetGame:
         return False
 
     def run(self):
+        success = False
         while self.running:
             self.screen.fill(self.BACKGROUND_COLOR)
             elapsed_time = int(time.time() - self.start_time)
@@ -48,11 +49,12 @@ class SealNetGame:
             if not self.check_intersections():
                 win_text = self.font.render("You untangled the net!", True, (0, 200, 0))
                 self.screen.blit(win_text, (self.WIDTH//2 - 100, self.HEIGHT//2))
+                success = True
+                self.running = False
             elif remaining_time == 0:
                 lose_text = self.font.render("Time's up! You lost!", True, (200, 0, 0))
                 self.screen.blit(lose_text, (self.WIDTH//2 - 100, self.HEIGHT//2))
                 pygame.display.flip()
-                pygame.time.delay(3000)
                 self.running = False
             
             for edge in self.edges:
@@ -75,7 +77,8 @@ class SealNetGame:
                 elif event.type == pygame.MOUSEMOTION and self.dragging is not None:
                     self.nodes[self.dragging] = (event.pos[0], event.pos[1])
         
-        pygame.quit()
+        pygame.time.delay(3000)
+        return success
 
 if __name__ == "__main__":
     game = SealNetGame()
