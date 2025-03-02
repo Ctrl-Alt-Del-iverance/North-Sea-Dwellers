@@ -11,8 +11,8 @@ class Animal:
         self.sprite = sprite
         self.minigame = minigame
 
-    def run(self):
-        game = self.minigame()
+    def run(self, display):
+        game = self.minigame(display)
         return game.run()
 
     def get_game_exp(self):
