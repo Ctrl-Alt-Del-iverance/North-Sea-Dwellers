@@ -8,19 +8,26 @@ from player import Player, LevelUpManager
 class Display:
     def __init__(self):
         self.screen = pygame.display.set_mode((1000, 500)) # dimensions of the window
+        self.font = pygame.font.SysFont("arial", 25)
 
+        """ Put backgrounds here. """
         self.layers = self.load_layers() # paralax layers for the start screens
         self.title_img = self.scale("src/images/start_layers/title7.png", (750, 375))
+        self.map_bg = self.scale("src/images/map/Map.png", (1000, 500))
+        #self.locations_bg = {"deep sea": self.scale("filepathtodeapseabg", (1000, 500)),
+        #                  "lighthouse": self.scale("filepath", (1000, 500))} #etc...
+
+        """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
         self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
         self.pin = self.scale("src/images/map/Pin.png", (375, 187.5))
         self.back_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
-        self.call_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
-        self.ran_away = "src/images/text/ran_away.png"
-        self.no_animal = "src/images/text/no_animal.png"
-        self.map_bg = self.scale("src/images/map/Map.png", (1000, 500))
-        #self.locations_bg = {"deep sea": self.scale("filepathtodeapseabg", (1000, 500)),
-        #                  "lighthouse": self.scale("filepath", (1000, 500))} #etc...
+        self.call_button = self.scale("src/images/buttons/call_button.png", (100, 100))
+        self.begin_button = self.scale("src/images/buttons/begin_button.png", (100, 100))
+
+        """ Text """
+        self.ran_away_text = self.font.render("Oh no! It ran away.Maybe leveling up will help", True, (200,200,200))
+        self.no_animal_text = self.font.render("Looks like nobody is here...", True, (200,200,200))
 
     def scale(self, file, scale):
         img = pygame.image.load(file)
@@ -43,7 +50,7 @@ class Game:
         self.state = "start"
         self.location = None # we will use this to swap out the different backgrounds
         self.encounter_result = None # what animal spawned if any
-        self.animal_ran = False
+        self.cur_animal = None
         self.loop_positions = [0] * 8 # positions for the start screen layers  
 
         """ Declare hit boxes here. """
@@ -51,6 +58,7 @@ class Game:
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
         self.back_rect = pygame.Rect(50, 50, 100, 100)
         self.call_rect = pygame.Rect(750, 350, 100, 100)
+        self.begin_rect = pygame.Rect(500, 350, 100, 100)
         self.pin_react = pygame.Rect(190, 330, 375, 188)
         self.map_rect = pygame.Rect(1000, 50, 800, 400)
 
@@ -89,13 +97,18 @@ class Game:
 
         # if animal is hiding, call again:
         elif self.state == "peeking":
-            if self.call_rect.collidepoint(pos):
-                if self.animal_ran:
-                    self.encounter_result = self.display.ran_away
-                self.state = "encountered"
+            if self.call_rect.collidepoint(pos): # determine if animal escapes based on player experience
+                if self.cur_animal.escapes(self.player.level):
+                    self.state = "ran away"
+                else: 
+                    self.state = "encountered"
+
+        elif self.state == "encountered":
+            if self.begin_rect.collidepoint(pos):
+                self.state = "minigame"
                     
         # control for the back button:
-        if self.state in ["location", "peeking", "encountered"]:
+        if self.state in ["location", "peeking", "encountered", "no animal", "ran away"]:
             if self.back_rect.collidepoint(pos):
                 self.state = "map"
 
@@ -105,13 +118,18 @@ class Game:
         self.display.screen.fill((0, 0, 0)) # erase
 
         # while you are searching/encountering an animal:
-        if self.state in ["location", "encountered", "peeking"]:
+        if self.state in ["location", "encountered", "peeking", "no animal", "ran away"]:
             # change the background from plain green here to 
             # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
             # uncomment locations_bg in Display
             self.display.screen.fill((50, 80, 20))
             self.display.screen.blit(self.display.back_button, (50, 50))
-            # lets display the player level here as well
+            level = self.display.font.render(f"Player Level: {self.player.level}", True, (0,0,0))
+            exp = self.display.font.render(f"Exp: {self.player.exp}", True, (0,0,0))
+            self.display.screen.blit(level, (835, 20))
+            self.display.screen.blit(exp, (835, 40))
+            cur_location = self.display.font.render(f"{self.location}", True, (0, 0,0))
+            self.display.screen.blit(cur_location, (450, 20))
 
         if self.state == "start":
             self.render_start_screen()
@@ -130,6 +148,13 @@ class Game:
         # display the results of the encounter:
         elif self.state == "encountered":
             self.render_sprite(self.encounter_result, 270, 130)
+            self.display.screen.blit(self.display.begin_button, (450, 350))
+
+        elif self.state == "no animal":
+            self.display.screen.blit(self.display.no_animal_text, (270, 130))
+        
+        elif self.state == "ran away":
+            self.display.screen.blit(self.display.ran_away_text, (270, 130))
 
         pygame.display.flip()  # Update screen
                        
@@ -212,13 +237,11 @@ class Game:
                 self.state = "encountered" # encounter is done
             else: # animal is rare
                 self.state = "peeking" # animal hides
-                # determine if animal escapes based on player experience
-                self.animal_ran =  spawned_animal.escapes(self.player.level)
             # display chosen animal
+            self.cur_animal = spawned_animal
             self.encounter_result = spawned_animal.sprite
         else: # there is no animal at that location right now
-            self.state = "encountered" # encounter is done
-            self.encounter_result = self.display.no_animal
+            self.state = "no animal" # encounter is done
 
     def run(self):
         clock = pygame.time.Clock()
