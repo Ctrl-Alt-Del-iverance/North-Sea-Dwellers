@@ -41,10 +41,10 @@ class Display:
         message = self.font.render(text, True, colour)
         self.screen.blit(message, pos)
 
-    def draw_object(self, file, x, y):
+    def draw_object(self, file, pos):
         """ Add an object to the screen. """
         # may need to make scale args
-        self.screen.blit(self.scale(file, (375, 187)), (x, y))
+        self.screen.blit(self.scale(file, (375, 187)), pos)
 
 
 """ The Game class controls game logic and user interaction. """
@@ -136,38 +136,31 @@ class Game:
         if self.state not in ["map", "start"]:
             self.render_location_screen()
 
-        if self.state in ["searching", "peeking"]:
-            self.display.screen.blit(self.display.call_button, (750, 350))
-
-        if self.state in ["peeking", "encountered"]:
-            self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
-
-        if self.state == "start":
-            self.render_start_screen()
-
-        elif self.state == "map":
-            self.render_map_screen()
-
-        # let the animal "peak:"
-        elif self.state == "peeking":
-            self.display.draw_object(self.encounter_result, 810, 150)
-
-        # display the results of the encounter:
-        elif self.state == "encountered":
-            self.display.draw_object(self.encounter_result, 270, 130)
-            self.display.screen.blit(self.display.begin_button, (450, 350))
-
-        elif self.state == "ran away":
-            self.display.draw_text("Oh no! It ran away.Maybe leveling up will help", (270, 130), (250, 250, 250))
-        
-        elif self.state == "no animal":
-            self.display.draw_text("Looks like nobody is here...", (270, 130), (250, 250, 250))
-
-        elif self.state == "won":
-            self.display.draw_text(f"You Won! Gained {self.cur_animal.get_game_exp()} exp", (450, 270), (250, 250, 250))
-
-        elif self.state == "lost":
-            self.display.draw_text("Too bad. You lost", (450, 270), (250, 250, 250))
+        match self.state:
+            case "start":
+                self.render_start_screen()
+            case "map":
+                self.render_map_screen()
+            case "searching":
+                self.display.screen.blit(self.display.call_button, (750, 350))
+            case "peeking": # animal partially visible
+                self.display.draw_object(self.encounter_result, (810, 150))
+                self.display.screen.blit(self.display.call_button, (750, 350))
+                self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
+            case "encountered": # animal caught!
+                self.display.draw_object(self.encounter_result, (270, 130))
+                self.display.screen.blit(self.display.begin_button, (450, 350))
+                self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
+            case "ran away":
+                self.display.draw_text("Oh no! It ran away.Maybe leveling up will help", (270, 130), (250, 250, 250))
+            case "no animal":
+                self.display.draw_text("Looks like nobody is here...", (270, 130), (250, 250, 250))
+            case "won":
+                self.display.draw_text(f"You Won! Gained {self.cur_animal.get_game_exp()} exp", (450, 270), (250, 250, 250))
+            case "lost":
+                self.display.draw_text("Too bad. You lost", (450, 270), (250, 250, 250))
+            case _:
+                raise Exception(f"Invalid game state {self.state}")
 
         pygame.display.flip()  # Update screend
                        
