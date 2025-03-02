@@ -26,10 +26,6 @@ class Display:
         self.call_button = self.scale("src/images/buttons/call_button.png", (100, 100))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (100, 100))
 
-        """ Text """
-        self.ran_away_text = self.font.render("Oh no! It ran away.Maybe leveling up will help", True, (200,200,200))
-        self.no_animal_text = self.font.render("Looks like nobody is here...", True, (200,200,200))
-
     def scale(self, file, scale):
         img = pygame.image.load(file)
         return pygame.transform.scale(img, scale)
@@ -40,6 +36,16 @@ class Display:
             img = pygame.image.load(f"src/images/start_layers/pixil-layer-{i}.png")
             layers.append(img)
         return layers
+    
+    def draw_text(self, text, pos, colour = (0, 0, 0)):
+        message = self.font.render(text, True, colour)
+        self.screen.blit(message, pos)
+
+    def draw_object(self, file, x, y):
+        """ Add an object to the screen. """
+        # may need to make scale args
+        self.screen.blit(self.scale(file, (375, 187)), (x, y))
+
 
 """ The Game class controls game logic and user interaction. """
 
@@ -88,11 +94,11 @@ class Game:
         elif self.state == "map":
             if self.pin_react.collidepoint(pos):
                 self.location = "deep sea"
-                self.state = "location"
+                self.state = "searching"
             #more pins here
 
         # call for an animal:
-        elif self.state == "location":
+        elif self.state == "searching":
             if self.call_rect.collidepoint(pos):
                 self.encounter() # encounter an animal if there is one
 
@@ -106,13 +112,18 @@ class Game:
 
         elif self.state == "encountered":
             if self.begin_rect.collidepoint(pos):
-                success = self.cur_animal.run()
-                if success:
-                    LevelUpManager.add_exp(self.player, self.cur_animal.get_game_exp())
-                pygame.display.set_caption("North Sea Dwellers")
+                try:
+                    success = self.cur_animal.run()
+                    self.state = "lost"
+                    if success:
+                        LevelUpManager.add_exp(self.player, self.cur_animal.get_game_exp())
+                        self.state = "won"
+                    pygame.display.set_caption("North Sea Dwellers")
+                except: # there is no minigame for this animal
+                    self.state = "searching"
                     
         # control for the back button:
-        if self.state in ["location", "peeking", "encountered", "no animal", "ran away"]:
+        if self.state not in ["map", "start"]:
             if self.back_rect.collidepoint(pos):
                 self.state = "map"
 
@@ -122,49 +133,43 @@ class Game:
         self.display.screen.fill((0, 0, 0)) # erase
 
         # while you are searching/encountering an animal:
-        if self.state in ["location", "encountered", "peeking", "no animal", "ran away"]:
-            # change the background from plain green here to 
-            # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
-            # uncomment locations_bg in Display
-            self.display.screen.fill((50, 80, 20))
-            self.display.screen.blit(self.display.back_button, (50, 50))
-            level = self.display.font.render(f"Player Level: {self.player.level}", True, (0,0,0))
-            exp = self.display.font.render(f"Exp: {self.player.exp}", True, (0,0,0))
-            self.display.screen.blit(level, (835, 20))
-            self.display.screen.blit(exp, (835, 40))
-            cur_location = self.display.font.render(f"{self.location}", True, (0, 0,0))
-            self.display.screen.blit(cur_location, (450, 20))
+        if self.state not in ["map", "start"]:
+            self.render_location_screen()
+
+        if self.state in ["searching", "peeking"]:
+            self.display.screen.blit(self.display.call_button, (750, 350))
+
+        if self.state in ["peeking", "encountered"]:
+            self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
 
         if self.state == "start":
             self.render_start_screen()
 
         elif self.state == "map":
             self.render_map_screen()
-        
-        elif self.state == "location":
-            self.display.screen.blit(self.display.call_button, (750, 350))
 
         # let the animal "peak:"
         elif self.state == "peeking":
-            self.display.screen.blit(self.display.call_button, (750, 350))
-            self.render_sprite(self.encounter_result, 810, 150)
-            cur_name = self.display.font.render(f"{self.cur_animal.name}", True, (0, 0,0))
-            self.display.screen.blit(cur_name, (450, 50))
+            self.display.draw_object(self.encounter_result, 810, 150)
 
         # display the results of the encounter:
         elif self.state == "encountered":
-            self.render_sprite(self.encounter_result, 270, 130)
+            self.display.draw_object(self.encounter_result, 270, 130)
             self.display.screen.blit(self.display.begin_button, (450, 350))
-            cur_name = self.display.font.render(f"{self.cur_animal.name}", True, (0, 0,0))
-            self.display.screen.blit(cur_name, (450, 50))
 
-        elif self.state == "no animal":
-            self.display.screen.blit(self.display.no_animal_text, (270, 130))
-        
         elif self.state == "ran away":
-            self.display.screen.blit(self.display.ran_away_text, (270, 130))
+            self.display.draw_text("Oh no! It ran away.Maybe leveling up will help", (270, 130), (250, 250, 250))
+        
+        elif self.state == "no animal":
+            self.display.draw_text("Looks like nobody is here...", (270, 130), (250, 250, 250))
 
-        pygame.display.flip()  # Update screen
+        elif self.state == "won":
+            self.display.draw_text(f"You Won! Gained {self.cur_animal.get_game_exp()} exp", (450, 270), (250, 250, 250))
+
+        elif self.state == "lost":
+            self.display.draw_text("Too bad. You lost", (450, 270), (250, 250, 250))
+
+        pygame.display.flip()  # Update screend
                        
     def render_start_screen(self):
         """ This will render all layers of the start screen and control the continuous loop. """
@@ -211,10 +216,16 @@ class Game:
         self.display.screen.blit(self.display.pin, (270, 130))
         self.display.screen.blit(self.display.pin, (50, 100))
         self.display.screen.blit(self.display.pin, (300, 50))
-
-    def render_sprite(self, file, x, y):
-        """ Add an object to the screen. """
-        self.display.screen.blit(self.display.scale(file, (375, 187)), (x, y))
+    
+    def render_location_screen(self):
+        # change the background from plain green here to 
+        # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
+        # uncomment locations_bg in Display
+        self.display.screen.fill((50, 80, 20))
+        self.display.screen.blit(self.display.back_button, (50, 50))
+        self.display.draw_text(f"Player Level: {self.player.level}", (835, 20))
+        self.display.draw_text(f"Exp: {self.player.exp}", (835, 40))
+        self.display.draw_text(f"{self.location}", (450, 20))
 
     def encounter(self):
         """ Searching for an animal. """
