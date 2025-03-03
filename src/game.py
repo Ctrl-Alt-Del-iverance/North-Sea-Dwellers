@@ -40,6 +40,10 @@ class Game:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.handle_click(event.pos)
+            # stop the player from resizing the window
+            # prevent them from seeing uglyness
+            if event.type == pygame.VIDEORESIZE:
+                pygame.display.set_mode((1000, 500))
 
     def handle_click(self, pos):
         """ Handle user input for buttons, and game logic """
@@ -51,16 +55,16 @@ class Game:
         # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
             if self.ocean_pin_rect.collidepoint(pos):
-                self.location = "deep sea"
+                self.location = "Deep Sea"
                 self.state = "searching"
             if self.lighthouse_pin_rect.collidepoint(pos):
-                self.location = "lighthouse"
+                self.location = "Aberdeen Lighthouse"
                 self.state = "searching"
             if self.beach_pin_rect.collidepoint(pos):
-                self.location = "seal beach"
+                self.location = "Seal Beach"
                 self.state = "searching"
             if self.cave_pin_rect.collidepoint(pos):
-                self.location = "puffin cave"
+                self.location = "Puffin Cave"
                 self.state = "searching"
 
         # call for an animal:
@@ -115,13 +119,13 @@ class Game:
             case "peeking": # animal partially visible
                 self.display.draw_object(self.encounter_result, (860, 150))
                 self.display.screen.blit(self.display.call_button, (750, 300))
-                self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
+                self.display.draw_text(f"{self.cur_animal.name}", (200, 27))
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))
                 self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (50, 450))
             case "encountered": # animal caught!
                 self.display.draw_object(self.encounter_result, (400, 130))
                 self.display.screen.blit(self.display.begin_button, (450, 370))
-                self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
+                self.display.draw_text(f"{self.cur_animal.name}", (200, 27))
             case "ran away":
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))
                 self.display.draw_text("Oh no! It ran away... Maybe leveling up will help", (50, 450))
@@ -191,19 +195,19 @@ class Game:
     def render_location_screen(self):
         self.display.screen.blit(self.display.location_bg[self.location], (0,0))
         self.display.screen.blit(self.display.back_button, (50, 50))
-        self.display.draw_text(f"Player Level: {self.player.level}", (835, 20))
-        self.display.draw_text(f"Exp: {self.player.exp}", (835, 40))
-        self.display.draw_text(f"{self.location}", (450, 20))
+        self.display.draw_text(f"Player Level: {self.player.level}", (822, 5))
+        self.display.draw_text(f"Exp: {self.player.exp}", (822, 27))
+        self.display.draw_text(f"{self.location}", (200, 5))
 
     def encounter(self):
         """ Searching for an animal. """
 
         # chance of each animal at each location
         # in order of none, harbour seal, dolphin, whale, puffin, grey seal
-        weights = {"seal beach": [10, 43, 20, 10, 0, 17], 
-                "puffin cave": [10, 25, 20, 10, 30, 5],
-                "lighthouse": [10, 35, 30, 20, 0, 5],
-                "deep sea": [10, 35, 25, 15, 10, 5]}
+        weights = {"Seal Beach": [10, 43, 20, 10, 0, 17], 
+                "Puffin Cave": [10, 25, 20, 10, 30, 5],
+                "Aberdeen Lighthouse": [10, 35, 30, 20, 0, 5],
+                "Deep Sea": [10, 35, 25, 15, 10, 5]}
         # 0 is associated with no animal at all
         rarities = [0, 1, 2, 3, 4, 5]
 
@@ -235,7 +239,7 @@ class Game:
         while self.running:
             self.handle_events()
             self.set_display()
-            clock.tick(30)  
+            clock.tick(60)  
 
 
 class Transition:

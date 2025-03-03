@@ -1,20 +1,22 @@
 import pygame
+import ctypes
 """ The Display class initialises all graphics and controls what is visible on the screen . """
 
 class Display:
     def __init__(self):
         self.screen = pygame.display.set_mode((1000, 500)) # dimensions of the window
-        self.font = pygame.font.SysFont("arial", 25)
+        self.font = pygame.font.Font("src/garamond.ttf", 30)
         pygame.display.set_caption("North Sea Dwellers")
 
+    
         """ Put backgrounds here. """
         self.layers = self.load_layers() # paralax layers for the start screens
         self.title_img = self.scale("src/images/start_layers/title7.png", (750, 375))
         self.map_bg = self.scale("src/images/map/Map.png", (800, 400))
-        self.location_bg = {"deep sea": self.scale("src/images/minigame_backgrounds/ocean_floor.png", (1000, 500)),
-                          "lighthouse": self.scale("src/images/map/lighthouse.png", (1000, 500)),
-                          "seal beach": self.scale("src/images/minigame_backgrounds/seal_hab.png", (1000, 500)),
-                          "puffin cave": self.scale("src/images/map/beachcave.png", (1000, 500))}
+        self.location_bg = {"Deep Sea": self.scale("src/images/minigame_backgrounds/ocean_floor.png", (1000, 500)),
+                          "Aberdeen Lighthouse": self.scale("src/images/map/lighthouse.png", (1000, 500)),
+                          "Seal Beach": self.scale("src/images/minigame_backgrounds/seal_hab.png", (1000, 500)),
+                          "Puffin Cave": self.scale("src/images/map/beachcave.png", (1000, 500))}
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (1000, 95))
 
         """ Buttons """
