@@ -22,7 +22,7 @@ class Game:
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
         self.back_rect = pygame.Rect(50, 50, 100, 100)
         self.call_rect = pygame.Rect(750, 300, 100, 100)
-        self.begin_rect = pygame.Rect(450, 300, 100, 100)
+        self.begin_rect = pygame.Rect(450, 350, 100, 100)
         self.ocean_pin_rect = pygame.Rect(650, 100, 100, 100)
         self.beach_pin_rect = pygame.Rect(150, 50, 100, 100)
         self.lighthouse_pin_rect = pygame.Rect(260, 210, 100, 100)
@@ -120,7 +120,7 @@ class Game:
                 self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (50, 450))
             case "encountered": # animal caught!
                 self.display.draw_object(self.encounter_result, (270, 130))
-                self.display.screen.blit(self.display.begin_button, (450, 300))
+                self.display.screen.blit(self.display.begin_button, (450, 350))
                 self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
             case "ran away":
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))
@@ -189,10 +189,7 @@ class Game:
         self.display.screen.blit(self.display.pin, (310+900-x_offset, 340)) # puffin cave
 
     def render_location_screen(self):
-        # change the background from plain green here to 
-        # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
-        # uncomment locations_bg in Display
-        self.display.screen.fill((0, 0, 100))
+        self.display.screen.blit(self.display.location_bg[self.location], (0,0))
         self.display.screen.blit(self.display.back_button, (50, 50))
         self.display.draw_text(f"Player Level: {self.player.level}", (835, 20))
         self.display.draw_text(f"Exp: {self.player.exp}", (835, 40))
@@ -204,7 +201,7 @@ class Game:
         # chance of each animal at each location
         # in order of none, harbour seal, dolphin, whale, puffin, grey seal
         weights = {"seal beach": [10, 43, 20, 10, 0, 17], 
-                "puffin cave": [10, 30, 20, 10, 25, 5],
+                "puffin cave": [10, 25, 20, 10, 30, 5],
                 "lighthouse": [10, 35, 30, 20, 0, 5],
                 "deep sea": [10, 35, 25, 15, 10, 5]}
         # 0 is associated with no animal at all
