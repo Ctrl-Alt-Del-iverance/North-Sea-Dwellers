@@ -10,7 +10,7 @@ class SealNetGame:
         self.display = display
         pygame.display.set_caption("Untangle the Net")
         self.background = self.display.scale("src/images/minigame_backgrounds/seal_hab.png", (self.WIDTH, self.HEIGHT))
-
+        self.running = True
         self.num_nodes = 8
         self.nodes = self.generate_nodes()
         self.node_radius = 10
@@ -80,7 +80,7 @@ class SealNetGame:
         success = False
         # the game should end either upon winning or time running out
         time_left = 60
-        while not success:
+        while self.running:
             self.display.screen.blit(self.background, (0, 0))
             
             # if no strings of the net are overlapping:
@@ -90,13 +90,14 @@ class SealNetGame:
                 # dont end until user lets go of the node
                 if self.dragging is None:
                     success = True
+                    self.running = False
             else: # black edge for tangled
                 self.edge_colour = (0, 0, 0)
 
             if time_left == 0:
                 self.display.draw_text("Time's up!", (self.WIDTH//2 - 100, 50), (200, 0, 0))
                 pygame.display.flip()
-                break
+                self.running = False
             
             for edge in self.edges:
                 # line of width 2. going from one endpoint of the edge to the other
@@ -109,7 +110,7 @@ class SealNetGame:
             
             # time left shouldn't go below 0, hence why we use max()
             time_left = max(0, 60 - int((time.time() - self.start_time)))
-            self.display.draw_text(f"Time Left: {time_left}s", (50, 50), (0, 0, 250))
+            self.display.draw_text(f"Time Left: {time_left}s", (50, 50), (0, 0, 0))
             pygame.display.flip()
             self.handle_events()    
         

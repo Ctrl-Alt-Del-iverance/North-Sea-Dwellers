@@ -11,8 +11,10 @@ class Display:
         self.layers = self.load_layers() # paralax layers for the start screens
         self.title_img = self.scale("src/images/start_layers/title7.png", (750, 375))
         self.map_bg = self.scale("src/images/map/Map.png", (800, 400))
-        #self.locations_bg = {"deep sea": self.scale("filepathtodeapseabg", (1000, 500)),
-        #                  "lighthouse": self.scale("filepath", (1000, 500))} #etc...
+        self.location_bg = {"deep sea": self.scale("src/images/minigame_backgrounds/ocean_floor.png", (1000, 500)),
+                          "lighthouse": self.scale("src/images/map/lighthouse.png", (1000, 500)),
+                          "seal beach": self.scale("src/images/minigame_backgrounds/seal_hab.png", (1000, 500)),
+                          "puffin cave": self.scale("src/images/map/beachcave.png", (1000, 500))}
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (1000, 95))
 
         """ Buttons """
@@ -34,11 +36,11 @@ class Display:
             layers.append(img)
         return layers
     
-    def draw_text(self, text, pos, colour = (250, 250, 250)):
+    def draw_text(self, text, pos, colour = (0, 0, 250)):
         message = self.font.render(text, True, colour)
         self.screen.blit(message, pos)
 
     def draw_object(self, file, pos):
         """ Add an object to the screen. """
         # may need to make scale args
-        self.screen.blit(self.scale(file, (375, 187)), pos)
+        self.screen.blit(self.scale(file, (220, 220)), pos)
