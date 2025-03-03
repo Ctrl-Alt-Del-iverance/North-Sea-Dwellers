@@ -177,11 +177,7 @@ while running:
                 for fish in fish_sprites:
                     fish.kill()
     
-    # Move the whale to follow mouse position (horizontally only)
-    if not game_over and not game_won:
-        mouse_pos = pygame.mouse.get_pos()
-        whale.move_to(mouse_pos[0])
-    
+   
     # Update all sprites
     all_sprites.update()
     
