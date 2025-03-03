@@ -8,8 +8,8 @@ from pygame.locals import *
 pygame.init()
 
 # Screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1000
+SCREEN_HEIGHT = 500
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Hungry Minke Whale")
 
@@ -19,6 +19,15 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
+
+# Load ocean floor background
+try:
+    ocean_floor = pygame.image.load('../images/minigame_backgrounds/ocean_floor.png').convert()
+    ocean_floor = pygame.transform.scale(ocean_floor, (SCREEN_WIDTH, SCREEN_HEIGHT))
+except pygame.error as e:
+    print(f"Couldn't load ocean floor image: {e}")
+    ocean_floor = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    ocean_floor.fill(BLUE)
 
 # Game variables
 score = 0
@@ -55,7 +64,6 @@ class Whale(pygame.sprite.Sprite):
     def update(self):
         pass
 
-
 # Fish class
 class Fish(pygame.sprite.Sprite):
     def __init__(self, fish_type):
@@ -76,7 +84,6 @@ class Fish(pygame.sprite.Sprite):
             self.image.fill(RED if fish_type in ['fish', 'monkfish'] else GREEN)
 
         self.rect = self.image.get_rect()
-        
         
         # Start from random side (left or right)
         if random.choice([True, False]):
@@ -177,7 +184,6 @@ while running:
                 for fish in fish_sprites:
                     fish.kill()
     
-   
     # Update all sprites
     all_sprites.update()
     
@@ -195,13 +201,8 @@ while running:
         weight_status = "Healthy Weight"
         weight_status_color = GREEN
     
-    # Clear the screen
-    screen.fill(BLUE)
-    
-    # Draw water background with simple waves
-    for y in range(0, SCREEN_HEIGHT, 30):
-        wave_color = (0, 90, 170)  # Slightly darker blue
-        pygame.draw.rect(screen, wave_color, (0, y, SCREEN_WIDTH, 5))
+    # Clear the screen with ocean floor background
+    screen.blit(ocean_floor, (0, 0))
     
     # Draw all sprites
     all_sprites.draw(screen)
