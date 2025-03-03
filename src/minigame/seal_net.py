@@ -6,7 +6,6 @@ import math
 
 class SealNetGame:
     WIDTH, HEIGHT = 1000, 500
-
     def __init__(self, display):
         self.display = display
         pygame.display.set_caption("Untangle the Net")
@@ -120,5 +119,6 @@ class SealNetGame:
         return success # lets the main game know if the player won
 
 if __name__ == "__main__":
-    game = SealNetGame()
+    from test_display import TestDisplay
+    game = SealNetGame(TestDisplay())
     game.run()
