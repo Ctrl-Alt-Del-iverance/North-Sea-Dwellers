@@ -100,7 +100,6 @@ class Game:
                 self.transition = True
                 self.render_start_screen(with_map=True)
             case "searching":
-                self.render_start_screen(with_map=True)
                 self.display.screen.blit(self.display.call_button, (750, 350))
             case "peeking": # animal partially visible
                 self.display.draw_object(self.encounter_result, (810, 150))
@@ -173,7 +172,6 @@ class Game:
         self.display.screen.blit(self.display.pin, (270+900-x_offset, 130))
         self.display.screen.blit(self.display.pin, (50+900-x_offset, 100))
         self.display.screen.blit(self.display.pin, (300+900-x_offset, 50))
-        self.display.screen.blit(self.display.call_button, (750+900-x_offset, 350))
     
     def render_location_screen(self):
         # change the background from plain green here to 
