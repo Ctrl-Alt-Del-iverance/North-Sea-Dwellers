@@ -37,8 +37,6 @@ class Game:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.handle_click(event.pos)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                self.transition = True
 
     def handle_click(self, pos):
         """ Handle user input for buttons, and game logic """
@@ -97,10 +95,13 @@ class Game:
 
         match self.state:
             case "start":
-                self.render_start_screen()
+                self.render_start_screen(with_map=False)
             case "map":
-                self.render_map_screen()
+                self.transition = True
+                self.render_start_screen(with_map=True)
+                self.display.screen.blit(self.display.call_button, (750, 350))
             case "searching":
+                self.render_start_screen(with_map=True)
                 self.display.screen.blit(self.display.call_button, (750, 350))
             case "peeking": # animal partially visible
                 self.display.draw_object(self.encounter_result, (810, 150))
@@ -123,7 +124,7 @@ class Game:
 
         pygame.display.flip()  # Update screend
                        
-    def render_start_screen(self):
+    def render_start_screen(self, with_map):
         """ This will render all layers of the start screen and control the continuous loop. """
 
         speeds = [6, 6, 6, 6, 4, 2, 1, 6, 6]
@@ -135,6 +136,8 @@ class Game:
             speeds = [speed * coefficient for speed in speeds]
         else:
             y_offset = 0
+        print(y_offset)
+        print(self.map_rect[0])
 
         #y_offset
         for i in range(len(self.display.layers)):
@@ -161,13 +164,16 @@ class Game:
         if self.transition:
             self.map_rect.x -= speeds[8]
             pygame.draw.rect(self.display.screen, (0,0,0), self.map_rect)
+        x_offset = 1000-self.map_rect[0]
+        if with_map:
+            self.render_map_screen(x_offset)
 
-    def render_map_screen(self):
-        self.display.screen.blit(self.display.map_bg, (0, 0))
-        self.display.screen.blit(self.display.pin, (190, 330))
-        self.display.screen.blit(self.display.pin, (270, 130))
-        self.display.screen.blit(self.display.pin, (50, 100))
-        self.display.screen.blit(self.display.pin, (300, 50))
+    def render_map_screen(self, x_offset):
+        self.display.screen.blit(self.display.map_bg, (100+900-x_offset, 50))
+        self.display.screen.blit(self.display.pin, (190+900-x_offset, 330))
+        self.display.screen.blit(self.display.pin, (270+900-x_offset, 130))
+        self.display.screen.blit(self.display.pin, (50+900-x_offset, 100))
+        self.display.screen.blit(self.display.pin, (300+900-x_offset, 50))
     
     def render_location_screen(self):
         # change the background from plain green here to 

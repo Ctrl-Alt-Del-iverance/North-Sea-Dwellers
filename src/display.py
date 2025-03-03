@@ -10,7 +10,7 @@ class Display:
         """ Put backgrounds here. """
         self.layers = self.load_layers() # paralax layers for the start screens
         self.title_img = self.scale("src/images/start_layers/title7.png", (750, 375))
-        self.map_bg = self.scale("src/images/map/Map.png", (1000, 500))
+        self.map_bg = self.scale("src/images/map/Map.png", (800, 400))
         #self.locations_bg = {"deep sea": self.scale("filepathtodeapseabg", (1000, 500)),
         #                  "lighthouse": self.scale("filepath", (1000, 500))} #etc...
 
