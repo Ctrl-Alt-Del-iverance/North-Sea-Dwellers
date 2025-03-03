@@ -53,39 +53,30 @@ class Whale(pygame.sprite.Sprite):
         self.rect.bottom = SCREEN_HEIGHT - 20
         
     def update(self):
-        # Keep the whale within screen boundaries
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > SCREEN_WIDTH:
-            self.rect.right = SCREEN_WIDTH
-            
-    def move_to(self, x):
-        self.rect.centerx = x
-        self.update()
+        pass
+
 
 # Fish class
 class Fish(pygame.sprite.Sprite):
     def __init__(self, fish_type):
         super().__init__()
         self.fish_type = fish_type
+        fish_images = {
+            'krill': '../images/animals/krill.png',
+            'mackerel': '../images/animals/mackerel.png',
+            'fish': '../images/animals/fish.png',
+            'monkfish': '../images/animals/monkfish.png'
+        }
         
-        # Load fish image for correct fish types
-        if fish_type in correct_fish:
-            try:
-                self.image = pygame.image.load('../images/animals/fish.png').convert_alpha()
-                # Scale image if needed
-                self.image = pygame.transform.scale(self.image, (50, 25))
-            except pygame.error as e:
-                print(f"Couldn't load fish image: {e}")
-                # Create a placeholder if image can't be loaded
-                self.image = pygame.Surface((50, 25))
-                self.image.fill(GREEN)
-        else:
-            # Create a simple fish shape for wrong fish types
-            self.image = pygame.Surface((50, 25), pygame.SRCALPHA)
-            self.image.fill(RED)
-        
+        try:
+            self.image = pygame.image.load(fish_images.get(fish_type, '../images/animals/fish.png')).convert_alpha()
+            self.image = pygame.transform.scale(self.image, (50, 25))
+        except pygame.error:
+            self.image = pygame.Surface((50, 25))
+            self.image.fill(RED if fish_type in ['fish', 'monkfish'] else GREEN)
+
         self.rect = self.image.get_rect()
+        
         
         # Start from random side (left or right)
         if random.choice([True, False]):
@@ -98,7 +89,7 @@ class Fish(pygame.sprite.Sprite):
             self.speed = random.uniform(-3.0, -1.0)  # Move left
         
         # Random vertical position
-        self.rect.y = random.randint(0, SCREEN_HEIGHT - self.rect.height)
+        self.rect.y = random.randint(50, SCREEN_HEIGHT - 100)
         
     def update(self):
         # Move the fish horizontally
@@ -117,8 +108,8 @@ whale = Whale()
 all_sprites.add(whale)
 
 # Define which fish are correct for Minke Whale diet
-correct_fish = ['herring', 'krill', 'mackerel']
-wrong_fish = ['cod', 'monkfish', 'flounder']
+correct_fish = ['krill', 'mackerel']
+wrong_fish = [ 'monkfish', 'flounder']
 all_fish_types = correct_fish + wrong_fish
 
 # Function to spawn a new fish
