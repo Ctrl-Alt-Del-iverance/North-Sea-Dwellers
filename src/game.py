@@ -113,14 +113,14 @@ class Game:
             case "searching":
                 self.display.screen.blit(self.display.call_button, (750, 300))
             case "peeking": # animal partially visible
-                self.display.draw_object(self.encounter_result, (810, 150))
+                self.display.draw_object(self.encounter_result, (860, 150))
                 self.display.screen.blit(self.display.call_button, (750, 300))
                 self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))
                 self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (50, 450))
             case "encountered": # animal caught!
-                self.display.draw_object(self.encounter_result, (270, 130))
-                self.display.screen.blit(self.display.begin_button, (450, 350))
+                self.display.draw_object(self.encounter_result, (400, 130))
+                self.display.screen.blit(self.display.begin_button, (450, 370))
                 self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
             case "ran away":
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))

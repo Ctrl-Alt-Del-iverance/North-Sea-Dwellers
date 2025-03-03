@@ -43,4 +43,4 @@ class Display:
     def draw_object(self, file, pos):
         """ Add an object to the screen. """
         # may need to make scale args
-        self.screen.blit(self.scale(file, (375, 187)), pos)
+        self.screen.blit(self.scale(file, (220, 220)), pos)

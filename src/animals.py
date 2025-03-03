@@ -37,7 +37,7 @@ class Animal:
         # the chance should go down by 0.15 every 5 levels
         # ensure it does not go bellow the minimum chance
         else:
-            escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.15 * ((player_level-1) // 5))
+            escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.15 * ((player_level-1) // 4))
         # returns true escape_chance% of the time
         return random.random() <= escape_chance
 
@@ -52,7 +52,7 @@ class AnimalManager:
         """ Define all the animals for the game. """
 
         harbour_seal = Animal("harbour seal", 1, "src/images/animals/seal.png", SealNetGame)
-        grey_seal = Animal("grey seal", 5, "src/images/animals/seal.png", SealNetGame)
+        grey_seal = Animal("grey seal", 5, "src/images/animals/GreySeal.png", SealNetGame)
         minke_whale = Animal("minke whale", 3, "src/images/animals/whale.png")
         bottlenose_dolphin = Animal("bottlenose dolphin", 2, "src/images/animals/dolphin.png")
         puffin = Animal("puffin", 4, "src/images/animals/puffin.png")
