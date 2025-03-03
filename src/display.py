@@ -13,11 +13,12 @@ class Display:
         self.map_bg = self.scale("src/images/map/Map.png", (800, 400))
         #self.locations_bg = {"deep sea": self.scale("filepathtodeapseabg", (1000, 500)),
         #                  "lighthouse": self.scale("filepath", (1000, 500))} #etc...
+        self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (1000, 95))
 
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
         self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
-        self.pin = self.scale("src/images/map/Pin.png", (375, 187.5))
+        self.pin = self.scale("src/images/map/Pin.png", (100, 100))
         self.back_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
         self.call_button = self.scale("src/images/buttons/call_button.png", (100, 100))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (100, 100))
@@ -33,7 +34,7 @@ class Display:
             layers.append(img)
         return layers
     
-    def draw_text(self, text, pos, colour = (0, 0, 0)):
+    def draw_text(self, text, pos, colour = (250, 250, 250)):
         message = self.font.render(text, True, colour)
         self.screen.blit(message, pos)
 
