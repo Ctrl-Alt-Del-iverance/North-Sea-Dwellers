@@ -21,8 +21,8 @@ class Game:
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
         self.back_rect = pygame.Rect(50, 50, 100, 100)
-        self.call_rect = pygame.Rect(750, 350, 100, 100)
-        self.begin_rect = pygame.Rect(500, 350, 100, 100)
+        self.call_rect = pygame.Rect(750, 300, 100, 100)
+        self.begin_rect = pygame.Rect(450, 300, 100, 100)
         self.ocean_pin_rect = pygame.Rect(650, 100, 100, 100)
         self.beach_pin_rect = pygame.Rect(150, 50, 100, 100)
         self.lighthouse_pin_rect = pygame.Rect(260, 210, 100, 100)
@@ -111,21 +111,25 @@ class Game:
                 self.transition = True
                 self.render_start_screen(with_map=True)
             case "searching":
-                self.display.screen.blit(self.display.call_button, (750, 350))
+                self.display.screen.blit(self.display.call_button, (750, 300))
             case "peeking": # animal partially visible
                 self.display.draw_object(self.encounter_result, (810, 150))
-                self.display.screen.blit(self.display.call_button, (750, 350))
+                self.display.screen.blit(self.display.call_button, (750, 300))
                 self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
+                self.display.screen.blit(self.display.dialogue_layer, (0, 420))
+                self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (50, 450))
             case "encountered": # animal caught!
                 self.display.draw_object(self.encounter_result, (270, 130))
-                self.display.screen.blit(self.display.begin_button, (450, 350))
+                self.display.screen.blit(self.display.begin_button, (450, 300))
                 self.display.draw_text(f"{self.cur_animal.name}", (450, 50))
             case "ran away":
-                self.display.draw_text("Oh no! It ran away.Maybe leveling up will help", (270, 130), (250, 250, 250))
+                self.display.screen.blit(self.display.dialogue_layer, (0, 420))
+                self.display.draw_text("Oh no! It ran away... Maybe leveling up will help", (50, 450))
             case "no animal":
-                self.display.draw_text("Looks like nobody is here...", (270, 130), (250, 250, 250))
+                self.display.screen.blit(self.display.dialogue_layer, (0, 420))
+                self.display.draw_text("Looks like nobody is here...", (50, 450), (250, 250, 250))
             case "won":
-                self.display.draw_text(f"You Won! Gained {self.cur_animal.get_game_exp()} exp", (450, 270), (250, 250, 250))
+                self.display.draw_text(f"You Won! Gained {self.cur_animal.get_game_exp()} exp", (450, 270))
             case "lost":
                 self.display.draw_text("Too bad. You lost", (450, 270), (250, 250, 250))
             case _:
@@ -188,7 +192,7 @@ class Game:
         # change the background from plain green here to 
         # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
         # uncomment locations_bg in Display
-        self.display.screen.fill((50, 80, 20))
+        self.display.screen.fill((0, 0, 100))
         self.display.screen.blit(self.display.back_button, (50, 50))
         self.display.draw_text(f"Player Level: {self.player.level}", (835, 20))
         self.display.draw_text(f"Exp: {self.player.exp}", (835, 40))

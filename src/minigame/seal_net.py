@@ -79,11 +79,9 @@ class SealNetGame:
     def run(self):
         success = False
         # the game should end either upon winning or time running out
+        time_left = 60
         while not success:
             self.display.screen.blit(self.background, (0, 0))
-            # time left shouldn't go below 0, hence why we use max()
-            time_left = max(0, 60 - int((time.time() - self.start_time)))
-            self.display.draw_text(f"Time Left: {time_left}s", (20, 20))
             
             # if no strings of the net are overlapping:
             if not self.check_intersections():
@@ -109,6 +107,9 @@ class SealNetGame:
                 # draws the nodes
                 pygame.draw.circle(self.display.screen, (0, 0, 200), (x, y), self.node_radius)
             
+            # time left shouldn't go below 0, hence why we use max()
+            time_left = max(0, 60 - int((time.time() - self.start_time)))
+            self.display.draw_text(f"Time Left: {time_left}s", (50, 50), (0, 0, 250))
             pygame.display.flip()
             self.handle_events()    
         
