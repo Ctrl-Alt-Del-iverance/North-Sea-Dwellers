@@ -17,7 +17,7 @@ class Display:
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
         self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
-        self.pin = self.scale("src/images/map/Pin.png", (375, 187.5))
+        self.pin = self.scale("src/images/map/Pin.png", (100, 100))
         self.back_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
         self.call_button = self.scale("src/images/buttons/call_button.png", (100, 100))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (100, 100))

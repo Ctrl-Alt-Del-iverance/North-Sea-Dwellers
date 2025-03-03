@@ -11,11 +11,11 @@ class SealNetGame:
         pygame.display.set_caption("Untangle the Net")
         self.background = self.display.scale("src/images/minigame_backgrounds/seal_hab.png", (self.WIDTH, self.HEIGHT))
 
-        self.num_nodes = 7
+        self.num_nodes = 8
         self.nodes = self.generate_nodes()
         self.node_radius = 10
         self.edges = self.generate_edges()
-        self.edge_colour = (0, 0, 0)
+        self.edge_colour = (0, 0, 0) # black :)
         self.dragging = None
         self.start_time = time.time()
 
@@ -33,17 +33,14 @@ class SealNetGame:
         # all but one of the nodes is in a circuit
         # so connect n-1 of the nodes:
         edges = []
+        middle_node = self.num_nodes - 1
         for node in range(self.num_nodes - 1):
+            edges.append((middle_node, node)) # connect xtra  node to all of the others
             next_node = node + 1
             if next_node == self.num_nodes - 1:  # if it's the last node in circuit
                 next_node = 0  # wrap around to the first node
-            
             edges.append((node, next_node))
-        # connect last node to all of the others
-        middle_node = self.num_nodes - 1
-        for node in range(self.num_nodes - 1):
-            edges.append((middle_node, node))
-        
+            
         # the result of this is a plannar graph which is always solvable
         return edges
     

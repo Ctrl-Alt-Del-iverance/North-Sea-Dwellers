@@ -23,7 +23,10 @@ class Game:
         self.back_rect = pygame.Rect(50, 50, 100, 100)
         self.call_rect = pygame.Rect(750, 350, 100, 100)
         self.begin_rect = pygame.Rect(500, 350, 100, 100)
-        self.pin_react = pygame.Rect(190, 330, 375, 188)
+        self.ocean_pin_rect = pygame.Rect(650, 100, 100, 100)
+        self.beach_pin_rect = pygame.Rect(150, 50, 100, 100)
+        self.lighthouse_pin_rect = pygame.Rect(260, 210, 100, 100)
+        self.cave_pin_rect = pygame.Rect(310, 340, 100, 100)
         self.map_rect = pygame.Rect(1000, 50, 800, 400)
 
         self.transitioning = Transition() #to cahgne holly stuff
@@ -47,10 +50,18 @@ class Game:
 
         # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
-            if self.pin_react.collidepoint(pos):
+            if self.ocean_pin_rect.collidepoint(pos):
                 self.location = "deep sea"
                 self.state = "searching"
-            #more pins here
+            if self.lighthouse_pin_rect.collidepoint(pos):
+                self.location = "lighthouse"
+                self.state = "searching"
+            if self.beach_pin_rect.collidepoint(pos):
+                self.location = "seal beach"
+                self.state = "searching"
+            if self.cave_pin_rect.collidepoint(pos):
+                self.location = "puffin cave"
+                self.state = "searching"
 
         # call for an animal:
         elif self.state == "searching":
@@ -168,11 +179,11 @@ class Game:
 
     def render_map_screen(self, x_offset):
         self.display.screen.blit(self.display.map_bg, (100+900-x_offset, 50))
-        self.display.screen.blit(self.display.pin, (190+900-x_offset, 330))
-        self.display.screen.blit(self.display.pin, (270+900-x_offset, 130))
-        self.display.screen.blit(self.display.pin, (50+900-x_offset, 100))
-        self.display.screen.blit(self.display.pin, (300+900-x_offset, 50))
-    
+        self.display.screen.blit(self.display.pin, (650+900-x_offset, 100)) #deap ocean
+        self.display.screen.blit(self.display.pin, (150+900-x_offset, 50)) # seal beach
+        self.display.screen.blit(self.display.pin, (260+900-x_offset, 210)) # lighthouse
+        self.display.screen.blit(self.display.pin, (310+900-x_offset, 340)) # puffin cave
+
     def render_location_screen(self):
         # change the background from plain green here to 
         # self.display.screen.blit(self.display.location_bg[self.location], (0,0))
@@ -187,10 +198,11 @@ class Game:
         """ Searching for an animal. """
 
         # chance of each animal at each location
-        weights = {"seal beach": [15, 40, 17, 13, 0, 15], 
-                "puffin cave": [15, 30, 15, 10, 25, 5],
-                "lighthouse": [15, 35, 25, 15, 0, 10],
-                "deep sea": [10, 30, 20, 15, 10, 15]}
+        # in order of none, harbour seal, dolphin, whale, puffin, grey seal
+        weights = {"seal beach": [10, 43, 20, 10, 0, 17], 
+                "puffin cave": [10, 30, 20, 10, 25, 5],
+                "lighthouse": [10, 35, 30, 20, 0, 5],
+                "deep sea": [10, 35, 25, 15, 10, 5]}
         # 0 is associated with no animal at all
         rarities = [0, 1, 2, 3, 4, 5]
 
