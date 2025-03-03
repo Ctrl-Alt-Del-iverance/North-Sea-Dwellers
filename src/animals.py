@@ -24,7 +24,7 @@ class Animal:
         return shells.get(self.rarity)
 
     def escapes(self, player_level):
-        base_chances = {3: 0.70, 4: 0.85, 5: 1.0} # starting chance of animal escaping for each level
+        base_chances = {3: 0.65, 4: 0.80, 5: 1.0} # starting chance of animal escaping for each level
         min_chances = {3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
 
         if self.rarity == 2:
