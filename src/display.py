@@ -1,7 +1,7 @@
 import pygame
 """ The Display class initialises all graphics and controls what is visible on the screen . """
 
-class Display:
+class display:
     def __init__(self):
         self.screen = pygame.display.set_mode((1000, 500)) # dimensions of the window
         self.font = pygame.font.SysFont("arial", 25)
