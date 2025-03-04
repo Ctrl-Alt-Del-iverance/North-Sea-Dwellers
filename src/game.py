@@ -20,9 +20,9 @@ class Game:
         """ Declare hit boxes here. """
         self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
         self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
-        self.back_rect = pygame.Rect(50, 50, 100, 100)
-        self.call_rect = pygame.Rect(750, 300, 100, 100)
-        self.begin_rect = pygame.Rect(450, 350, 100, 100)
+        self.back_rect = pygame.Rect(10, 10, 90, 90)
+        self.call_rect = pygame.Rect(765, 345, 220, 68)
+        self.begin_rect = pygame.Rect(375, 350, 256, 87)
         self.ocean_pin_rect = pygame.Rect(650, 100, 100, 100)
         self.beach_pin_rect = pygame.Rect(150, 50, 100, 100)
         self.lighthouse_pin_rect = pygame.Rect(260, 210, 100, 100)
@@ -61,10 +61,10 @@ class Game:
                 self.location = "Aberdeen Lighthouse"
                 self.state = "searching"
             if self.beach_pin_rect.collidepoint(pos):
-                self.location = "Seal Beach"
+                self.location = "Newburgh Seal Beach"
                 self.state = "searching"
             if self.cave_pin_rect.collidepoint(pos):
-                self.location = "Puffin Cave"
+                self.location = "Puffin Cave, Fowlsheugh"
                 self.state = "searching"
 
         # call for an animal:
@@ -115,27 +115,27 @@ class Game:
                 self.transition = True
                 self.render_start_screen(with_map=True)
             case "searching":
-                self.display.screen.blit(self.display.call_button, (750, 300))
+                self.display.screen.blit(self.display.call_button, (765, 345))
             case "peeking": # animal partially visible
                 self.display.draw_object(self.encounter_result, (860, 150))
-                self.display.screen.blit(self.display.call_button, (750, 300))
-                self.display.draw_text(f"{self.cur_animal.name}", (200, 27))
+                self.display.screen.blit(self.display.call_button, (765, 345))
+                self.display.draw_text(f"{self.cur_animal.name}", (115, 37))
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))
-                self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (50, 450))
+                self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (25, 445), (255, 255, 255))
             case "encountered": # animal caught!
-                self.display.draw_object(self.encounter_result, (400, 130))
-                self.display.screen.blit(self.display.begin_button, (450, 370))
-                self.display.draw_text(f"{self.cur_animal.name}", (200, 27))
+                self.display.draw_object(self.encounter_result, (390, 130))
+                self.display.screen.blit(self.display.begin_button, (375, 370))
+                self.display.draw_text(f"{self.cur_animal.name}", (115, 37))
             case "ran away":
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))
-                self.display.draw_text("Oh no! It ran away... Maybe leveling up will help", (50, 450))
+                self.display.draw_text("Oh no! It ran away... Maybe leveling up will help.", (25, 445), (255, 255, 255))
             case "no animal":
                 self.display.screen.blit(self.display.dialogue_layer, (0, 420))
-                self.display.draw_text("Looks like nobody is here...", (50, 450), (250, 250, 250))
+                self.display.draw_text("Looks like nobody is here...", (25, 445), (255, 255, 255))
             case "won":
                 self.display.draw_text(f"You Won! Gained {self.cur_animal.get_game_exp()} exp", (450, 270))
             case "lost":
-                self.display.draw_text("Too bad. You lost", (450, 270), (250, 250, 250))
+                self.display.draw_text("Too bad. You lost", (450, 270))
             case _:
                 raise Exception(f"Invalid game state {self.state}")
 
@@ -194,18 +194,18 @@ class Game:
 
     def render_location_screen(self):
         self.display.screen.blit(self.display.location_bg[self.location], (0,0))
-        self.display.screen.blit(self.display.back_button, (50, 50))
-        self.display.draw_text(f"Player Level: {self.player.level}", (820, 5))
-        self.display.draw_text(f"Exp: {self.player.exp}", (820, 27))
-        self.display.draw_text(f"{self.location}", (200, 5))
+        self.display.screen.blit(self.display.back_button, (10, 10))
+        self.display.draw_text(f"Player Level: {self.player.level}", (420, 10))
+        self.display.draw_text(f"Exp: {self.player.exp}", (605, 10))
+        self.display.draw_text(f"{self.location}", (115, 10))
 
     def encounter(self):
         """ Searching for an animal. """
 
         # chance of each animal at each location
         # in order of none, harbour seal, dolphin, whale, puffin, grey seal
-        weights = {"Seal Beach": [10, 43, 20, 10, 0, 17], 
-                "Puffin Cave": [10, 25, 20, 10, 30, 5],
+        weights = {"Newburgh Seal Beach": [10, 43, 20, 10, 0, 17], 
+                "Puffin Cave, Fowlsheugh": [10, 25, 20, 10, 30, 5],
                 "Aberdeen Lighthouse": [10, 35, 30, 20, 0, 5],
                 "Deep Sea": [10, 35, 25, 15, 10, 5]}
         # 0 is associated with no animal at all

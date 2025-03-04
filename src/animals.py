@@ -53,11 +53,11 @@ class AnimalManager:
     def get_animals(cls):
         """ Define all the animals for the game. """
 
-        harbour_seal = Animal("harbour seal", 1, "src/images/animals/seal.png", SealNetGame)
-        grey_seal = Animal("grey seal", 5, "src/images/animals/GreySeal.png", SealNetGame)
-        minke_whale = Animal("minke whale", 3, "src/images/animals/whale.png", HungryMinkeWhale)
-        bottlenose_dolphin = Animal("bottlenose dolphin", 2, "src/images/animals/dolphin.png")
-        puffin = Animal("puffin", 4, "src/images/animals/puffin.png", PuffinMaze)
+        harbour_seal = Animal("Harbour Seal", 1, "src/images/animals/seal.png", SealNetGame)
+        grey_seal = Animal("Grey Seal", 5, "src/images/animals/GreySeal.png", SealNetGame)
+        minke_whale = Animal("Minke Whale", 3, "src/images/animals/whale.png", HungryMinkeWhale)
+        bottlenose_dolphin = Animal("Bottlenose Dolphin", 2, "src/images/animals/dolphin.png")
+        puffin = Animal("Puffin", 4, "src/images/animals/puffin.png", PuffinMaze)
 
         return {harbour_seal, grey_seal, minke_whale, bottlenose_dolphin, puffin}
 
