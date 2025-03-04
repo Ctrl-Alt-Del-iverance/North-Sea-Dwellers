@@ -5,18 +5,17 @@ from itertools import combinations
 import math
 
 class SealNetGame:
-    WIDTH, HEIGHT = 1000, 500
     def __init__(self, display):
         self.display = display
         pygame.display.set_caption("Untangle the Net")
-        self.background = self.display.scale("src/images/minigame_backgrounds/seal_hab.png", (self.WIDTH, self.HEIGHT))
+        self.background = self.display.location_bg["Newburgh Seal Beach"]
         self.running = True
         self.num_nodes = 8
         self.nodes = self.generate_nodes()
         self.node_radius = 10
         self.edges = self.generate_edges()
         self.edge_colour = (0, 0, 0) # black :)
-        self.dragging = None
+        self.dragging = None # node that is being dragged
         self.start_time = time.time()
 
     def generate_nodes(self):
@@ -24,7 +23,7 @@ class SealNetGame:
         nodes = []
         for i in range(self.num_nodes):
             x = random.randint(50, 950)
-            y = random.randint(50, 450)
+            y = random.randint(65, 450) # avoid overlapping with the text
             nodes.append((x, y))
         return nodes
     
@@ -81,7 +80,7 @@ class SealNetGame:
     def run(self):
         success = False
         # the game should end either upon winning or time running out
-        time_left = 60
+        time_left = 45
         while self.running:
             self.display.screen.blit(self.background, (0, 0))
             
@@ -97,7 +96,7 @@ class SealNetGame:
                 self.edge_colour = (0, 0, 0)
 
             if time_left == 0:
-                self.display.draw_text("Time's up!", (self.WIDTH//2 - 100, 50), (200, 0, 0))
+                self.display.draw_text("Time's up!", (self.display.width//2 - 100, 50), (200, 0, 0))
                 pygame.display.flip()
                 self.running = False
             
@@ -111,8 +110,9 @@ class SealNetGame:
                 pygame.draw.circle(self.display.screen, (0, 0, 200), (x, y), self.node_radius)
             
             # time left shouldn't go below 0, hence why we use max()
-            time_left = max(0, 60 - int((time.time() - self.start_time)))
-            self.display.draw_text(f"Time Left: {time_left}s", (50, 50), (0, 0, 0))
+            time_left = max(0, 45 - int((time.time() - self.start_time)))
+            self.display.draw_text(f"Time Left: {time_left}s", (10, 10), (0, 0, 0))
+            self.display.draw_text(f"Untangle the net strings to free the seal!", (205, 10), (0, 0, 0))
             pygame.display.flip()
             self.handle_events()    
         
@@ -120,7 +120,7 @@ class SealNetGame:
         return success # lets the main game know if the player won
 
 if __name__ == "__main__":
-    pygame.init()
     from test_display import TestDisplay
+    pygame.init()
     game = SealNetGame(TestDisplay())
     game.run()

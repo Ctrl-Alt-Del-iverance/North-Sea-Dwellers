@@ -25,9 +25,10 @@ class Game:
         self.begin_rect = pygame.Rect(375, 350, 256, 87)
         self.ocean_pin_rect = pygame.Rect(650, 130, 100, 100)
         self.beach_pin_rect = pygame.Rect(150, 80, 100, 100)
-        self.lighthouse_pin_rect = pygame.Rect(240, 210, 100, 100)
+        self.lighthouse_pin_rect = pygame.Rect(260, 240, 100, 100)
         self.cave_pin_rect = pygame.Rect(310, 370, 100, 100)
         self.map_rect = pygame.Rect(1000, 80, 800, 400)
+        self.info_rect = pygame.Rect(750, 35, 40, 40)
 
         self.transitioning = Transition() #to cahgne holly stuff
         self.transition = False #TO CHANGE HOLLY STUFF
@@ -43,7 +44,7 @@ class Game:
             # stop the player from resizing the window
             # prevent them from seeing uglyness
             if event.type == pygame.VIDEORESIZE:
-                pygame.display.set_mode((1000, 500))
+                pygame.display.set_mode((self.display.width, self.display.height))
 
     def handle_click(self, pos):
         """ Handle user input for buttons, and game logic """
@@ -57,15 +58,17 @@ class Game:
             if self.ocean_pin_rect.collidepoint(pos):
                 self.location = "Deep Sea"
                 self.state = "searching"
-            if self.lighthouse_pin_rect.collidepoint(pos):
+            elif self.lighthouse_pin_rect.collidepoint(pos):
                 self.location = "Aberdeen Lighthouse"
                 self.state = "searching"
-            if self.beach_pin_rect.collidepoint(pos):
+            elif self.beach_pin_rect.collidepoint(pos):
                 self.location = "Newburgh Seal Beach"
                 self.state = "searching"
-            if self.cave_pin_rect.collidepoint(pos):
+            elif self.cave_pin_rect.collidepoint(pos):
                 self.location = "Puffin Cave, Fowlsheugh"
                 self.state = "searching"
+            elif self.info_rect.collidepoint(pos):
+                self.state = "information"
 
         # call for an animal:
         elif self.state == "searching":
@@ -105,7 +108,7 @@ class Game:
         self.display.screen.fill((0, 0, 0)) # erase
 
         # while you are searching/encountering an animal:
-        if self.state not in ["map", "start"]:
+        if self.state not in ["map", "start", "information"]:
             self.render_location_screen()
 
         match self.state:
@@ -114,28 +117,26 @@ class Game:
             case "map":
                 self.transition = True
                 self.render_start_screen(with_map=True)
+            case "information":
+                self.display.screen.fill((0, 0, 0))
+                self.display.screen.blit(self.display.back_button, (10, 10))
             case "searching":
                 self.display.screen.blit(self.display.call_button, (765, 345))
             case "peeking": # animal partially visible
-                self.display.draw_object(self.encounter_result, (860, 150))
+                self.render_animal_information((860, 150))
                 self.display.screen.blit(self.display.call_button, (765, 345))
-                self.display.draw_text(f"{self.cur_animal.name}", (115, 37))
-                self.display.screen.blit(self.display.dialogue_layer, (0, 420))
-                self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (25, 445), (255, 255, 255))
+                self.render_dialogue(f"{self.cur_animal.name} is hiding, lets encourage it to come out!")
             case "encountered": # animal caught!
-                self.display.draw_object(self.encounter_result, (390, 130))
+                self.render_animal_information()
                 self.display.screen.blit(self.display.begin_button, (375, 370))
-                self.display.draw_text(f"{self.cur_animal.name}", (115, 37))
             case "ran away":
-                self.display.screen.blit(self.display.dialogue_layer, (0, 420))
-                self.display.draw_text("Oh no! It ran away... Maybe leveling up will help.", (25, 445), (255, 255, 255))
+                self.render_dialogue("Oh no! It ran away... Maybe leveling up will help.")
             case "no animal":
-                self.display.screen.blit(self.display.dialogue_layer, (0, 420))
-                self.display.draw_text("Looks like nobody is here...", (25, 445), (255, 255, 255))
+                self.render_dialogue("Looks like nobody is here...")
             case "won":
-                self.display.draw_text(f"You Won! Gained {self.cur_animal.get_game_exp()} exp", (450, 270))
+                self.render_dialogue(f"You Won! Gained {self.cur_animal.get_game_exp()} exp")
             case "lost":
-                self.display.draw_text("Too bad. You lost", (450, 270))
+                self.render_dialogue("Too bad. You lost")
             case _:
                 raise Exception(f"Invalid game state {self.state}")
 
@@ -160,14 +161,14 @@ class Game:
         for i in range(len(self.display.layers)):
             self.loop_positions[i] -= speeds[i]
 
-            if self.loop_positions[i] <= -1000:
+            if self.loop_positions[i] <= -self.display.width:
                 self.loop_positions[i] = 0
             if i != 7:
                 self.display.screen.blit(self.display.layers[i], (self.loop_positions[i], 0-y_offset))
-                self.display.screen.blit(self.display.layers[i], (self.loop_positions[i] + 1000, 0-y_offset))
+                self.display.screen.blit(self.display.layers[i], (self.loop_positions[i] + self.display.width, 0-y_offset))
             else: 
-                self.display.screen.blit(self.display.layers[i], (self.loop_positions[i], 500-y_offset))
-                self.display.screen.blit(self.display.layers[i], (self.loop_positions[i] + 1000, 500-y_offset))
+                self.display.screen.blit(self.display.layers[i], (self.loop_positions[i], self.display.height-y_offset))
+                self.display.screen.blit(self.display.layers[i], (self.loop_positions[i] + self.display.width, self.display.height-y_offset))
 
         self.display.screen.blit(self.display.title_img, (125, 20-y_offset))
         # Use the rect positions for button rendering
@@ -181,13 +182,14 @@ class Game:
         if self.transition:
             self.map_rect.x -= speeds[8]
             pygame.draw.rect(self.display.screen, (0,0,0), self.map_rect)
-        x_offset = 1000-self.map_rect[0]
+        x_offset = self.display.width-self.map_rect[0]
         if with_map:
             self.render_map_screen(x_offset)
 
     def render_map_screen(self, x_offset):
         self.display.screen.blit(self.display.caption_layer, (270+900-x_offset, 30))
         self.display.draw_text("Aberdeen Coast. Explore the Wildlife.", (283+900-x_offset, 35), (255, 255, 255))
+        self.display.screen.blit(self.display.info_button, (750+900-x_offset, 35))
         self.display.screen.blit(self.display.map_bg, (100+900-x_offset, 80))
         self.display.screen.blit(self.display.pin, (650+900-x_offset, 130)) #deap ocean
         self.display.screen.blit(self.display.pin, (150+900-x_offset, 80)) # seal beach
@@ -200,6 +202,14 @@ class Game:
         self.display.draw_text(f"Player Level: {self.player.level}", (420, 10))
         self.display.draw_text(f"Exp: {self.player.exp}", (605, 10))
         self.display.draw_text(f"{self.location}", (115, 10))
+
+    def render_animal_information(self, animal_pos = (390, 130)):
+        self.display.draw_object(self.encounter_result, animal_pos)
+        self.display.draw_text(f"{self.cur_animal.name}", (115, 37))
+
+    def render_dialogue(self, text):
+        self.display.screen.blit(self.display.dialogue_layer, (0, 420))
+        self.display.draw_text(text, (25, 445), (255, 255, 255))
 
     def encounter(self):
         """ Searching for an animal. """

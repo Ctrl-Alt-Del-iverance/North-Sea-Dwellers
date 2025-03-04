@@ -59,6 +59,7 @@ class AnimalManager:
         bottlenose_dolphin = Animal("Bottlenose Dolphin", 2, "src/images/animals/dolphin.png")
         puffin = Animal("Puffin", 4, "src/images/animals/puffin.png", PuffinMaze)
 
+
         return {harbour_seal, grey_seal, minke_whale, bottlenose_dolphin, puffin}
 
     def set_sprite(self, filepath):

@@ -15,7 +15,7 @@ class TestDisplay:
         self.map_bg = self.scale("src/images/map/Map.png", (800, 400))
         self.location_bg = {"Deep Sea": self.scale("src/images/minigame_backgrounds/ocean_floor.png", (1000, 500)),
                           "Aberdeen Lighthouse": self.scale("src/images/map/lighthouse.png", (1000, 500)),
-                          "Seal Beach": self.scale("src/images/minigame_backgrounds/seal_hab.png", (1000, 500)),
+                          "Newburgh Seal Beach": self.scale("src/images/minigame_backgrounds/seal_hab.png", (1000, 500)),
                           "Puffin Cave": self.scale("src/images/map/beachcave.png", (1000, 500))}
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (1000, 95))
 
@@ -23,7 +23,7 @@ class TestDisplay:
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
         self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
         self.pin = self.scale("src/images/map/Pin.png", (100, 100))
-        self.back_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
+        self.back_button = self.scale("src/images/buttons/back_button.png", (100, 100))
         self.call_button = self.scale("src/images/buttons/call_button.png", (100, 100))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (100, 100))
 
