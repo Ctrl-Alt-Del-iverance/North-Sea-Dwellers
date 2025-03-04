@@ -96,7 +96,7 @@ class SealNetGame:
                 self.edge_colour = (0, 0, 0)
 
             if time_left == 0:
-                self.display.draw_text("Time's up!", (self.display.width//2 - 100, 50), (200, 0, 0))
+                self.display.draw_text("Time's up!", (self.display.width//2 - 70, 150), (200, 0, 0))
                 pygame.display.flip()
                 self.running = False
             

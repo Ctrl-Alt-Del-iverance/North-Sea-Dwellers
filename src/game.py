@@ -49,35 +49,45 @@ class Game:
     def handle_click(self, pos):
         """ Handle user input for buttons, and game logic """
 
+        sound = pygame.mixer.Sound("src/click.wav")
+
         if self.state == "start":
             if self.continue_button_rect.collidepoint(pos):
+                sound.play()
                 self.state = "map"
 
         # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
             if self.ocean_pin_rect.collidepoint(pos):
+                sound.play()
                 self.location = "Deep Sea"
                 self.state = "searching"
             elif self.lighthouse_pin_rect.collidepoint(pos):
+                sound.play()
                 self.location = "Aberdeen Lighthouse"
                 self.state = "searching"
             elif self.beach_pin_rect.collidepoint(pos):
+                sound.play()
                 self.location = "Newburgh Seal Beach"
                 self.state = "searching"
             elif self.cave_pin_rect.collidepoint(pos):
+                sound.play()
                 self.location = "Puffin Cave, Fowlsheugh"
                 self.state = "searching"
             elif self.info_rect.collidepoint(pos):
+                sound.play()
                 self.state = "information"
 
         # call for an animal:
         elif self.state == "searching":
             if self.call_rect.collidepoint(pos):
+                sound.play()
                 self.encounter() # encounter an animal if there is one
 
         # if animal is hiding, call again:
         elif self.state == "peeking":
             if self.call_rect.collidepoint(pos): # determine if animal escapes based on player experience
+                sound.play()
                 if self.cur_animal.escapes(self.player.level):
                     self.state = "ran away"
                 else: 
@@ -85,6 +95,7 @@ class Game:
 
         elif self.state == "encountered":
             if self.begin_rect.collidepoint(pos):
+                sound.play()
                 try:
                     success = self.cur_animal.run(self.display)
                     self.state = "lost"
@@ -100,6 +111,7 @@ class Game:
         # control for the back button:
         if self.state not in ["map", "start"]:
             if self.back_rect.collidepoint(pos):
+                sound.play()
                 self.state = "map"
 
     def set_display(self):
@@ -303,7 +315,8 @@ class Transition:
         return self.coefficient
 
 def main():  
-    pygame.init() 
+    pygame.init()
+    pygame.mixer.init()
     game = Game()
     game.run()
     pygame.quit()
