@@ -1,5 +1,4 @@
 import pygame
-import ctypes
 """ The Display class initialises all graphics and controls what is visible on the screen . """
 
 class Display:
@@ -7,11 +6,12 @@ class Display:
         self.screen = pygame.display.set_mode((1000, 500)) # dimensions of the window
         self.font = pygame.font.Font("src/garamond.ttf", 30)
         pygame.display.set_caption("North Sea Dwellers")
-
+        self.width = 1000
+        self.height = 500
     
         """ Put backgrounds here. """
         self.layers = self.load_layers() # paralax layers for the start screens
-        self.title_img = self.scale("src/images/start_layers/title7.png", (750, 375))
+        self.title_img = self.scale("src/images/start_layers/title8.png", (750, 375))
         self.map_bg = self.scale("src/images/map/Map.png", (800, 400))
         self.location_bg = {"Deep Sea": self.scale("src/images/minigame_backgrounds/ocean_floor.png", (1000, 500)),
                           "Aberdeen Lighthouse": self.scale("src/images/map/lighthouse.png", (1000, 500)),
@@ -23,8 +23,8 @@ class Display:
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
         self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
         self.pin = self.scale("src/images/map/Pin.png", (100, 100))
-        self.back_button = self.scale("src/images/buttons/back_button.jpg", (100, 100))
-        self.call_button = self.scale("src/images/buttons/call_button.png", (100, 100))
+        self.back_button = self.scale("src/images/buttons/back_button.png", (100, 100))
+        self.call_button = self.scale("src/images/buttons/call_button.png", (250, 100))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (100, 100))
 
     def scale(self, file, scale):

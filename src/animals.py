@@ -1,5 +1,6 @@
 import random
 from minigame.seal_net import SealNetGame
+from minigame.whale import HungryMinkeWhale
 
 """ The animal class stores and manages the animal attributes
 and their corresponding minigames"""
@@ -16,7 +17,7 @@ class Animal:
         return game.run()
 
     def get_game_exp(self):
-        exp = {1: 5, 2: 10, 3: 15, 4: 25, 5: 40}
+        exp = {1: 8, 2: 15, 3: 25, 4: 35, 5: 50}
         return exp.get(self.rarity)
     
     def get_reward(self):
@@ -28,13 +29,13 @@ class Animal:
         min_chances = {3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
 
         if self.rarity == 2:
-            if player_level >= 10:
+            if player_level >= 8:
                 return False # rarity 2 animals will no longer escape
-            if player_level >= 5:
+            if player_level >= 4:
                 escape_chance = 0.1
             else:
                 escape_chance = 0.5
-        # the chance should go down by 0.15 every 5 levels
+        # the chance should go down by 0.15 every 4 levels
         # ensure it does not go bellow the minimum chance
         else:
             escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.15 * ((player_level-1) // 4))
@@ -53,7 +54,7 @@ class AnimalManager:
 
         harbour_seal = Animal("harbour seal", 1, "src/images/animals/seal.png", SealNetGame)
         grey_seal = Animal("grey seal", 5, "src/images/animals/GreySeal.png", SealNetGame)
-        minke_whale = Animal("minke whale", 3, "src/images/animals/whale.png")
+        minke_whale = Animal("minke whale", 3, "src/images/animals/whale.png", HungryMinkeWhale)
         bottlenose_dolphin = Animal("bottlenose dolphin", 2, "src/images/animals/dolphin.png")
         puffin = Animal("puffin", 4, "src/images/animals/puffin.png")
 
