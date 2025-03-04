@@ -23,7 +23,7 @@ pygame.display.set_caption("Puffin's Journey Home")
 clock = pygame.time.Clock()
 
 # Load background image
-background_image = pygame.image.load("../images/minigame_backgrounds/puffin_habitat.png")
+background_image = pygame.image.load("../images/minigame_backgrounds/puffin_habitat2.png")
 background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
 
 # Load puffin image
@@ -68,13 +68,13 @@ class Cell:
         x, y = offset_x + self.x * cell_size, offset_y + self.y * cell_size
         
         if self.walls['top']:
-            pygame.draw.line(surface, BLACK, (x, y), (x + cell_size, y), 6)  # Thicker walls
+            pygame.draw.line(surface, BLACK, (x, y), (x + cell_size, y), 8)  
         if self.walls['right']:
-            pygame.draw.line(surface, BLACK, (x + cell_size, y), (x + cell_size, y + cell_size), 6)
+            pygame.draw.line(surface, BLACK, (x + cell_size, y), (x + cell_size, y + cell_size), 8)
         if self.walls['bottom']:
-            pygame.draw.line(surface, BLACK, (x, y + cell_size), (x + cell_size, y + cell_size), 6)
+            pygame.draw.line(surface, BLACK, (x, y + cell_size), (x + cell_size, y + cell_size), 8)
         if self.walls['left']:
-            pygame.draw.line(surface, BLACK, (x, y), (x, y + cell_size), 6)
+            pygame.draw.line(surface, BLACK, (x, y), (x, y + cell_size), 8)
 
 def generate_maze(width, height):
     # Create grid of cells
