@@ -28,7 +28,7 @@ class Player:
         self.exp = 0
 
 class LevelUpManager:
-    base_threshold = 15
+    base_threshold = 20
     thresh_multiplier = 1.5
 
     @classmethod
