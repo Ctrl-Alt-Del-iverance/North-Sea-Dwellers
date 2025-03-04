@@ -23,11 +23,11 @@ class Game:
         self.back_rect = pygame.Rect(10, 10, 90, 90)
         self.call_rect = pygame.Rect(765, 345, 220, 68)
         self.begin_rect = pygame.Rect(375, 350, 256, 87)
-        self.ocean_pin_rect = pygame.Rect(650, 100, 100, 100)
-        self.beach_pin_rect = pygame.Rect(150, 50, 100, 100)
-        self.lighthouse_pin_rect = pygame.Rect(260, 210, 100, 100)
-        self.cave_pin_rect = pygame.Rect(310, 340, 100, 100)
-        self.map_rect = pygame.Rect(1000, 50, 800, 400)
+        self.ocean_pin_rect = pygame.Rect(650, 130, 100, 100)
+        self.beach_pin_rect = pygame.Rect(150, 80, 100, 100)
+        self.lighthouse_pin_rect = pygame.Rect(240, 210, 100, 100)
+        self.cave_pin_rect = pygame.Rect(310, 370, 100, 100)
+        self.map_rect = pygame.Rect(1000, 80, 800, 400)
 
         self.transitioning = Transition() #to cahgne holly stuff
         self.transition = False #TO CHANGE HOLLY STUFF
@@ -186,11 +186,13 @@ class Game:
             self.render_map_screen(x_offset)
 
     def render_map_screen(self, x_offset):
-        self.display.screen.blit(self.display.map_bg, (100+900-x_offset, 50))
-        self.display.screen.blit(self.display.pin, (650+900-x_offset, 100)) #deap ocean
-        self.display.screen.blit(self.display.pin, (150+900-x_offset, 50)) # seal beach
-        self.display.screen.blit(self.display.pin, (260+900-x_offset, 210)) # lighthouse
-        self.display.screen.blit(self.display.pin, (310+900-x_offset, 340)) # puffin cave
+        self.display.screen.blit(self.display.caption_layer, (270+900-x_offset, 30))
+        self.display.draw_text("Aberdeen Coast. Explore the Wildlife.", (283+900-x_offset, 35), (255, 255, 255))
+        self.display.screen.blit(self.display.map_bg, (100+900-x_offset, 80))
+        self.display.screen.blit(self.display.pin, (650+900-x_offset, 130)) #deap ocean
+        self.display.screen.blit(self.display.pin, (150+900-x_offset, 80)) # seal beach
+        self.display.screen.blit(self.display.pin, (260+900-x_offset, 240)) # lighthouse
+        self.display.screen.blit(self.display.pin, (310+900-x_offset, 370)) # puffin cave
 
     def render_location_screen(self):
         self.display.screen.blit(self.display.location_bg[self.location], (0,0))

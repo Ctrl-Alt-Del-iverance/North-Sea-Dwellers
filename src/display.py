@@ -18,6 +18,7 @@ class Display:
                           "Newburgh Seal Beach": self.scale("src/images/minigame_backgrounds/seal_hab.png", (1000, 500)),
                           "Puffin Cave, Fowlsheugh": self.scale("src/images/map/beachcave.png", (1000, 500))}
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (1000, 95))
+        self.caption_layer = self.scale("src/images/miscellaneous/caption_layer.png", (460, 50))
 
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
