@@ -61,6 +61,8 @@ class SealNetGame:
                 # if the player is holding onto a node and moving the mouse, 
                 # update position of the node
                 self.nodes[self.dragging] = (event.pos[0], event.pos[1])
+            if event.type == pygame.VIDEORESIZE:
+                pygame.display.set_mode((self.display.width, self.display.height))
 
     def check_intersections(self):
         def ccw(A, B, C):
@@ -118,6 +120,7 @@ class SealNetGame:
         return success # lets the main game know if the player won
 
 if __name__ == "__main__":
+    pygame.init()
     from test_display import TestDisplay
     game = SealNetGame(TestDisplay())
     game.run()

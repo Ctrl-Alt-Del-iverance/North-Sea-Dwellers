@@ -12,16 +12,16 @@ class Whale(pygame.sprite.Sprite):
         try:
             self.image = pygame.image.load('src/images/animals/whale.png').convert_alpha()
             # Scale image if needed
-            self.image = pygame.transform.scale(self.image, (120, 80))
+            self.image = pygame.transform.scale(self.image, (213, 184))
         except pygame.error as e:
             print(f"Couldn't load whale image: {e}")
             # Create a placeholder if image can't be loaded
-            self.image = pygame.Surface((120, 80))
+            self.image = pygame.Surface((213, 184))
             self.image.fill((0, 119, 190))
             
         self.rect = self.image.get_rect()
         self.rect.centerx = width // 2
-        self.rect.bottom = height - 20
+        self.rect.bottom = height - 10
         
     def update(self):
         pass
@@ -60,7 +60,7 @@ class Fish(pygame.sprite.Sprite):
             self.speed = random.uniform(-3.0, -1.0)  # Move left
         
         # Random vertical position
-        self.rect.y = random.randint(50, self.screen_height - 100)
+        self.rect.y = random.randint(50, self.screen_height - 70)
         
     def update(self):
         # Move the fish horizontally
@@ -110,6 +110,8 @@ class HungryMinkeWhale:
                             if self.score < 0:
                                 self.score = 0
                         fish.kill()  # Remove the clicked fish
+            if event.type == pygame.VIDEORESIZE:
+                pygame.display.set_mode((self.display.width, self.display.height))
 
     def whale_full(self):
         return self.score >= self.target_score
@@ -134,23 +136,23 @@ class HungryMinkeWhale:
                 weight_status_color = (255, 0, 0)
             elif self.score < self.target_score // 3 * 2:
                 self.whale.weight_status = "Underweight"
-                weight_status_color = (255, 165, 0)  # Orange
+                weight_status_color = (225, 115, 0)  # Orange
             elif self.score < self.target_score:
                 self.whale.weight_status = "Almost Healthy"
-                weight_status_color = (255, 255, 0)  # Yellow
+                weight_status_color = (220, 220, 0)  # Yellow
             else:
                 self.whale.weight_status = "Healthy Weight"
-                weight_status_color = (0, 255, 0)
+                weight_status_color = (0, 180, 0)
             
             # Draw all the fish
             self.all_sprites.draw(self.display.screen)
-            self.display.draw_text(f"Fish Eaten: {self.score}/{self.target_score}", (10, 10), (255, 255, 255))
-            self.display.draw_text(f"Time: {time_left}s", (10, 50), (255, 255, 255))
-            self.display.draw_text(f"Status: {self.whale.weight_status}", (10, 90), weight_status_color)
+            self.display.draw_text(f"Fish Eaten: {self.score}/{self.target_score}", (10, 10), (0, 0, 150))
+            self.display.draw_text(f"Time: {time_left}s", (230, 10), (0, 0, 150))
+            self.display.draw_text(f"Status: {self.whale.weight_status}", (367, 10), weight_status_color)
             
             # Game over or game won screen
             if time_left == 0:
-                over_text = self.display.font.render("GAME OVER - Whale still hungry!", True, (255, 255, 255))
+                over_text = self.display.font.render("GAME OVER - Whale still hungry!", True, (255, 0, 0))
                 self.display.screen.blit(over_text, (self.display.width // 2 - over_text.get_width() // 2, self.display.height // 2 - 50))
                 self.running = False  
             elif self.whale_full():
@@ -160,8 +162,8 @@ class HungryMinkeWhale:
                 success = True
             # Draw instructions at the bottom
             else:
-                inst_text = self.display.font.render("Click correct fish: herring, krill, mackerel", True, (255, 255, 255))
-                self.display.screen.blit(inst_text, (self.display.width // 2 - inst_text.get_width() // 2, self.display.width - 30))
+                inst_text = self.display.font.render("Click on the correct fish to eat : krill and mackerel", True, (0, 0, 0))
+                self.display.screen.blit(inst_text, (self.display.width // 2 - inst_text.get_width() // 2, self.display.height - 40))
             
             # Update the display
             pygame.display.flip()
