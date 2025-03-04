@@ -1,5 +1,4 @@
 import pygame
-import ctypes
 """ The Display class initialises all graphics and controls what is visible on the screen . """
 
 class Display:
@@ -7,7 +6,8 @@ class Display:
         self.screen = pygame.display.set_mode((1000, 500)) # dimensions of the window
         self.font = pygame.font.Font("src/garamond.ttf", 30)
         pygame.display.set_caption("North Sea Dwellers")
-
+        self.width = 1000
+        self.height = 500
     
         """ Put backgrounds here. """
         self.layers = self.load_layers() # paralax layers for the start screens

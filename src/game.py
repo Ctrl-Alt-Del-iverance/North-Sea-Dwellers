@@ -195,8 +195,8 @@ class Game:
     def render_location_screen(self):
         self.display.screen.blit(self.display.location_bg[self.location], (0,0))
         self.display.screen.blit(self.display.back_button, (50, 50))
-        self.display.draw_text(f"Player Level: {self.player.level}", (822, 5))
-        self.display.draw_text(f"Exp: {self.player.exp}", (822, 27))
+        self.display.draw_text(f"Player Level: {self.player.level}", (820, 5))
+        self.display.draw_text(f"Exp: {self.player.exp}", (820, 27))
         self.display.draw_text(f"{self.location}", (200, 5))
 
     def encounter(self):
