@@ -1,4 +1,5 @@
 import pygame
+import os
 """ The Display class initialises all graphics and controls what is visible on the screen . """
 
 class Display:
@@ -21,6 +22,7 @@ class Display:
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (self.width, 95))
         self.caption_layer = self.scale("src/images/miscellaneous/caption_layer.png", (460, 50))
         self.instruction_bg = self.scale("src/images/miscellaneous/text_background.jpg", (self.width, self.height))
+        self.frames = self.load_frames("src/dolphin_video/output_folder")
 
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
@@ -66,3 +68,12 @@ class Display:
         """ Add an object to the screen. """
         # may need to make scale args
         self.screen.blit(self.scale(file, scale), pos)
+
+    def load_frames(self, folder):
+        frames = []
+        for filename in sorted(os.listdir(folder)):
+            if filename.endswith(('.png', '.jpg', '.jpeg')):
+                img_path = os.path.join(folder, filename)
+                img = pygame.image.load(img_path)
+                frames.append(img)
+        return frames

@@ -31,21 +31,14 @@ class DolphinGame:
         self.small_font = pygame.font.Font(None, 28)
 
         # Game state variables
-        self.frames = self.load_frames("src/dolphin_video/output_folder")
+        self.frames = self.display.frames 
         self.current_frame = 0
         self.reset()
         self.create_grid()
         self.grey_image = pygame.image.load("src/images/animals/dolphin_poses_buttons/grey.png")
         self.grey_image = pygame.transform.scale(self.grey_image, (self.CELL_SIZE, self.CELL_SIZE))
 
-    def load_frames(self, folder):
-        frames = []
-        for filename in sorted(os.listdir(folder)):
-            if filename.endswith(('.png', '.jpg', '.jpeg')):
-                img_path = os.path.join(folder, filename)
-                img = pygame.image.load(img_path)
-                frames.append(img)
-        return frames
+
     
     def load_images(self, folder):
         images = []
