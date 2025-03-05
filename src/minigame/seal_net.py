@@ -126,10 +126,12 @@ class SealNetGame:
         
         pygame.time.delay(2000)
 
-        
-        self.show_seal_fun_fact() 
+        self.show_seal_fun_fact()  
+
+        pygame.time.delay(1000)
 
         return success # lets the main game know if the player won
+        
     
     def show_seal_fun_fact(self):
         overlay = pygame.Surface((self.display.width, self.display.height))
