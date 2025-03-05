@@ -22,7 +22,7 @@ class DolphinGame:
         self.BUTTON_COLOR = (200, 200, 200)
 
         # Initialize screen
-        self.screen = display.screen
+        self.screen = display
         pygame.display.set_caption("Dolphin Memory Game ")
         self.clock = pygame.time.Clock()
 
@@ -179,11 +179,11 @@ class DolphinGame:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     game.handle_click(pygame.mouse.get_pos())
             
-            if game.playing_sequence:
-                game.play_sequence_step()
+            if self.playing_sequence:
+                self.play_sequence_step()
 
-            game.current_frame = (game.current_frame + 1) % len(game.frames)
-            game.draw()
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+            self.draw()
             self.clock.tick(30)
 
 if __name__ == "__main__":

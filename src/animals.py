@@ -1,4 +1,5 @@
 import random
+import pygame
 from minigame.seal_net import SealNetGame
 from minigame.whale import HungryMinkeWhale
 from minigame.puffin import PuffinMaze
