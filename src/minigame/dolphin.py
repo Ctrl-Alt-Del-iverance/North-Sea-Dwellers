@@ -43,8 +43,7 @@ class DolphinGame:
         for filename in sorted(os.listdir(folder)):
             if filename.endswith(('.png', '.jpg', '.jpeg')):
                 img_path = os.path.join(folder, filename)
-                img = pygame.image.load(img_path).convert()
-                img = pygame.transform.scale(img, (self.WIDTH, self.HEIGHT))
+                img = pygame.image.load(img_path)
                 frames.append(img)
         return frames
     
@@ -428,7 +427,7 @@ class DolphinGame:
 
             self.current_frame = (self.current_frame + 1) % len(self.frames)
             self.draw()
-            self.clock.tick(30)
+            self.clock.tick(20)
         
         # Show fun fact after game ends
         self.show_dolphin_fun_fact()
