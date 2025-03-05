@@ -5,7 +5,9 @@ import os
 
 class DolphinGame:
     def __init__(self, display):
-        # Initialize Pygame
+        self.display = display
+        pygame.display.set_caption("Dolphin Memory Game")
+        
         # Game Constants
         self.WIDTH, self.HEIGHT = 1000, 500
         self.CELL_SIZE = 100
@@ -19,18 +21,16 @@ class DolphinGame:
         # Colors
         self.BG_COLOR = (255, 255, 255)
         self.TEXT_COLOR = (255, 255, 255)
-        self.BUTTON_COLOR = (200, 200, 200)
 
-        # Initialize screen
-        self.display = display.screen
-        pygame.display.set_caption("Dolphin Memory Game ")
+        # Screen setup
+        self.screen = self.display.screen
         self.clock = pygame.time.Clock()
 
         # Fonts
+        self.font = pygame.font.Font(None, 36)
+        self.small_font = pygame.font.Font(None, 28)
 
-        self.font = pygame.font.Font("src/pixelfont.ttf", 36)
-        self.small_font = pygame.font.Font("src/pixelfont.ttf", 28)
-
+        # Game state variables
         self.frames = self.load_frames("src/dolphin_video/output_folder")
         self.current_frame = 0
         self.reset()
@@ -86,6 +86,12 @@ class DolphinGame:
                     'offset': (0, 0)
                 })
 
+    def start_game(self):
+        self.reset()
+        self.game_active = True
+        self.playing_sequence = True
+        self.add_to_sequence()
+
     def add_to_sequence(self):
         new_step = random.randint(0, 8)
         self.sequence.append(new_step)
@@ -116,24 +122,24 @@ class DolphinGame:
             self.level += 1
             if self.level == 10:  # Winning condition
                 self.show_win_message = True
-                self.game_active = False  # Stop the game
+                self.game_active = False
+                return True
             else:
                 self.add_to_sequence()
         return True
 
     def draw(self):
         if self.frames:
-            self.display.blit(self.frames[self.current_frame], (0, 0))
+            self.screen.blit(self.frames[self.current_frame], (0, 0))
         else:
-            self.display.fill(self.BG_COLOR)
+            self.screen.fill(self.BG_COLOR)
         
         level_text = self.font.render(f"Level: {self.level}", True, self.TEXT_COLOR)
-        self.display.blit(level_text, (10, 10))
+        self.screen.blit(level_text, (10, 10))
 
         # Draw cells
         for cell in self.cells:
-            #pygame.draw.rect(screen, CELL_COLOR, cell['rect'], border_radius=10)
-            self.display.blit(self.grey_image, (cell['rect'].x + 10, cell['rect'].y + 10))
+            self.screen.blit(self.grey_image, (cell['rect'].x + 10, cell['rect'].y + 10))
             
             now = pygame.time.get_ticks()
             if now < cell['flash_end']:
@@ -147,39 +153,37 @@ class DolphinGame:
             else:
                 cell['offset'] = (0, 0)
             
-            self.display.blit(cell['image'], 
+            self.screen.blit(cell['image'], 
                         (cell['rect'].x + cell['offset'][0], 
                          cell['rect'].y + cell['offset'][1]))
         
         if self.show_game_over:
             game_over_text = self.font.render(f"Game Over! Level: {self.level}", True, (255, 0, 0))
-            self.display.blit(game_over_text, (self.WIDTH//2 - game_over_text.get_width()//2, self.HEIGHT//2))
-            return False
+            self.screen.blit(game_over_text, (self.WIDTH//2 - game_over_text.get_width()//2, self.HEIGHT//2))
 
         if self.show_win_message:
             win_text = self.font.render("You Win!", True, (0, 255, 0))
-            self.display.blit(win_text, (self.WIDTH//2 - win_text.get_width()//2, self.HEIGHT//2))
-            return True
+            self.screen.blit(win_text, (self.WIDTH//2 - win_text.get_width()//2, self.HEIGHT//2))
         
         pygame.display.flip()
 
     def handle_click(self, pos):
-            
         if self.game_active and not self.playing_sequence:
             for i, cell in enumerate(self.cells):
                 if cell['rect'].collidepoint(pos):
                     cell['flash_end'] = pygame.time.get_ticks() + self.ACTIVE_TIME
                     self.player_sequence.append(i)
-                    self.check_sequence()
+                    return self.check_sequence()
 
     def run(self):
-        while True:
+        self.start_game()
+        
+        while not self.show_game_over and not self.show_win_message:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+                    return False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    game.handle_click(pygame.mouse.get_pos())
+                    self.handle_click(pygame.mouse.get_pos())
             
             if self.playing_sequence:
                 self.play_sequence_step()
@@ -187,9 +191,16 @@ class DolphinGame:
             self.current_frame = (self.current_frame + 1) % len(self.frames)
             self.draw()
             self.clock.tick(30)
+        
+        # Return True if player wins, False if game over
+        return self.show_win_message
 
+# Optional: Allow the game to be run standalone for testing
 if __name__ == "__main__":
     from test_display import TestDisplay
     pygame.init()
     game = DolphinGame(TestDisplay())
-    game.run()
+    success = game.run()
+    print("Game Result:", "Win" if success else "Lose")
+    pygame.quit()
+    sys.exit()
