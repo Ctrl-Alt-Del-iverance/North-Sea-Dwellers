@@ -258,7 +258,7 @@ class Game:
 
     def render_instructions(self):
         for i, line in enumerate(self.display.instructions):
-            self.display.draw_text(line, (45, i * 30+100), (0, 0, 0))
+            self.display.draw_text(line, (45, i * 30+100), (255, 255, 0))
 
     def encounter(self):
         """ Searching for an animal. """
