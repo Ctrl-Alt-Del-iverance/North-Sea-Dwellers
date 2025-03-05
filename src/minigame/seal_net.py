@@ -18,6 +18,14 @@ class SealNetGame:
         self.dragging = None # node that is being dragged
         self.start_time = time.time()
 
+        # Load seal image
+        try:
+            self.seal_image = pygame.image.load("src/images/animals/seal.png").convert_alpha()
+        except pygame.error:
+            print("Seal image not found, continuing without it.")
+            self.seal_image = None  
+
+
     def generate_nodes(self):
         # puts some nodes at random coordinates
         nodes = []
