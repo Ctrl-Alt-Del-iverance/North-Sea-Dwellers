@@ -3,6 +3,8 @@ import random
 from animals import Animal, AnimalManager
 from player import Player, LevelUpManager
 from display import Display
+import sys
+import os
 
 """ The Game class controls game logic and user interaction. """
 
