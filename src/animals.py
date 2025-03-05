@@ -16,13 +16,8 @@ class Animal:
         self.minigame = minigame
 
     def run(self, display):
-        print(f"Initializing game: {self.minigame.__name__}")
-        try:
-            game = self.minigame(display)
-            print("Game initialized successfully!")
-            game.run()
-        except Exception as e:
-            print(f"Error occurred while running game {self.minigame.__name__}: {e}")
+        game = self.minigame(display)
+        return game.run()
 
     def get_game_exp(self):
         exp = {1: 8, 2: 15, 3: 25, 4: 35, 5: 50}
