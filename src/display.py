@@ -24,26 +24,28 @@ class Display:
 
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
-        self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
+        self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (300, 187.5))
         self.pin = self.scale("src/images/map/Pin.png", (100, 100))
         self.back_button = self.scale("src/images/buttons/back_button.png", (104, 81))
         self.call_button = self.scale("src/images/buttons/call_button.png", (220, 68))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (256, 87))
         self.info_button = self.scale("src/images/buttons/info_button.png", (40, 40))
+        self.save_button = self.scale("src/images/buttons/save.png", (90, 40))
 
         """ Text """
 
         self.instructions = ["Welcome to North Sea Dwellers! Discover the coastal wildlife of Aberdeen.",
-                             "",
-                             "Use the map to travel through various iconic areas of the Aberdeen coastline.",
-                             "Throughout your journey you will encounter various animals that are commonly",
-                             "found near here. Animals such as harbour seals and dolphins can be frequently",
-                             "sighted, but there are also some rarer, endangered species such as puffins",
-                             "and grey seals",
-                             "However, the animals need your help! They are in need of assistance - from",
-                             "leading a puffin home, to helping a dolphin with its dance.",
-                             "The rarer animals are shy, so they might run away, but as you level up your",
-                             "reputation will improve and they will become more friendly and trusting."] 
+                             "   ",
+                             "Use the map to travel through various iconic areas of the Aberdeen",
+                             "coastline. Throughout your journey you will encounter various animals",
+                             "that are commonly found near here. Animals such as harbour seals and",
+                             "dolphins can be frequently sighted, but there are also some rarer,",
+                             "endangered species such as puffins and grey seals",
+                             "   ",
+                             "However, the animals need your help! They are in need of assistance:",
+                             "from leading a puffin home, to helping a dolphin with its dance.",
+                             "The rarer animals are shy, so they might run away, but as you level up",
+                             "your reputation will improve and they will become more friendly and trusting."] 
 
     def scale(self, file, scale = (1000, 500)):
         img = pygame.image.load(file).convert_alpha()

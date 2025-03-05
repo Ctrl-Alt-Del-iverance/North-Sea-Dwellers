@@ -3,6 +3,7 @@ import random
 from animals import Animal, AnimalManager
 from player import Player, LevelUpManager
 from display import Display
+import pickle
 
 """ The Game class controls game logic and user interaction. """
 
@@ -19,25 +20,22 @@ class Game:
         self.loop_positions = [0] * 8 # positions for the start screen layers  
 
         """ Declare hit boxes here. """
-        self.continue_button_rect = pygame.Rect(190, 330, 500, 100)
-        self.new_game_button_rect = pygame.Rect(420, 270, 0, 0)
+        self.continue_button_rect = pygame.Rect(200, 330, 300, 100)
+        self.new_game_button_rect = pygame.Rect(500, 270, 300, 160)
         self.back_rect = pygame.Rect(10, 10, 90, 90)
         self.call_rect = pygame.Rect(765, 345, 220, 68)
         self.begin_rect = pygame.Rect(375, 350, 256, 87)
         self.ocean_pin_rect = pygame.Rect(650, 130, 100, 100)
         self.beach_pin_rect = pygame.Rect(150, 80, 100, 100)
-        self.lighthouse_pin_rect = pygame.Rect(260, 240, 100, 100)
+        self.lighthouse_pin_rect = pygame.Rect(245, 240, 100, 100)
         self.cave_pin_rect = pygame.Rect(310, 370, 100, 100)
         self.map_rect = pygame.Rect(1000, 80, 800, 400)
         self.info_rect = pygame.Rect(750, 35, 40, 40)
+        self.save_rect = pygame.Rect(90, 40, 810, 30)
 
         self.transitioning = Transition(self.display)
         self.pending_action = None
         self.transition = False #TO CHANGE HOLLY STUFF
- 
-
-
-
 
     def handle_events(self):
         """ Detect user input. """
@@ -57,11 +55,21 @@ class Game:
 
         click = pygame.mixer.Sound("src/click.wav")
         expup = pygame.mixer.Sound("src/expup.mp3")
+        save = "src/save_files/save.pkl"
 
         if self.state == "start":
-            if self.continue_button_rect.collidepoint(pos):
+            if self.new_game_button_rect.collidepoint(pos):
                 click.play()
                 self.state = "map"
+            if self.continue_button_rect.collidepoint(pos):
+                click.play()
+                try:
+                    with open (save, "rb") as player:
+                        self.player = pickle.load(player)
+                    self.state = "map"
+                except:
+                    print("no save file")
+                    self.state = "map"
 
         # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
@@ -85,6 +93,13 @@ class Game:
                 click.play()
                 self.pending_action = ("information", "N/A")
                 self.transitioning.start_fade_out()
+            elif self.save_rect.collidepoint(pos):
+                try:
+                    with open(save, "wb") as player_data:
+                        pickle.dump(self.player, player_data)
+                except:
+                    print("couldnt save")
+
         # call for an animal:
         elif self.state == "searching":
             if self.call_rect.collidepoint(pos):
@@ -213,11 +228,7 @@ class Game:
         self.display.screen.blit(self.display.continue_button_img, (self.continue_button_rect.topleft[0],int(self.continue_button_rect.topleft[1])-y_offset))
         self.display.screen.blit(self.display.new_game_button_img, (self.new_game_button_rect.topleft[0],int(self.new_game_button_rect.topleft[1])-y_offset))
 
-        # Visualize button hitboxes for debugging
-        #pygame.draw.rect(self.display.screen, (255, 0, 0), self.continue_button_rect, 2)
-        #pygame.draw.rect(self.display.screen, (0, 255, 0), self.new_game_button_rect, 2)
-        #map rect
-        if self.transition:
+        if self.transition:#map rect
             self.map_rect.x -= speeds[8]
             pygame.draw.rect(self.display.screen, (0,0,0), self.map_rect)
         x_offset = self.display.width-self.map_rect[0]
@@ -230,9 +241,10 @@ class Game:
         self.display.draw_text("Aberdeen Coast. Explore the Wildlife.", (283+900-x_offset, 35), (255, 255, 255))
         self.display.screen.blit(self.display.info_button, (750+900-x_offset, 35))
         self.display.screen.blit(self.display.map_bg, (100+900-x_offset, 80))
+        self.display.screen.blit(self.display.save_button, (810+900-x_offset, 30))
         self.display.screen.blit(self.display.pin, (650+900-x_offset, 130)) #deap ocean
         self.display.screen.blit(self.display.pin, (150+900-x_offset, 80)) # seal beach
-        self.display.screen.blit(self.display.pin, (260+900-x_offset, 240)) # lighthouse
+        self.display.screen.blit(self.display.pin, (245+900-x_offset, 240)) # lighthouse
         self.display.screen.blit(self.display.pin, (310+900-x_offset, 370)) # puffin cave
 
     def render_location_screen(self):
@@ -256,7 +268,7 @@ class Game:
 
     def render_instructions(self):
         for i, line in enumerate(self.display.instructions):
-            self.display.draw_text(line, (45, i * 30+100), (255, 255, 0))
+            self.display.draw_text(line, (22, i * 30+100), (35, 0, 35)) # purple tone
 
     def encounter(self):
         """ Searching for an animal. """
