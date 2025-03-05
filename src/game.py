@@ -55,10 +55,13 @@ class Game:
     def handle_click(self, pos):
         """ Handle user input for buttons, and game logic """
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
         click = pygame.mixer.Sound("src/click.wav")
         expup = pygame.mixer.Sound("src/expup.mp3")
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         if self.state == "start":
@@ -69,6 +72,7 @@ class Game:
         # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
             if self.ocean_pin_rect.collidepoint(pos):
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                 click.play()
                 self.pending_action = ("location", "Deep Sea")
@@ -90,6 +94,8 @@ class Game:
                 self.pending_action = ("information", "N/A")
                 self.transitioning.start_fade_out()
 =======
+=======
+>>>>>>> Stashed changes
                 self.pending_action = ("location", "Deep Sea")
                 self.transitioning.start_fade_out()
             if self.lighthouse_pin_rect.collidepoint(pos):
@@ -101,6 +107,9 @@ class Game:
             if self.cave_pin_rect.collidepoint(pos):
                self.pending_action = ("location", "Puffin Cave")
                self.transitioning.start_fade_out()
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         # call for an animal:
         elif self.state == "searching":
@@ -138,7 +147,10 @@ class Game:
         if self.state not in ["map", "start"]:
             if self.back_rect.collidepoint(pos):
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 click.play()
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 self.pending_action = ("menu", "map")
@@ -156,6 +168,7 @@ class Game:
                     elif action_type == "menu":
                         self.state = value
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                     elif action_type == "information":
                         self.state = "information"
                     self.pending_action = None
@@ -170,6 +183,12 @@ class Game:
                     self.transitioning.start_fade_in()
 
         self.display.screen.fill((0, 0, 0))  # Clear screen
+=======
+                    self.pending_action = None
+                    self.transitioning.start_fade_in()
+
+        self.display.screen.fill((0, 0, 0))  # Clear screen
+>>>>>>> Stashed changes
 
         if self.state not in ["map", "start"]:
 >>>>>>> Stashed changes
@@ -181,6 +200,7 @@ class Game:
             case "map":
                 self.transition = True
                 self.render_start_screen(with_map=True)
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
             case "information":
                 self.display.screen.fill((0, 0, 0))
@@ -195,6 +215,8 @@ class Game:
                 self.render_animal_information()
                 self.display.screen.blit(self.display.begin_button, (375, 370))
 =======
+=======
+>>>>>>> Stashed changes
             case "searching": 
                 self.display.screen.blit(self.display.call_button, (750, 300))
             case "peeking": 
