@@ -71,6 +71,7 @@ class Game:
         self.current_step = 0
         self.last_step_time = 0
         self.show_game_over = False
+        self.show_win_message = False
         
     def create_grid(self):
         self.cells = []
@@ -121,7 +122,11 @@ class Game:
             
         if len(self.player_sequence) == len(self.sequence):
             self.level += 1
-            self.add_to_sequence()
+            if self.level == 10:  # Winning condition
+                self.show_win_message = True
+                self.game_active = False  # Stop the game
+            else:
+                self.add_to_sequence()
         return True
 
     def draw(self):
@@ -157,6 +162,10 @@ class Game:
         if self.show_game_over:
             game_over_text = font.render(f"Game Over! Level: {self.level}", True, (255, 0, 0))
             screen.blit(game_over_text, (WIDTH//2 - game_over_text.get_width()//2, HEIGHT//2))
+
+        if self.show_win_message:
+            win_text = font.render("You Win!", True, (0, 255, 0))
+            screen.blit(win_text, (WIDTH//2 - win_text.get_width()//2, HEIGHT//2))
         
         pygame.display.flip()
 
