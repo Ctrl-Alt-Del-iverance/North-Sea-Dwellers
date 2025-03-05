@@ -6,7 +6,7 @@ class Display:
         self.width = 1000
         self.height = 500
         self.screen = pygame.display.set_mode((self.width, self.height)) # dimensions of the window
-        self.font = pygame.font.Font("src/garamond.ttf", 30)
+        self.font = pygame.font.Font("src/pixelfont.ttf", 25)
         pygame.display.set_caption("North Sea Dwellers")
         
     
@@ -25,7 +25,7 @@ class Display:
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
         self.new_game_button_img = self.scale("src/images/buttons/new_game_button.png", (375, 187.5))
         self.pin = self.scale("src/images/map/Pin.png", (100, 100))
-        self.back_button = self.scale("src/images/buttons/back_button.png", (90, 90))
+        self.back_button = self.scale("src/images/buttons/back_button.png", (104, 81))
         self.call_button = self.scale("src/images/buttons/call_button.png", (220, 68))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (256, 87))
         self.info_button = self.scale("src/images/buttons/info_button.png", (40, 40))
