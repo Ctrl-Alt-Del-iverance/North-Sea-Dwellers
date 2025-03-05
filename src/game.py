@@ -5,6 +5,7 @@ from player import Player, LevelUpManager
 from display import Display
 import pickle
 
+
 """ The Game class controls game logic and user interaction. """
 
 class Game:
