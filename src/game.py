@@ -19,8 +19,8 @@ class Game:
         self.loop_positions = [0] * 8 # positions for the start screen layers  
 
         """ Declare hit boxes here. """
-        self.continue_button_rect = pygame.Rect(190, 330, 375, 188)
-        self.new_game_button_rect = pygame.Rect(420, 270, 375, 188)
+        self.continue_button_rect = pygame.Rect(190, 330, 500, 100)
+        self.new_game_button_rect = pygame.Rect(420, 270, 0, 0)
         self.back_rect = pygame.Rect(10, 10, 90, 90)
         self.call_rect = pygame.Rect(765, 345, 220, 68)
         self.begin_rect = pygame.Rect(375, 350, 256, 87)
@@ -213,8 +213,8 @@ class Game:
         self.display.screen.blit(self.display.new_game_button_img, (self.new_game_button_rect.topleft[0],int(self.new_game_button_rect.topleft[1])-y_offset))
 
         # Visualize button hitboxes for debugging
-        pygame.draw.rect(self.display.screen, (255, 0, 0), self.continue_button_rect, 2)
-        pygame.draw.rect(self.display.screen, (0, 255, 0), self.new_game_button_rect, 2)
+        #pygame.draw.rect(self.display.screen, (255, 0, 0), self.continue_button_rect, 2)
+        #pygame.draw.rect(self.display.screen, (0, 255, 0), self.new_game_button_rect, 2)
         #map rect
         if self.transition:
             self.map_rect.x -= speeds[8]
@@ -290,6 +290,8 @@ class Game:
 
     def run(self):
         clock = pygame.time.Clock()
+        music = pygame.mixer.Sound("src/music.mp3")
+        music.play()
         while self.running:
             self.handle_events()
             self.set_display()
