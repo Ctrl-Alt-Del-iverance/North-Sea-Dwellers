@@ -20,6 +20,7 @@ class Display:
                           "Puffin Cave, Fowlsheugh": self.scale("src/images/map/beachcave.png")}
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (self.width, 95))
         self.caption_layer = self.scale("src/images/miscellaneous/caption_layer.png", (460, 50))
+        self.instruction_bg = self.scale("src/images/miscellaneous/text_background.png", (self.width, self.height))
 
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
@@ -29,6 +30,20 @@ class Display:
         self.call_button = self.scale("src/images/buttons/call_button.png", (220, 68))
         self.begin_button = self.scale("src/images/buttons/begin_button.png", (256, 87))
         self.info_button = self.scale("src/images/buttons/info_button.png", (40, 40))
+
+        """ Text """
+
+        self.instructions = ["Welcome to North Sea Dwellers! Discover the coastal wildlife of Aberdeen.",
+                             "",
+                             "Use the map to travel through various iconic areas of the Aberdeen coastline.",
+                             "Throughout your journey you will encounter various animals that are commonly",
+                             "found near here. Animals such as harbour seals and dolphins can be frequently",
+                             "sighted, but there are also some rarer, endangered species such as puffins",
+                             "and grey seals",
+                             "However, the animals need your help! They are in need of assistance - from",
+                             "leading a puffin home, to helping a dolphin with its dance.",
+                             "The rarer animals are shy, so they might run away, but as you level up your",
+                             "reputation will improve and they will become more friendly and trusting."] 
 
     def scale(self, file, scale = (1000, 500)):
         img = pygame.image.load(file).convert_alpha()

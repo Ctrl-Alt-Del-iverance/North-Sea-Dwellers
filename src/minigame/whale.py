@@ -150,7 +150,7 @@ class HungryMinkeWhale:
         body_font = pygame.font.SysFont('Arial', 24)
         for i, line in enumerate(fact_lines):
             text = body_font.render(line, True, (255, 255, 255))
-            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + (i+1) * 30))
+            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + (i+10) * 30))
             self.display.screen.blit(text, text_rect)
 
         # Render continue instruction

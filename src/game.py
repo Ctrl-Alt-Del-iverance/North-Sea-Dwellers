@@ -153,8 +153,9 @@ class Game:
                 self.transition = True
                 self.render_start_screen(with_map=True)
             case "information":
-                self.display.screen.fill((0, 0, 0))
+                self.display.screen.blit(self.display.instruction_bg, (0, 0))
                 self.display.screen.blit(self.display.back_button, (10, 10))
+                self.render_instructions()
             case "searching":
                 self.display.screen.blit(self.display.call_button, (765, 345))
             case "peeking": # animal partially visible
@@ -191,8 +192,8 @@ class Game:
             speeds = [speed * coefficient for speed in speeds]
         else:
             y_offset = 0
-        print(y_offset)
-        print(self.map_rect[0])
+        #print(y_offset)
+        #print(self.map_rect[0])
 
         #y_offset
         for i in range(len(self.display.layers)):
@@ -252,6 +253,10 @@ class Game:
     def render_dialogue(self, text):
         self.display.screen.blit(self.display.dialogue_layer, (0, 420))
         self.display.draw_text(text, (25, 445), (255, 255, 255))
+
+    def render_instructions(self):
+        for i, line in enumerate(self.display.instructions):
+            self.display.draw_text(line, (45, i * 30+100), (0, 0, 0))
 
     def encounter(self):
         """ Searching for an animal. """
@@ -340,18 +345,18 @@ class Transition:
     
     def get_x_coefficent(self, x_location):
         if self.finishedx:
-            print("I ran 1")
+            #print("I ran 1")
             return self.coefficient
-        print(x_location, self.halfwayx)
+        #print(x_location, self.halfwayx)
         if x_location > 566:
             self.speedx += 1.567
             self.coefficient = self.speedx/6
-            print("I ran 2")
+            #print("I ran 2")
         else:
             self.speedx -= 1.493
             self.coefficient = self.speedx/6
-            print("I ran 3")
-        print("I ran 1")
+            #print("I ran 3")
+        #print("I ran 1")
         if x_location < 108:
             self.finishedx = True
             self.coefficient = 0
