@@ -352,13 +352,18 @@ class DolphinGame:
         self.screen.blit(overlay, (0, 0))
        
         # Prepare fun fact text about dolphins
+        if self.show_game_over:
+            title_text = "Game Over! You mimicked the dance wrong."
+            title_colour = (255, 100, 100)
+        else:
+            title_text = "Congratulations! What a beautiful performance."
+            title_colour = (100, 255, 100)
+
         fact_lines = [
             "Dolphins of Aberdeen!",
-            "",
             "The waters off Aberdeen are home to a remarkable population of",
             "bottlenose dolphins in the Moray Firth, one of the best places",
             "in Europe to spot these marine mammals.",
-            "  ",
             "Over 130 individual dolphins have been identified in this area,",
             "making it a critical habitat for these intelligent creatures.",
             "  "
@@ -371,18 +376,18 @@ class DolphinGame:
         self.screen.blit(scaled_dolphin, dolphin_rect)
        
         # Render fact text with improved positioning
-        title_font = pygame.font.Font(None, 36)
-        body_font = pygame.font.Font(None, 24)
+        title_font = pygame.font.SysFont('Arial', 36, bold=True)
+        body_font = self.display.font
        
         # Render title separately
-        title = title_font.render(fact_lines[0], True, (100, 255, 100))
+        title = title_font.render(title_text, True, title_colour)
         title_rect = title.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2))
         self.screen.blit(title, title_rect)
        
         # Render body text
-        for i, line in enumerate(fact_lines[2:], start=1):
+        for i, line in enumerate(fact_lines):
             text = body_font.render(line, True, (255, 255, 255))  # White color
-            text_rect = text.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2 + i * 30 + 10))
+            text_rect = text.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2 + (i+1) * 30))
             self.screen.blit(text, text_rect)
        
         # Render continue instruction

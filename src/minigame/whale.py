@@ -121,24 +121,25 @@ class HungryMinkeWhale:
             fact_lines = [
                 "Fun Fact: Minke Whales near Aberdeen!",
                 "",
-                "Minke whales are often spotted in the North Sea which is just off the coast of",
-                "Aberdeen. These whales are known for their curiosity and are sometimes seen by",
-                "fishermen and sailors.Aberdeen's coastal waters are rich in krill and small fish,",
-                "so are a good feeding ground for Minke whales during summer."
+                "Minke whales are often spotted in the North Sea which is just off the coast",
+                "of Aberdeen. These whales are known for their curiosity and are sometimes",
+                "seen by fishermen and sailors. Aberdeen's coastal waters are rich in krill",
+                "and small fish, so are a good feeding ground for Minke whales during summer."
             ]
         else:
             title = "Game Over - Whale is still hungry!"
             fact_lines = [
                 "Fun Fact: Minke Whales near Aberdeen!",
                 "",
-                "Minke whales in the North Sea rely on a diet of krill and small fish to survive.",
-                "Aberdeen's coastal waters are an important habitat for these whales, but overfishing",
-                "and pollution can threaten their food supply.",      
+                "Minke whales in the North Sea rely on a diet of krill and small fish to",
+                "survive. Aberdeen's coastal waters are an important habitat for these",
+                "whales, but overfishing and pollution can threaten their food supply.",      
             ]
 
         whale_image = self.display.scale('src/images/animals/whale.png', (325, 280))
         whale_rect = whale_image.get_rect(center=(self.display.width // 2, self.display.height // 2 - 140))
         self.display.screen.blit(whale_image, whale_rect)
+        font = self.display.font
 
         # Render title
         title_font = pygame.font.SysFont('Arial', 36, bold=True)
@@ -147,14 +148,14 @@ class HungryMinkeWhale:
         self.display.screen.blit(title_text, title_rect)
 
         # Render fact text
-        body_font = pygame.font.SysFont('Arial', 24)
+        
         for i, line in enumerate(fact_lines):
-            text = body_font.render(line, True, (255, 255, 255))
-            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + (i+10) * 30))
+            text = font.render(line, True, (255, 255, 255))
+            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + (i+1) * 30))
             self.display.screen.blit(text, text_rect)
 
         # Render continue instruction
-        continue_text = body_font.render("Press any key to continue", True, (255, 255, 255))
+        continue_text = font.render("Press any key to continue", True, (255, 255, 255))
         continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 40))
         self.display.screen.blit(continue_text, continue_rect)
 
@@ -207,8 +208,6 @@ class HungryMinkeWhale:
             
             # Game over or game won screen
             if time_left == 0:
-                over_text = self.display.font.render("GAME OVER - Whale still hungry!", True, (255, 0, 0))
-                self.display.screen.blit(over_text, (self.display.width // 2 - over_text.get_width() // 2, self.display.height // 2 - 50))
                 self.running = False  
             elif self.whale_full():
                 self.running = False

@@ -4,7 +4,7 @@ import pygame
 class TestDisplay:
     def __init__(self):
         self.screen = pygame.display.set_mode((1000, 500)) # dimensions of the window
-        self.font = pygame.font.Font("src/garamond.ttf", 30)
+        self.font = pygame.font.Font("src/pixelfont.ttf", 25)
         pygame.display.set_caption("North Sea Dwellers")
         self.width = 1000
         self.height = 500
