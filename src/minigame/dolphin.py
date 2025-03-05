@@ -22,7 +22,7 @@ class DolphinGame:
         self.BUTTON_COLOR = (200, 200, 200)
 
         # Initialize screen
-        self.display = display
+        self.display = display.screen
         pygame.display.set_caption("Dolphin Memory Game ")
         self.clock = pygame.time.Clock()
 
