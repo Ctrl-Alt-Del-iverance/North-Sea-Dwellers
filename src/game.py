@@ -54,13 +54,10 @@ class Game:
 
     def handle_click(self, pos):
         """ Handle user input for buttons, and game logic """
-<<<<<<< Updated upstream
 
         click = pygame.mixer.Sound("src/click.wav")
         expup = pygame.mixer.Sound("src/expup.mp3")
 
-=======
->>>>>>> Stashed changes
         if self.state == "start":
             if self.continue_button_rect.collidepoint(pos):
                 click.play()
@@ -69,7 +66,6 @@ class Game:
         # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
             if self.ocean_pin_rect.collidepoint(pos):
-<<<<<<< Updated upstream
                 click.play()
                 self.pending_action = ("location", "Deep Sea")
                 self.transitioning.start_fade_out()
@@ -89,19 +85,6 @@ class Game:
                 click.play()
                 self.pending_action = ("information", "N/A")
                 self.transitioning.start_fade_out()
-=======
-                self.pending_action = ("location", "Deep Sea")
-                self.transitioning.start_fade_out()
-            if self.lighthouse_pin_rect.collidepoint(pos):
-                self.pending_action = ("location", "Aberdeen Lighthouse")
-                self.transitioning.start_fade_out()
-            if self.beach_pin_rect.collidepoint(pos):
-              self.pending_action = ("location", "Seal Beach")
-              self.transitioning.start_fade_out()
-            if self.cave_pin_rect.collidepoint(pos):
-               self.pending_action = ("location", "Puffin Cave")
-               self.transitioning.start_fade_out()
->>>>>>> Stashed changes
         # call for an animal:
         elif self.state == "searching":
             if self.call_rect.collidepoint(pos):
@@ -137,10 +120,7 @@ class Game:
         
         if self.state not in ["map", "start"]:
             if self.back_rect.collidepoint(pos):
-<<<<<<< Updated upstream
                 click.play()
-=======
->>>>>>> Stashed changes
                 self.pending_action = ("menu", "map")
                 self.transitioning.start_fade_out()
 
@@ -155,7 +135,6 @@ class Game:
                         self.state = "searching"
                     elif action_type == "menu":
                         self.state = value
-<<<<<<< Updated upstream
                     elif action_type == "information":
                         self.state = "information"
                     self.pending_action = None
@@ -165,14 +144,6 @@ class Game:
         self.display.screen.fill((0, 0, 0))  # Clear screen
         # while you are searching/encountering an animal:
         if self.state not in ["map", "start", "information"]:
-=======
-                    self.pending_action = None
-                    self.transitioning.start_fade_in()
-
-        self.display.screen.fill((0, 0, 0))  # Clear screen
-
-        if self.state not in ["map", "start"]:
->>>>>>> Stashed changes
             self.render_location_screen()
 
         match self.state:
@@ -181,7 +152,6 @@ class Game:
             case "map":
                 self.transition = True
                 self.render_start_screen(with_map=True)
-<<<<<<< Updated upstream
             case "information":
                 self.display.screen.fill((0, 0, 0))
                 self.display.screen.blit(self.display.back_button, (10, 10))
@@ -194,20 +164,6 @@ class Game:
             case "encountered": # animal caught!
                 self.render_animal_information()
                 self.display.screen.blit(self.display.begin_button, (375, 370))
-=======
-            case "searching": 
-                self.display.screen.blit(self.display.call_button, (750, 300))
-            case "peeking": 
-                self.display.draw_object(self.encounter_result, (860, 150))
-                self.display.screen.blit(self.display.call_button, (750, 300))
-                self.display.draw_text(f"{self.cur_animal.name}", (200, 27))
-                self.display.screen.blit(self.display.dialogue_layer, (0, 420))
-                self.display.draw_text(f"{self.cur_animal.name} is hiding, lets encourage it to come out!", (50, 450))
-            case "encountered": 
-                self.display.draw_object(self.encounter_result, (400, 130))
-                self.display.screen.blit(self.display.begin_button, (450, 370))
-                self.display.draw_text(f"{self.cur_animal.name}", (200, 27))
->>>>>>> Stashed changes
             case "ran away":
                 self.render_dialogue("Oh no! It ran away... Maybe leveling up will help.")
             case "no animal":
