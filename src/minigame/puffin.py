@@ -188,19 +188,16 @@ class PuffinMaze:
         fact_lines = [
             "Fun Fact: Puffins in Aberdeen!",
             "",
-            "The Troup Head nature reserve near Aberdeen",
-            "is home to one of the largest",
-            "gannet colonies in the world, and also hosts",
-            "a significant population of puffins.",
-            "",
-            "Over 1,500 puffin pairs nest on the",
-            "rocky cliffs, making it a prime location", 
+            "The Troup Head nature reserve near Aberdeen is home to one of the largest",
+            "gannet colonies in the world, and also hosts a significant population of puffins.",
+            "  ",
+            "Over 1,500 puffin pairs nest on the rocky cliffs, making it a prime location", 
             "for these charming seabirds in Scotland."
         ]
         
         # Render puffin image
         scaled_puffin = pygame.transform.scale(self.puffin_image, (200, 200))
-        puffin_rect = scaled_puffin.get_rect(center=(self.width // 2, self.height // 2 - 150))
+        puffin_rect = scaled_puffin.get_rect(center=(self.width // 2, self.height // 2 - 140))
         self.screen.blit(scaled_puffin, puffin_rect)
         
         # Render fact text with improved positioning
@@ -208,19 +205,19 @@ class PuffinMaze:
         body_font = pygame.font.SysFont('Arial', 24)
         
         # Render title separately
-        title = title_font.render(fact_lines[0], True, self.WHITE)
-        title_rect = title.get_rect(center=(self.width // 2, self.height // 2 - 50))
+        title = title_font.render(fact_lines[0], True, (100, 255, 100))
+        title_rect = title.get_rect(center=(self.width // 2, self.height // 2))
         self.screen.blit(title, title_rect)
         
         # Render body text
-        for i, line in enumerate(fact_lines[2:-2], start=1):
+        for i, line in enumerate(fact_lines[2:], start=1):
             text = body_font.render(line, True, self.WHITE)
-            text_rect = text.get_rect(center=(self.width // 2, self.height // 2 + i * 30))
+            text_rect = text.get_rect(center=(self.width // 2, self.height // 2 + i * 30+10))
             self.screen.blit(text, text_rect)
         
         # Render continue instruction
         continue_text = body_font.render("Press any key to continue", True, self.WHITE)
-        continue_rect = continue_text.get_rect(center=(self.width // 2, self.height - 100))
+        continue_rect = continue_text.get_rect(center=(self.width // 2, self.height - 30))
         self.screen.blit(continue_text, continue_rect)
         
         pygame.display.flip()
@@ -234,10 +231,10 @@ class PuffinMaze:
                 if event.type == pygame.KEYDOWN:
                     waiting = False
         
-        return True
+        return
 
     def run(self):
-        current_level = 0
+        current_level = 2
         level_transition = True
         
         while True:  # Main game loop that handles multiple levels

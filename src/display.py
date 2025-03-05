@@ -31,7 +31,7 @@ class Display:
         self.info_button = self.scale("src/images/buttons/info_button.png", (40, 40))
 
     def scale(self, file, scale = (1000, 500)):
-        img = pygame.image.load(file)
+        img = pygame.image.load(file).convert_alpha()
         return pygame.transform.scale(img, scale)
     
     def load_layers(self):
@@ -45,7 +45,7 @@ class Display:
         message = self.font.render(text, True, colour)
         self.screen.blit(message, pos)
 
-    def draw_object(self, file, pos):
+    def draw_object(self, file, pos, scale = (220, 220)):
         """ Add an object to the screen. """
         # may need to make scale args
-        self.screen.blit(self.scale(file, (220, 220)), pos)
+        self.screen.blit(self.scale(file, scale), pos)

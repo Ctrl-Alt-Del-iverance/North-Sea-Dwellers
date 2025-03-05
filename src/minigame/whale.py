@@ -4,15 +4,13 @@ import time
 from pygame.locals import *
 
 class Whale(pygame.sprite.Sprite):
-    def __init__(self, width, height):
+    def __init__(self, display):
         super().__init__()
 
         self.weight_status = "Underweight"
-        # Load whale image
-        try:
-            self.image = pygame.image.load('src/images/animals/whale.png').convert_alpha()
-            # Scale image if needed
-            self.image = pygame.transform.scale(self.image, (213, 184))
+        
+        try: # Load whale image
+            self.image = display.scale('src/images/animals/whale.png', (213, 184))
         except pygame.error as e:
             print(f"Couldn't load whale image: {e}")
             # Create a placeholder if image can't be loaded
@@ -20,55 +18,47 @@ class Whale(pygame.sprite.Sprite):
             self.image.fill((0, 119, 190))
             
         self.rect = self.image.get_rect()
-        self.rect.centerx = width // 2
-        self.rect.bottom = height - 10
+        self.rect.centerx = display.width // 2
+        self.rect.bottom = display.height - 10
         
     def update(self):
         pass
 
 # Fish class
 class Fish(pygame.sprite.Sprite):
-    def __init__(self, fish_type, width, height):
+    def __init__(self, fish_type, display):
         super().__init__()
         self.fish_type = fish_type
-        self.screen_width = width
-        self.screen_height = height
         fish_images = {
             'krill': 'src/images/animals/krill.png',
             'mackerel': 'src/images/animals/mackerel.png',
-            'fish': 'src/images/animals/fish.png',
+            'fish': 'src/images/animals/fish.png', # this is a flounder
             'monkfish': 'src/images/animals/monkfish.png'
         }
         
         try:
-            self.image = pygame.image.load(fish_images.get(fish_type, 'src/images/animals/fish.png')).convert_alpha()
-            self.image = pygame.transform.scale(self.image, (50, 25))
+            self.image = display.scale(fish_images.get(fish_type, 'src/images/animals/fish.png'), (50, 25))
         except pygame.error:
-            self.image = pygame.Surface((50, 25))
+            self.image = pygame.Surface((50, 25)) # boxes for fish
             self.image.fill((255, 0, 0) if fish_type in ['fish', 'monkfish'] else (0, 255, 0))
-
         self.rect = self.image.get_rect()
         
         # Start from random side (left or right)
-        if random.choice([True, False]):
-            # Start from left side
+        if random.choice([True, False]): # left
             self.rect.x = -self.rect.width
             self.speed = random.uniform(1.0, 3.0)  # Move right
-        else:
-            # Start from right side
-            self.rect.x = self.screen_width
+        else: # right
+            self.rect.x = display.width
             self.speed = random.uniform(-3.0, -1.0)  # Move left
         
-        # Random vertical position
-        self.rect.y = random.randint(50, self.screen_height - 70)
+        # Random vertical position, but not covering the text
+        self.rect.y = random.randint(50, display.height - 70)
         
-    def update(self):
-        # Move the fish horizontally
+    def update(self): # move the fishy horizontally
         self.rect.x += self.speed
-        
         # Remove if it goes off the screen
-        if self.rect.right < 0 or self.rect.left > self.screen_width:
-            self.kill() 
+        if self.rect.right < 0 or self.rect.left > 1000:
+            self.kill() #byebye
 
 class HungryMinkeWhale:
     def __init__(self, display):
@@ -80,7 +70,7 @@ class HungryMinkeWhale:
 
         self.all_sprites = pygame.sprite.Group()
         self.fish_sprites = pygame.sprite.Group()
-        self.whale = Whale(self.display.width, self.display.height)
+        self.whale = Whale(self.display)
 
         self.correct_fish = ['krill', 'mackerel'] # for minke whale diet
         self.wrong_fish = [ 'monkfish', 'flounder']
@@ -123,6 +113,7 @@ class HungryMinkeWhale:
         overlay.set_alpha(220)
         overlay.fill((0, 0, 0))
         self.display.screen.blit(overlay, (0, 0))
+        title_colour = (100, 255, 100) if success else (255, 100, 100)
 
         # Prepare fun fact text about Minke whales in Aberdeen
         if success:
@@ -130,9 +121,10 @@ class HungryMinkeWhale:
             fact_lines = [
                 "Fun Fact: Minke Whales near Aberdeen!",
                 "",
-                "Minke whales are often spotted in the North Sea which is just off the coast of Aberdeen.",
-                "These whales are known for their curiosity and are sometimes seen by fishermen and sailors.",
-                "Aberdeen's coastal waters are rich in krilland small fish, good feeding ground for Minke whales during summer."
+                "Minke whales are often spotted in the North Sea which is just off the coast of",
+                "Aberdeen. These whales are known for their curiosity and are sometimes seen by",
+                "fishermen and sailors.Aberdeen's coastal waters are rich in krill and small fish,",
+                "so are a good feeding ground for Minke whales during summer."
             ]
         else:
             title = "Game Over - Whale is still hungry!"
@@ -141,32 +133,29 @@ class HungryMinkeWhale:
                 "",
                 "Minke whales in the North Sea rely on a diet of krill and small fish to survive.",
                 "Aberdeen's coastal waters are an important habitat for these whales, but overfishing",
-                "and pollution can threaten their food supply.",
-                
+                "and pollution can threaten their food supply.",      
             ]
 
-        
-        whale_image = pygame.image.load('src/images/animals/whale.png').convert_alpha()
-        whale_image = pygame.transform.scale(whale_image, (200, 150))  # Resize for the popup
-        whale_rect = whale_image.get_rect(center=(self.display.width // 2, self.display.height // 2 - 200))
+        whale_image = self.display.scale('src/images/animals/whale.png', (325, 280))
+        whale_rect = whale_image.get_rect(center=(self.display.width // 2, self.display.height // 2 - 140))
         self.display.screen.blit(whale_image, whale_rect)
 
         # Render title
         title_font = pygame.font.SysFont('Arial', 36, bold=True)
-        title_text = title_font.render(title, True, (255, 255, 255))
-        title_rect = title_text.get_rect(center=(self.display.width // 2, self.display.height // 2 - 50))
+        title_text = title_font.render(title, True, title_colour)
+        title_rect = title_text.get_rect(center=(self.display.width // 2, self.display.height // 2 - 20))
         self.display.screen.blit(title_text, title_rect)
 
         # Render fact text
         body_font = pygame.font.SysFont('Arial', 24)
         for i, line in enumerate(fact_lines):
             text = body_font.render(line, True, (255, 255, 255))
-            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + i * 30))
+            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + (i+1) * 30))
             self.display.screen.blit(text, text_rect)
 
         # Render continue instruction
         continue_text = body_font.render("Press any key to continue", True, (255, 255, 255))
-        continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 100))
+        continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 40))
         self.display.screen.blit(continue_text, continue_rect)
 
         pygame.display.flip()
@@ -180,7 +169,7 @@ class HungryMinkeWhale:
                 if event.type == pygame.KEYDOWN:
                     waiting = False
 
-        return True
+        return
 
     def run(self):
         pygame.display.set_caption("Hungry Minke Whale")
@@ -222,8 +211,6 @@ class HungryMinkeWhale:
                 self.display.screen.blit(over_text, (self.display.width // 2 - over_text.get_width() // 2, self.display.height // 2 - 50))
                 self.running = False  
             elif self.whale_full():
-                win_text = self.display.font.render("CONGRATULATIONS! Whale is healthy now!", True, (0, 255, 0))
-                self.display.screen.blit(win_text, (self.display.width // 2 - win_text.get_width() // 2, self.display.height // 2 - 50))
                 self.running = False
                 success = True
             # Draw instructions at the bottom
@@ -245,7 +232,7 @@ class HungryMinkeWhale:
             
     def spawn_fish(self):
         fish_type = random.choice(self.all_fish)
-        new_fish = Fish(fish_type, self.display.width, self.display.height)
+        new_fish = Fish(fish_type, self.display)
         self.all_sprites.add(new_fish)
         self.fish_sprites.add(new_fish)
 

@@ -49,45 +49,46 @@ class Game:
     def handle_click(self, pos):
         """ Handle user input for buttons, and game logic """
 
-        sound = pygame.mixer.Sound("src/click.wav")
+        click = pygame.mixer.Sound("src/click.wav")
+        expup = pygame.mixer.Sound("src/expup.mp3")
 
         if self.state == "start":
             if self.continue_button_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.state = "map"
 
         # when clicking a pin on the map, go to relevant location:
         elif self.state == "map":
             if self.ocean_pin_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.location = "Deep Sea"
                 self.state = "searching"
             elif self.lighthouse_pin_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.location = "Aberdeen Lighthouse"
                 self.state = "searching"
             elif self.beach_pin_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.location = "Newburgh Seal Beach"
                 self.state = "searching"
             elif self.cave_pin_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.location = "Puffin Cave, Fowlsheugh"
                 self.state = "searching"
             elif self.info_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.state = "information"
 
         # call for an animal:
         elif self.state == "searching":
             if self.call_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.encounter() # encounter an animal if there is one
 
         # if animal is hiding, call again:
         elif self.state == "peeking":
             if self.call_rect.collidepoint(pos): # determine if animal escapes based on player experience
-                sound.play()
+                click.play()
                 if self.cur_animal.escapes(self.player.level):
                     self.state = "ran away"
                 else: 
@@ -95,13 +96,14 @@ class Game:
 
         elif self.state == "encountered":
             if self.begin_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 try:
                     success = self.cur_animal.run(self.display)
                     self.state = "lost"
                     if success:
                         LevelUpManager.add_exp(self.player, self.cur_animal.get_game_exp())
                         self.state = "won"
+                        expup.play()
                     pygame.display.set_caption("North Sea Dwellers")
                 except: # there is no minigame for this animal
                     self.state = "searching" # for testing purposes
@@ -111,7 +113,7 @@ class Game:
         # control for the back button:
         if self.state not in ["map", "start"]:
             if self.back_rect.collidepoint(pos):
-                sound.play()
+                click.play()
                 self.state = "map"
 
     def set_display(self):
@@ -216,7 +218,11 @@ class Game:
         self.display.draw_text(f"{self.location}", (115, 10))
 
     def render_animal_information(self, animal_pos = (390, 130)):
-        self.display.draw_object(self.encounter_result, animal_pos)
+        if self.cur_animal.name == "Minke Whale":
+            scale = (250, 220)
+        else:
+            scale = (220, 220)
+        self.display.draw_object(self.encounter_result, animal_pos, scale)
         self.display.draw_text(f"{self.cur_animal.name}", (115, 37))
 
     def render_dialogue(self, text):
