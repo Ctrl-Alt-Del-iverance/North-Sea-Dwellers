@@ -194,24 +194,33 @@ class PuffinMaze:
             "a significant population of puffins.",
             "",
             "Over 1,500 puffin pairs nest on the",
-            "rocky cliffs, making it a prime location",
+            "rocky cliffs, making it a prime location", 
             "for these charming seabirds in Scotland."
         ]
         
         # Render puffin image
         scaled_puffin = pygame.transform.scale(self.puffin_image, (200, 200))
-        puffin_rect = scaled_puffin.get_rect(center=(self.width // 2, self.height // 2 - 100))
+        puffin_rect = scaled_puffin.get_rect(center=(self.width // 2, self.height // 2 - 150))
         self.screen.blit(scaled_puffin, puffin_rect)
         
-        # Render fact text
-        for i, line in enumerate(fact_lines):
-            text = self.font.render(line, True, self.WHITE)
-            text_rect = text.get_rect(center=(self.width // 2, self.height // 2 + i * 30 + 50))
+        # Render fact text with improved positioning
+        title_font = pygame.font.SysFont('Arial', 36)
+        body_font = pygame.font.SysFont('Arial', 24)
+        
+        # Render title separately
+        title = title_font.render(fact_lines[0], True, self.WHITE)
+        title_rect = title.get_rect(center=(self.width // 2, self.height // 2 - 50))
+        self.screen.blit(title, title_rect)
+        
+        # Render body text
+        for i, line in enumerate(fact_lines[2:-2], start=1):
+            text = body_font.render(line, True, self.WHITE)
+            text_rect = text.get_rect(center=(self.width // 2, self.height // 2 + i * 30))
             self.screen.blit(text, text_rect)
         
         # Render continue instruction
-        continue_text = self.font.render("Press any key to continue", True, self.WHITE)
-        continue_rect = continue_text.get_rect(center=(self.width // 2, self.height - 50))
+        continue_text = body_font.render("Press any key to continue", True, self.WHITE)
+        continue_rect = continue_text.get_rect(center=(self.width // 2, self.height - 100))
         self.screen.blit(continue_text, continue_rect)
         
         pygame.display.flip()
