@@ -154,10 +154,12 @@ class DolphinGame:
         if self.show_game_over:
             game_over_text = self.font.render(f"Game Over! Level: {self.level}", True, (255, 0, 0))
             self.display.blit(game_over_text, (self.WIDTH//2 - game_over_text.get_width()//2, self.HEIGHT//2))
+            return False
 
         if self.show_win_message:
             win_text = self.font.render("You Win!", True, (0, 255, 0))
             self.display.blit(win_text, (self.WIDTH//2 - win_text.get_width()//2, self.HEIGHT//2))
+            return True
         
         pygame.display.flip()
 
