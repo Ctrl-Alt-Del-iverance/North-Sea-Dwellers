@@ -8,6 +8,7 @@ from display import Display
 
 class Game:
     def __init__(self):
+        
         self.running = True
         self.display = Display()
         self.player = Player()
@@ -30,8 +31,13 @@ class Game:
         self.map_rect = pygame.Rect(1000, 80, 800, 400)
         self.info_rect = pygame.Rect(750, 35, 40, 40)
 
-        self.transitioning = Transition() #to cahgne holly stuff
+        self.transitioning = Transition(self.display)
+        self.pending_action = None
         self.transition = False #TO CHANGE HOLLY STUFF
+ 
+
+
+
 
     def handle_events(self):
         """ Detect user input. """
@@ -61,24 +67,24 @@ class Game:
         elif self.state == "map":
             if self.ocean_pin_rect.collidepoint(pos):
                 click.play()
-                self.location = "Deep Sea"
-                self.state = "searching"
+                self.pending_action = ("location", "Deep Sea")
+                self.transitioning.start_fade_out()
             elif self.lighthouse_pin_rect.collidepoint(pos):
                 click.play()
-                self.location = "Aberdeen Lighthouse"
-                self.state = "searching"
-            elif self.beach_pin_rect.collidepoint(pos):
+                self.pending_action = ("location", "Aberdeen Lighthouse")
+                self.transitioning.start_fade_out()
+            elif self.beach_pin_rect.collidepoint(pos):   
                 click.play()
-                self.location = "Newburgh Seal Beach"
-                self.state = "searching"
+                self.pending_action = ("location", "Newburgh Seal Beach")
+                self.transitioning.start_fade_out()
             elif self.cave_pin_rect.collidepoint(pos):
                 click.play()
-                self.location = "Puffin Cave, Fowlsheugh"
-                self.state = "searching"
+                self.pending_action = ("location", "Puffin Cave, Fowlsheugh")
+                self.transitioning.start_fade_out()
             elif self.info_rect.collidepoint(pos):
                 click.play()
-                self.state = "information"
-
+                self.pending_action = ("information", "N/A")
+                self.transitioning.start_fade_out()
         # call for an animal:
         elif self.state == "searching":
             if self.call_rect.collidepoint(pos):
@@ -111,16 +117,31 @@ class Game:
                     print("couldnt fetch game")
                     
         # control for the back button:
+        
         if self.state not in ["map", "start"]:
             if self.back_rect.collidepoint(pos):
                 click.play()
-                self.state = "map"
+                self.pending_action = ("menu", "map")
+                self.transitioning.start_fade_out()
 
     def set_display(self):
         """ Update the display based on the game state. """
+        if self.transitioning.update():
+            if self.transitioning.direction == "out":
+                if self.pending_action:
+                    action_type, value = self.pending_action
+                    if action_type == "location":
+                        self.location = value
+                        self.state = "searching"
+                    elif action_type == "menu":
+                        self.state = value
+                    elif action_type == "information":
+                        self.state = "information"
+                    self.pending_action = None
+                    self.transitioning.start_fade_in()
+                    
 
-        self.display.screen.fill((0, 0, 0)) # erase
-
+        self.display.screen.fill((0, 0, 0))  # Clear screen
         # while you are searching/encountering an animal:
         if self.state not in ["map", "start", "information"]:
             self.render_location_screen()
@@ -154,7 +175,9 @@ class Game:
             case _:
                 raise Exception(f"Invalid game state {self.state}")
 
-        pygame.display.flip()  # Update screend
+        # Draw transition effect on top of everything
+        self.transitioning.draw(self.display.screen)
+        pygame.display.flip()  # Single display update
                        
     def render_start_screen(self, with_map):
         """ This will render all layers of the start screen and control the continuous loop. """
@@ -199,6 +222,7 @@ class Game:
         x_offset = self.display.width-self.map_rect[0]
         if with_map:
             self.render_map_screen(x_offset)
+
 
     def render_map_screen(self, x_offset):
         self.display.screen.blit(self.display.caption_layer, (270+900-x_offset, 30))
@@ -273,7 +297,8 @@ class Game:
 
 
 class Transition:
-    def __init__(self, height=500, width=1000):
+    def __init__(self, display, height=500, width=1000):
+        self.display = display
         self.y_offset = 0
         self.speedy = 0
         self.speedx = 6
@@ -284,6 +309,14 @@ class Transition:
         self.finishedy = False
         self.finishedx = False
         self.coefficient = 1
+
+        self.fade_surface = pygame.Surface((width, height))
+        self.fade_surface.fill((0, 0, 0))
+        self.alpha = 0
+        self.direction = None  # 'in' or 'out'
+        self.speed = 5
+        self.active = False
+
 
     def get_y_offset(self):
         if self.finishedy:
@@ -319,6 +352,40 @@ class Transition:
             self.finishedx = True
             self.coefficient = 0
         return self.coefficient
+    
+    def start_fade_in(self):
+        self.direction = "in"
+        self.alpha = 255
+        self.active = True
+
+    def start_fade_out(self):
+        self.direction = "out"
+        self.alpha = 0
+        self.active = True
+
+    def update(self):
+        if not self.active:
+            return False
+
+        if self.direction == "out":
+            self.alpha += self.speed
+            if self.alpha >= 255:
+                self.alpha = 255
+                self.active = False
+                return True  # Fade out complete
+        else:  # fade in
+            self.alpha -= self.speed
+            if self.alpha <= 0:
+                self.alpha = 0
+                self.active = False
+                return True  # Fade in complete
+        return False
+
+    def draw(self, screen):
+        if self.active or self.alpha > 0:
+            self.fade_surface.set_alpha(self.alpha)
+            screen.blit(self.fade_surface, (0, 0))
+
 
 def main():  
     pygame.init()
