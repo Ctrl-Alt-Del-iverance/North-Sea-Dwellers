@@ -1,7 +1,7 @@
 import pygame
 import random
 import sys
-
+import os
 
 # Initialize Pygame
 pygame.init()
@@ -9,17 +9,16 @@ pygame.init()
 # Game Constants
 WIDTH, HEIGHT = 1000, 500
 CELL_SIZE = 100
-GRID_GAP = 10
+GRID_GAP = 20
 ROWS, COLS = 3, 3
 GRID_TOP = 70
 GRID_LEFT = 400
 SEQUENCE_DELAY = 1000  # 1 second between cells
-ACTIVE_TIME = 500      # 500ms highlight duration
+ACTIVE_TIME = 500      # 500ms animation duration
 
 # Colors
 BG_COLOR = (255, 255, 255)
 CELL_COLOR = (0, 119, 190)
-ACTIVE_COLOR = (0, 179, 255)
 TEXT_COLOR = (0, 0, 0)
 BUTTON_COLOR = (200, 200, 200)
 
@@ -34,10 +33,35 @@ small_font = pygame.font.Font(None, 28)
 
 class Game:
     def __init__(self):
+        self.frames = self.load_frames("src/dolphin_video/output_folder")
+        self.current_frame = 0
         self.reset()
         self.create_grid()
-        self.button_rect = pygame.Rect(80, 370, 160, 40)
-        
+        self.grey_image = pygame.image.load("src/images/animals/dolphin_poses_buttons/grey.png")
+        self.grey_image = pygame.transform.scale(self.grey_image, (CELL_SIZE, CELL_SIZE))
+
+    def load_frames(self, folder):
+        frames = []
+        for filename in sorted(os.listdir(folder)):
+            if filename.endswith(('.png', '.jpg', '.jpeg')):
+                img_path = os.path.join(folder, filename)
+                img = pygame.image.load(img_path).convert()
+                img = pygame.transform.scale(img, (WIDTH, HEIGHT))
+                frames.append(img)
+        return frames
+    
+    def load_images(self, folder):
+        images = []
+        for filename in sorted(os.listdir(folder)):
+            if filename.endswith(('.png', '.jpg', '.jpeg')):
+                img_path = os.path.join(folder, filename)
+                img = pygame.image.load(img_path)
+                img = pygame.transform.scale(img, (CELL_SIZE, CELL_SIZE))
+                images.append(img)
+                if len(images) == 9:
+                    break
+        return images
+
     def reset(self):
         self.sequence = []
         self.player_sequence = []
@@ -50,6 +74,7 @@ class Game:
         
     def create_grid(self):
         self.cells = []
+        images = self.load_images("src/images/animals/dolphin_poses_buttons")
         for row in range(ROWS):
             for col in range(COLS):
                 x = GRID_LEFT + col * (CELL_SIZE + GRID_GAP)
@@ -57,18 +82,18 @@ class Game:
                 rect = pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)
                 self.cells.append({
                     'rect': rect,
-                    'active': False,
-                    'flash_end': 0
+                    'image': images[row * COLS + col],
+                    'flash_end': 0,
+                    'offset': (0, 0)
                 })
 
     def start_game(self):
         self.reset()
         self.game_active = True
         self.playing_sequence = True
-        self.add_to_sequence()  # Start with first step
-        
+        self.add_to_sequence()
+
     def add_to_sequence(self):
-        # Only append ONE new step to existing sequence
         new_step = random.randint(0, 8)
         self.sequence.append(new_step)
         self.playing_sequence = True
@@ -79,18 +104,15 @@ class Game:
         now = pygame.time.get_ticks()
         if now - self.last_step_time >= SEQUENCE_DELAY:
             if self.current_step < len(self.sequence):
-                # Flash current step in sequence
                 cell_index = self.sequence[self.current_step]
                 self.cells[cell_index]['flash_end'] = now + ACTIVE_TIME
                 self.current_step += 1
                 self.last_step_time = now
             else:
-                # Finished showing full sequence
                 self.playing_sequence = False
-                self.player_sequence = []  # Reset player input
+                self.player_sequence = []
 
     def check_sequence(self):
-        # Compare player input with current sequence
         for i in range(len(self.player_sequence)):
             if self.player_sequence[i] != self.sequence[i]:
                 self.show_game_over = True
@@ -98,54 +120,58 @@ class Game:
                 return False
             
         if len(self.player_sequence) == len(self.sequence):
-            # Only add new step when entire sequence is matched
             self.level += 1
-            self.add_to_sequence()  # Append new step to existing sequence
+            self.add_to_sequence()
         return True
 
     def draw(self):
-        screen.fill(BG_COLOR)
+        if self.frames:
+            screen.blit(self.frames[self.current_frame], (0, 0))
+        else:
+            screen.fill(BG_COLOR)
         
-        # Draw level
         level_text = font.render(f"Level: {self.level}", True, TEXT_COLOR)
         screen.blit(level_text, (10, 10))
+
+        # Draw cells
+        for cell in self.cells:
+            #pygame.draw.rect(screen, CELL_COLOR, cell['rect'], border_radius=10)
+            screen.blit(self.grey_image, (cell['rect'].x + 10, cell['rect'].y + 10))
+            
+            now = pygame.time.get_ticks()
+            if now < cell['flash_end']:
+                elapsed = now - (cell['flash_end'] - ACTIVE_TIME)
+                progress = elapsed / ACTIVE_TIME
+                if progress <= 0.5:
+                    offset = int(10 * (progress / 0.5))
+                else:
+                    offset = int(10 * (1 - (progress - 0.5)/0.5))
+                cell['offset'] = (offset, offset)
+            else:
+                cell['offset'] = (0, 0)
+            
+            screen.blit(cell['image'], 
+                        (cell['rect'].x + cell['offset'][0], 
+                         cell['rect'].y + cell['offset'][1]))
         
-        # Draw game over text
         if self.show_game_over:
             game_over_text = font.render(f"Game Over! Level: {self.level}", True, (255, 0, 0))
             screen.blit(game_over_text, (WIDTH//2 - game_over_text.get_width()//2, HEIGHT//2))
         
-        # Draw cells
-        for cell in self.cells:
-            color = ACTIVE_COLOR if pygame.time.get_ticks() < cell['flash_end'] else CELL_COLOR
-            pygame.draw.rect(screen, color, cell['rect'], border_radius=10)
-            text = font.render("🐬", True, (255, 255, 255))
-            text_rect = text.get_rect(center=cell['rect'].center)
-            screen.blit(text, text_rect)
-        
-        # Draw start button
-        pygame.draw.rect(screen, BUTTON_COLOR, self.button_rect, border_radius=5)
-        button_text = small_font.render("New Game", True, TEXT_COLOR)
-        text_rect = button_text.get_rect(center=self.button_rect.center)
-        screen.blit(button_text, text_rect)
-        
         pygame.display.flip()
 
     def handle_click(self, pos):
-        if self.button_rect.collidepoint(pos):
-            self.start_game()
-            return
             
         if self.game_active and not self.playing_sequence:
             for i, cell in enumerate(self.cells):
                 if cell['rect'].collidepoint(pos):
-                    cell['flash_end'] = pygame.time.get_ticks() + 200
+                    cell['flash_end'] = pygame.time.get_ticks() + ACTIVE_TIME
                     self.player_sequence.append(i)
                     self.check_sequence()
 
 def main():
     game = Game()
-    
+    game.start_game()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -156,7 +182,8 @@ def main():
         
         if game.playing_sequence:
             game.play_sequence_step()
-        
+
+        game.current_frame = (game.current_frame + 1) % len(game.frames)
         game.draw()
         clock.tick(30)
 
