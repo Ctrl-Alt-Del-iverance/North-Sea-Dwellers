@@ -1,4 +1,5 @@
 import pygame
+import os
 """ The Display class initialises all graphics and controls what is visible on the screen . """
 
 class TestDisplay:
@@ -18,6 +19,7 @@ class TestDisplay:
                           "Newburgh Seal Beach": self.scale("src/images/minigame_backgrounds/seal_hab.png", (1000, 500)),
                           "Puffin Cave": self.scale("src/images/map/beachcave.png", (1000, 500))}
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (1000, 95))
+        self.frames = self.load_frames()
 
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
@@ -46,3 +48,13 @@ class TestDisplay:
         """ Add an object to the screen. """
         # may need to make scale args
         self.screen.blit(self.scale(file, (220, 220)), pos)
+
+    def load_frames(self, folder="src/dolphin_video/output_folder"):
+        frames = []
+        for filename in sorted(os.listdir(folder)):
+            if filename.endswith(('.png', '.jpg', '.jpeg')):
+                img_path = os.path.join(folder, filename)
+                img = pygame.image.load(img_path).convert()
+                img = pygame.transform.scale(img, (self.width, self.height))
+                frames.append(img)
+        return frames

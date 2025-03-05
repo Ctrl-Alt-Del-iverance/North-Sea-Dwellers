@@ -121,8 +121,6 @@ class Game:
         elif self.state == "encountered":
             if self.begin_rect.collidepoint(pos):
                 click.play()
-                self.display.draw_text("Loading...", (400, 200), (255, 255, 0))
-                pygame.display.flip()
                 try:
                     success = self.cur_animal.run(self.display)
                     self.state = "lost"
