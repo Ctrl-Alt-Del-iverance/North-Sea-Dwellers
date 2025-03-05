@@ -115,6 +115,72 @@ class HungryMinkeWhale:
 
     def whale_full(self):
         return self.score >= self.target_score
+    
+
+    def show_popup(self, success):
+        # Create a semi-transparent overlay
+        overlay = pygame.Surface((self.display.width, self.display.height))
+        overlay.set_alpha(220)
+        overlay.fill((0, 0, 0))
+        self.display.screen.blit(overlay, (0, 0))
+
+        # Prepare fun fact text about Minke whales in Aberdeen
+        if success:
+            title = "Congratulations! Whale is healthy!"
+            fact_lines = [
+                "Fun Fact: Minke Whales near Aberdeen!",
+                "",
+                "Minke whales are often spotted in the North Sea which is just off the coast of Aberdeen.",
+                "These whales are known for their curiosity and are sometimes seen by fishermen and sailors.",
+                "Aberdeen's coastal waters are rich in krilland small fish, good feeding ground for Minke whales during summer."
+            ]
+        else:
+            title = "Game Over - Whale is still hungry!"
+            fact_lines = [
+                "Fun Fact: Minke Whales near Aberdeen!",
+                "",
+                "Minke whales in the North Sea rely on a diet of krill and small fish to survive.",
+                "Aberdeen's coastal waters are an important habitat for these whales, but overfishing",
+                "and pollution can threaten their food supply.",
+                
+            ]
+
+        
+        whale_image = pygame.image.load('src/images/animals/whale.png').convert_alpha()
+        whale_image = pygame.transform.scale(whale_image, (200, 150))  # Resize for the popup
+        whale_rect = whale_image.get_rect(center=(self.display.width // 2, self.display.height // 2 - 200))
+        self.display.screen.blit(whale_image, whale_rect)
+
+        # Render title
+        title_font = pygame.font.SysFont('Arial', 36, bold=True)
+        title_text = title_font.render(title, True, (255, 255, 255))
+        title_rect = title_text.get_rect(center=(self.display.width // 2, self.display.height // 2 - 50))
+        self.display.screen.blit(title_text, title_rect)
+
+        # Render fact text
+        body_font = pygame.font.SysFont('Arial', 24)
+        for i, line in enumerate(fact_lines):
+            text = body_font.render(line, True, (255, 255, 255))
+            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + i * 30))
+            self.display.screen.blit(text, text_rect)
+
+        # Render continue instruction
+        continue_text = body_font.render("Press any key to continue", True, (255, 255, 255))
+        continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 100))
+        self.display.screen.blit(continue_text, continue_rect)
+
+        pygame.display.flip()
+
+        # Wait for key press
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
+                if event.type == pygame.KEYDOWN:
+                    waiting = False
+
+        return True
 
     def run(self):
         pygame.display.set_caption("Hungry Minke Whale")
@@ -169,6 +235,10 @@ class HungryMinkeWhale:
             pygame.display.flip()
             # Cap the frame rate
             clock.tick(60)
+
+        self.show_popup(success)
+        return success
+
 
         pygame.time.delay(2000)
         return success
