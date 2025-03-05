@@ -14,7 +14,7 @@ ROWS, COLS = 3, 3
 GRID_TOP = 70
 GRID_LEFT = 400
 SEQUENCE_DELAY = 1000  # 1 second between cells
-ACTIVE_TIME = 500      # 500ms animation duration
+ACTIVE_TIME = 300      # 500ms animation duration
 
 # Colors
 BG_COLOR = (255, 255, 255)
