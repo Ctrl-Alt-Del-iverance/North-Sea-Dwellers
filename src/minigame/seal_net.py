@@ -117,6 +117,10 @@ class SealNetGame:
             self.handle_events()    
         
         pygame.time.delay(2000)
+
+        if success:
+            self.show_seal_fun_fact() 
+            
         return success # lets the main game know if the player won
     
     def show_seal_fun_fact(self):
