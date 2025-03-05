@@ -4,6 +4,7 @@ from animals import Animal, AnimalManager
 from player import Player, LevelUpManager
 from display import Display
 import pickle
+import os
 
 
 """ The Game class controls game logic and user interaction. """
@@ -95,6 +96,7 @@ class Game:
                 self.pending_action = ("information", "N/A")
                 self.transitioning.start_fade_out()
             elif self.save_rect.collidepoint(pos):
+                click.play()
                 try:
                     with open(save, "wb") as player_data:
                         pickle.dump(self.player, player_data)
