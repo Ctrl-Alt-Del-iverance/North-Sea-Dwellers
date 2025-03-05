@@ -138,7 +138,7 @@ class SealNetGame:
         self.display.screen.blit(overlay, (0, 0))
         
         fact_lines = [
-            "Fun Fact: Seals in Newburgh!",
+            "Fun Fact: Seals in Aberdeen!",
             "",
             "Newburgh Seal Beach is home to one of the largest colonies of seals in Scotland.",
             "At certain times of the year, over 400 seals can be seen basking on the sands.",
