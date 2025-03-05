@@ -177,6 +177,56 @@ class PuffinMaze:
         pygame.display.flip()
         pygame.time.delay(2000)  # Show for 2 seconds
 
+    def show_puffin_fun_fact(self):
+        # Create a semi-transparent overlay
+        overlay = pygame.Surface((self.width, self.height))
+        overlay.set_alpha(220)
+        overlay.fill(self.BLACK)
+        self.screen.blit(overlay, (0, 0))
+        
+        # Prepare fun fact text about puffins in Aberdeen
+        fact_lines = [
+            "Fun Fact: Puffins in Aberdeen!",
+            "",
+            "The Troup Head nature reserve near Aberdeen",
+            "is home to one of the largest",
+            "gannet colonies in the world, and also hosts",
+            "a significant population of puffins.",
+            "",
+            "Over 1,500 puffin pairs nest on the",
+            "rocky cliffs, making it a prime location",
+            "for these charming seabirds in Scotland."
+        ]
+        
+        # Render puffin image
+        scaled_puffin = pygame.transform.scale(self.puffin_image, (200, 200))
+        puffin_rect = scaled_puffin.get_rect(center=(self.width // 2, self.height // 2 - 100))
+        self.screen.blit(scaled_puffin, puffin_rect)
+        
+        # Render fact text
+        for i, line in enumerate(fact_lines):
+            text = self.font.render(line, True, self.WHITE)
+            text_rect = text.get_rect(center=(self.width // 2, self.height // 2 + i * 30 + 50))
+            self.screen.blit(text, text_rect)
+        
+        # Render continue instruction
+        continue_text = self.font.render("Press any key to continue", True, self.WHITE)
+        continue_rect = continue_text.get_rect(center=(self.width // 2, self.height - 50))
+        self.screen.blit(continue_text, continue_rect)
+        
+        pygame.display.flip()
+        
+        # Wait for key press
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return False
+                if event.type == pygame.KEYDOWN:
+                    waiting = False
+        
+        return True
+
     def run(self):
         current_level = 0
         total_score = 0
@@ -289,13 +339,11 @@ class PuffinMaze:
                         level_transition = True
                         running = False
                     else:
-                        # Game complete
-                        complete_text = self.font.render(f"Game Complete! Final Score: {total_score}", True, self.BLACK)
-                        self.screen.blit(complete_text, (self.width // 2 - complete_text.get_width() // 2, self.height // 2 - 50))
-                        
-                        pygame.display.flip()
-                        pygame.time.delay(3000)
-                        return True
+                        # Game complete - show fun fact before ending
+                        if self.show_puffin_fun_fact():
+                            return True
+                        else:
+                            return False
                 
                 pygame.display.flip()
                 self.clock.tick(60)
