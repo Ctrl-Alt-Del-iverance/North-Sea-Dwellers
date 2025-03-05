@@ -22,7 +22,7 @@ class DolphinGame:
         self.BUTTON_COLOR = (200, 200, 200)
 
         # Initialize screen
-        self.screen = display
+        self.display = display
         pygame.display.set_caption("Dolphin Memory Game ")
         self.clock = pygame.time.Clock()
 
@@ -123,17 +123,17 @@ class DolphinGame:
 
     def draw(self):
         if self.frames:
-            self.screen.blit(self.frames[self.current_frame], (0, 0))
+            self.display.blit(self.frames[self.current_frame], (0, 0))
         else:
-            self.screen.fill(self.BG_COLOR)
+            self.display.fill(self.BG_COLOR)
         
         level_text = self.font.render(f"Level: {self.level}", True, self.TEXT_COLOR)
-        self.screen.blit(level_text, (10, 10))
+        self.display.blit(level_text, (10, 10))
 
         # Draw cells
         for cell in self.cells:
             #pygame.draw.rect(screen, CELL_COLOR, cell['rect'], border_radius=10)
-            self.screen.blit(self.grey_image, (cell['rect'].x + 10, cell['rect'].y + 10))
+            self.display.blit(self.grey_image, (cell['rect'].x + 10, cell['rect'].y + 10))
             
             now = pygame.time.get_ticks()
             if now < cell['flash_end']:
@@ -147,17 +147,17 @@ class DolphinGame:
             else:
                 cell['offset'] = (0, 0)
             
-            self.screen.blit(cell['image'], 
+            self.display.blit(cell['image'], 
                         (cell['rect'].x + cell['offset'][0], 
                          cell['rect'].y + cell['offset'][1]))
         
         if self.show_game_over:
             game_over_text = self.font.render(f"Game Over! Level: {self.level}", True, (255, 0, 0))
-            self.screen.blit(game_over_text, (self.WIDTH//2 - game_over_text.get_width()//2, self.HEIGHT//2))
+            self.display.blit(game_over_text, (self.WIDTH//2 - game_over_text.get_width()//2, self.HEIGHT//2))
 
         if self.show_win_message:
             win_text = self.font.render("You Win!", True, (0, 255, 0))
-            self.screen.blit(win_text, (self.WIDTH//2 - win_text.get_width()//2, self.HEIGHT//2))
+            self.display.blit(win_text, (self.WIDTH//2 - win_text.get_width()//2, self.HEIGHT//2))
         
         pygame.display.flip()
 
