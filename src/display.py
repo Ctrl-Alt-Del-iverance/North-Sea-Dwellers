@@ -20,7 +20,7 @@ class Display:
                           "Puffin Cave, Fowlsheugh": self.scale("src/images/map/beachcave.png")}
         self.dialogue_layer = self.scale("src/images/miscellaneous/dialogue_layer.png", (self.width, 95))
         self.caption_layer = self.scale("src/images/miscellaneous/caption_layer.png", (460, 50))
-        self.instruction_bg = self.scale("src/images/miscellaneous/text_background.png", (self.width, self.height))
+        self.instruction_bg = self.scale("src/images/miscellaneous/text_background.jpg", (self.width, self.height))
 
         """ Buttons """
         self.continue_button_img = self.scale("src/images/buttons/continue_button.png", (375, 187.5))
