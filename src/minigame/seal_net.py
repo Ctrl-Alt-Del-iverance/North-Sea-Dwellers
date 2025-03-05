@@ -131,7 +131,7 @@ class SealNetGame:
             "Newburgh Seal Beach is home to one of the largest colonies of seals in Scotland.",
             "At certain times of the year, over 400 seals can be seen basking on the sands.",
             "  ",
-            "Seals are very curious creatures and often swim close to the shore to observe humans!"
+            "Seals are very curious creatures and often swim close to the shore to observe humans!",
             "Seals can hold their breath for 40-45 minutes"
         ]
         
@@ -139,17 +139,14 @@ class SealNetGame:
         body_font = pygame.font.SysFont('Arial', 24)
         
         title = title_font.render(fact_lines[0], True, (100, 255, 100))
-        title_rect = title.get_rect(center=(self.display.width // 2, self.display.height // 4))
-        self.display.screen.blit(title, title_rect)
+        self.display.screen.blit(title, (self.display.width // 4, 100))
 
         for i, line in enumerate(fact_lines[2:], start=0):
             text = body_font.render(line, True, (255, 255, 255))
-            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + i * 30))
-            self.display.screen.blit(text, text_rect)
+            self.display.screen.blit(text, (self.display.width // 4, 200 + i * 30))
         
         continue_text = body_font.render("Press any key to continue", True, (255, 255, 255))
-        continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 50))
-        self.display.screen.blit(continue_text, continue_rect)
+        self.display.screen.blit(continue_text, (self.display.width // 4, self.display.height - 50))
         
         pygame.display.flip()
         waiting = True
@@ -157,6 +154,7 @@ class SealNetGame:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
                     waiting = False
+                    return
 
 if __name__ == "__main__":
     from test_display import TestDisplay
