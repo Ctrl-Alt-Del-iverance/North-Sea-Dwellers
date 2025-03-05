@@ -238,7 +238,6 @@ class PuffinMaze:
 
     def run(self):
         current_level = 0
-        total_score = 0
         level_transition = True
         
         while True:  # Main game loop that handles multiple levels
@@ -265,7 +264,7 @@ class PuffinMaze:
             puffin = self.Puffin(0, 0)
             family_x, family_y = grid_width - 1, grid_height - 1
             
-            moves = 0
+            moves = 0  # Keep the moves counter
             level_complete = False
             
             # Show level transition screen
@@ -283,7 +282,7 @@ class PuffinMaze:
                     if event.type == pygame.KEYDOWN and not level_complete:
                         if event.key == pygame.K_UP:
                             puffin.move(0, -1, maze)
-                            moves += 1
+                            moves += 1  # Increment moves counter
                         elif event.key == pygame.K_DOWN:
                             puffin.move(0, 1, maze)
                             moves += 1
@@ -297,7 +296,6 @@ class PuffinMaze:
                         # Check if puffin found family
                         if puffin.x == family_x and puffin.y == family_y:
                             level_complete = True
-                            total_score += 1000 - moves  # Score based on moves
                 
                 # Draw background image
                 self.screen.blit(self.background_image, (0, 0))
@@ -315,14 +313,12 @@ class PuffinMaze:
                 # Draw puffin with offsets
                 puffin.draw(self.screen, cell_size, puffin_image, maze_x, maze_y)
                 
-                # Draw move counter and level info
+                # Draw moves counter and level info
                 moves_text = self.font.render(f"Moves: {moves}", True, self.BLACK)
                 level_text = self.font.render(f"Level: {level_config['name']}", True, self.BLACK)
-                score_text = self.font.render(f"Score: {total_score}", True, self.BLACK)
                 
                 self.screen.blit(moves_text, (10, 10))
                 self.screen.blit(level_text, (10, 40))
-                self.screen.blit(score_text, (10, 70))
                 
                 # Display level complete message
                 if level_complete:
@@ -331,13 +327,14 @@ class PuffinMaze:
                     msg_surface.fill(self.WHITE)
                     msg_surface.set_alpha(230)
                     
-                    level_score = 1000 - moves
-                    complete_text = self.font.render(f"Level Complete! Score: {level_score}", True, self.BLACK)
+                    complete_text = self.font.render("Level Complete!", True, self.BLACK)
+                    moves_used_text = self.font.render(f"Moves used: {moves}", True, self.BLACK)
                     
                     if current_level < len(self.LEVELS) - 1:
                         next_text = self.font.render("Next level starting in 3 seconds...", True, self.BLACK)
-                        msg_surface.blit(complete_text, (50, 50))
-                        msg_surface.blit(next_text, (50, 80))
+                        msg_surface.blit(complete_text, (50, 30))
+                        msg_surface.blit(moves_used_text, (50, 60))
+                        msg_surface.blit(next_text, (50, 90))
                         self.screen.blit(msg_surface, (100, self.height // 2 - 75))
                         
                         pygame.display.flip()
