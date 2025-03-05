@@ -241,7 +241,6 @@ class Game:
 
     def render_map_screen(self, x_offset):
         self.display.screen.blit(self.display.caption_layer, (270+900-x_offset, 30))
-        self.display.draw_text("Aberdeen Coast. Explore the Wildlife.", (283+900-x_offset, 35), (255, 255, 255))
         self.display.screen.blit(self.display.info_button, (750+900-x_offset, 35))
         self.display.screen.blit(self.display.map_bg, (100+900-x_offset, 80))
         self.display.screen.blit(self.display.save_button, (810+900-x_offset, 30))
