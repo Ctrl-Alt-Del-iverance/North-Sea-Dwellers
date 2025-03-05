@@ -174,69 +174,7 @@ class DolphinGame:
                     cell['flash_end'] = pygame.time.get_ticks() + self.ACTIVE_TIME
                     self.player_sequence.append(i)
                     return self.check_sequence()
-                
-    def show_dolphin_fun_fact(self):
-        # Create a semi-transparent overlay
-        overlay = pygame.Surface((self.WIDTH, self.HEIGHT))
-        overlay.set_alpha(220)
-        overlay.fill((0, 0, 0))  # Black color
-        self.screen.blit(overlay, (0, 0))
-        
-        # Prepare fun fact text about dolphins
-        fact_lines = [
-        "Dolphins of Aberdeen!",
-        "",
-        "The waters off Aberdeen are home to a remarkable population of",
-        "bottlenose dolphins in the Moray Firth, one of the best places",
-        "in Europe to spot these marine mammals.",
-        "  ",
-        "Over 130 individual dolphins have been identified in this area,",
-        "making it a critical habitat for these intelligent creatures.",
-        "  ",
-        "Tourists can often spot dolphins from the coast at Chanonry Point",
-        "or take wildlife boat tours from Aberdeen harbour."
-    ]
-        
-        # Render dolphin image
-        dolphin_image = pygame.image.load("src/images/animals/dolphin.png")
-        scaled_dolphin = pygame.transform.scale(dolphin_image, (200, 200))
-        dolphin_rect = scaled_dolphin.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2 - 140))
-        self.screen.blit(scaled_dolphin, dolphin_rect)
-        
-        # Render fact text with improved positioning
-        title_font = pygame.font.Font("src/pixelfont.ttf", 36)
-        body_font = pygame.font.Font("src/pixelfont.ttf", 24)
-        
-        # Render title separately
-        title = title_font.render(fact_lines[0], True, (100, 255, 100))
-        title_rect = title.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2))
-        self.screen.blit(title, title_rect)
-        
-        # Render body text
-        for i, line in enumerate(fact_lines[2:], start=1):
-            text = body_font.render(line, True, (255, 255, 255))  # White color
-            text_rect = text.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2 + i * 30 + 10))
-            self.screen.blit(text, text_rect)
-        
-        # Render continue instruction
-        continue_text = body_font.render("Press any key to continue", True, (255, 255, 255))
-        continue_rect = continue_text.get_rect(center=(self.WIDTH // 2, self.HEIGHT - 30))
-        self.screen.blit(continue_text, continue_rect)
-        
-        pygame.display.flip()
-        
-        # Wait for key press
-        waiting = True
-        while waiting:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    waiting = False
-        
-        return
-    
+
     def run(self):
         self.start_game()
         
@@ -252,10 +190,6 @@ class DolphinGame:
 
             self.current_frame = (self.current_frame + 1) % len(self.frames)
             self.draw()
-
-            if not game.game_active and (game.show_game_over or game.show_win_message):
-                game.show_dolphin_fun_fact()
-                game.reset()
             self.clock.tick(30)
         
         # Return True if player wins, False if game over
