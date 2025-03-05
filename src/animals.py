@@ -2,6 +2,7 @@ import random
 from minigame.seal_net import SealNetGame
 from minigame.whale import HungryMinkeWhale
 from minigame.puffin import PuffinMaze
+from minigame.dolphin import DolphinGame
 
 """ The animal class stores and manages the animal attributes
 and their corresponding minigames"""
@@ -56,8 +57,9 @@ class AnimalManager:
         harbour_seal = Animal("Harbour Seal", 1, "src/images/animals/seal.png", SealNetGame)
         grey_seal = Animal("Grey Seal", 5, "src/images/animals/GreySeal.png", SealNetGame)
         minke_whale = Animal("Minke Whale", 3, "src/images/animals/whale.png", HungryMinkeWhale)
-        bottlenose_dolphin = Animal("Bottlenose Dolphin", 2, "src/images/animals/dolphin.png")
+        bottlenose_dolphin = Animal("Bottlenose Dolphin", 2, "src/images/animals/dolphin.png", DolphinGame)
         puffin = Animal("Puffin", 4, "src/images/animals/puffin.png", PuffinMaze)
+        
 
 
         return {harbour_seal, grey_seal, minke_whale, bottlenose_dolphin, puffin}
