@@ -12,14 +12,13 @@ CELL_SIZE = 100
 GRID_GAP = 20
 ROWS, COLS = 3, 3
 GRID_TOP = 70
-GRID_LEFT = 400
+GRID_LEFT = 325
 SEQUENCE_DELAY = 1000  # 1 second between cells
 ACTIVE_TIME = 300      # 500ms animation duration
 
 # Colors
 BG_COLOR = (255, 255, 255)
-CELL_COLOR = (0, 119, 190)
-TEXT_COLOR = (0, 0, 0)
+TEXT_COLOR = (255, 255, 255)
 BUTTON_COLOR = (200, 200, 200)
 
 # Initialize screen
