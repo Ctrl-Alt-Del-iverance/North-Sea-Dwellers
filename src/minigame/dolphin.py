@@ -296,7 +296,7 @@ class DolphinGame:
             
         if len(self.player_sequence) == len(self.sequence):
             self.level += 1
-            if self.level == 10:  # Winning condition
+            if self.level == 8:  # Winning condition
                 self.show_win_message = True
                 self.game_active = False
                 return True
@@ -368,9 +368,7 @@ class DolphinGame:
             "  ",
             "Over 130 individual dolphins have been identified in this area,",
             "making it a critical habitat for these intelligent creatures.",
-            "  ",
-            "Tourists can often spot dolphins from the coast at Chanonry Point",
-            "or take wildlife boat tours from Aberdeen harbour."
+            "  "
         ]
        
         # Render dolphin image
