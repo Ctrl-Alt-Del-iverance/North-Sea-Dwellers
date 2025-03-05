@@ -1,7 +1,9 @@
 import random
+import pygame
 from minigame.seal_net import SealNetGame
 from minigame.whale import HungryMinkeWhale
 from minigame.puffin import PuffinMaze
+from minigame.dolphin import DolphinGame
 
 """ The animal class stores and manages the animal attributes
 and their corresponding minigames"""
@@ -14,8 +16,13 @@ class Animal:
         self.minigame = minigame
 
     def run(self, display):
-        game = self.minigame(display)
-        return game.run()
+        print(f"Initializing game: {self.minigame.__name__}")
+        try:
+            game = self.minigame(display)
+            print("Game initialized successfully!")
+            game.run()
+        except Exception as e:
+            print(f"Error occurred while running game {self.minigame.__name__}: {e}")
 
     def get_game_exp(self):
         exp = {1: 8, 2: 15, 3: 25, 4: 35, 5: 50}
@@ -56,8 +63,9 @@ class AnimalManager:
         harbour_seal = Animal("Harbour Seal", 1, "src/images/animals/seal.png", SealNetGame)
         grey_seal = Animal("Grey Seal", 5, "src/images/animals/GreySeal.png", SealNetGame)
         minke_whale = Animal("Minke Whale", 3, "src/images/animals/whale.png", HungryMinkeWhale)
-        bottlenose_dolphin = Animal("Bottlenose Dolphin", 2, "src/images/animals/dolphin.png")
+        bottlenose_dolphin = Animal("Bottlenose Dolphin", 2, "src/images/animals/dolphin.png", DolphinGame)
         puffin = Animal("Puffin", 4, "src/images/animals/puffin.png", PuffinMaze)
+        
 
 
         return {harbour_seal, grey_seal, minke_whale, bottlenose_dolphin, puffin}

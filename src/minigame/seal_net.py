@@ -18,6 +18,14 @@ class SealNetGame:
         self.dragging = None # node that is being dragged
         self.start_time = time.time()
 
+        # Load seal image
+        try:
+            self.seal_image = pygame.image.load("src/images/animals/seal.png").convert_alpha()
+        except pygame.error:
+            print("Seal image not found, continuing without it.")
+            self.seal_image = None  
+
+
     def generate_nodes(self):
         # puts some nodes at random coordinates
         nodes = []
@@ -117,7 +125,53 @@ class SealNetGame:
             self.handle_events()    
         
         pygame.time.delay(2000)
+
+        if success:
+            self.show_seal_fun_fact() 
+
         return success # lets the main game know if the player won
+    
+    def show_seal_fun_fact(self):
+        overlay = pygame.Surface((self.display.width, self.display.height))
+        overlay.set_alpha(220)
+        overlay.fill((0, 0, 0))
+        self.display.screen.blit(overlay, (0, 0))
+        
+        fact_lines = [
+            "Fun Fact: Seals in Aberdeen!",
+            "",
+            "Newburgh Seal Beach is home to one of the largest colonies of seals in Scotland.",
+            "At certain times of the year, over 400 seals can be seen basking on the sands.",
+            "Seals are very curious creatures and often swim close to the shore to observe humans!",
+            "Seals can hold their breath for 40-45 minutes"
+        ]
+        
+        title_font = pygame.font.SysFont('Arial', 36)
+        body_font = pygame.font.SysFont('Arial', 24)
+        
+        # Render seal image
+        if self.seal_image:
+            scaled_seal = pygame.transform.scale(self.seal_image, (200, 200))
+            seal_rect = scaled_seal.get_rect(center=(self.display.width // 2, self.display.height // 2 - 140))
+            self.display.screen.blit(scaled_seal, seal_rect)
+        
+        for i, line in enumerate(fact_lines):
+            text = body_font.render(line, True, (255, 255, 255))
+            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + i * 30))
+            self.display.screen.blit(text, text_rect)
+        
+        continue_text = body_font.render("Press any key to continue", True, (255, 255, 255))
+        continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 50))
+        self.display.screen.blit(continue_text, continue_rect)
+        
+        pygame.display.flip()
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN or event.type == pygame.QUIT:
+                    waiting = False
+                    return
+
 
 if __name__ == "__main__":
     from test_display import TestDisplay
