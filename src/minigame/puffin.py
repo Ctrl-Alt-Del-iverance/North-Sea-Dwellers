@@ -234,7 +234,7 @@ class PuffinMaze:
         return
 
     def run(self):
-        current_level = 2
+        current_level = 0
         level_transition = True
         
         while True:  # Main game loop that handles multiple levels
