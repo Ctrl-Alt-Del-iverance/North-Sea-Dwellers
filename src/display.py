@@ -7,8 +7,11 @@ class Display:
         self.width = 1000
         self.height = 500
         self.screen = pygame.display.set_mode((self.width, self.height)) # dimensions of the window
+        self.screen.fill((0, 0, 0))
         self.font = pygame.font.Font("src/pixelfont.ttf", 25)
         pygame.display.set_caption("North Sea Dwellers")
+        self.draw_text("Loading..", (100, 230), (255, 255, 255))
+        pygame.display.flip()
         
     
         """ Put backgrounds here. """
