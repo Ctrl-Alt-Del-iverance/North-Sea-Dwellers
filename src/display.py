@@ -12,7 +12,6 @@ class Display:
         pygame.display.set_caption("North Sea Dwellers")
         self.draw_text("Loading...", (450, 230), (255, 255, 255))
         pygame.display.flip()
-        
     
         """ Put backgrounds here. """
         self.layers = self.load_layers() # paralax layers for the start screens

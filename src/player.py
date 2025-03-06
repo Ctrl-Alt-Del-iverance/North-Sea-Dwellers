@@ -2,7 +2,7 @@
 May be useful to make this save-able. """
 
 class Player:
-    def __init__(self, name="player", level=0, exp=0, shells=0):
+    def __init__(self, name="player", level=1, exp=0, shells=0):
         self.name = name # should probably make this a user input
         self.level = level
         self.exp = exp

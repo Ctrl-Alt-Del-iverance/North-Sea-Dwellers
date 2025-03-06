@@ -28,20 +28,22 @@ class Animal:
         return shells.get(self.rarity)
 
     def escapes(self, player_level):
-        base_chances = {3: 0.65, 4: 0.80, 5: 1.0} # starting chance of animal escaping for each level
-        min_chances = {3:0.10, 4:0.20, 5:0.30} # minimum chance of it escaping
+        base_chances = {3: 0.55, 4: 0.70, 5: 0.99} # starting chance of animal escaping for each level
+        min_chances = {3:0.05, 4:0.10, 5:0.30} # minimum chance of it escaping
 
         if self.rarity == 2:
-            if player_level >= 8:
+            if player_level >=15:
                 return False # rarity 2 animals will no longer escape
-            if player_level >= 4:
-                escape_chance = 0.1
-            else:
+            if player_level >= 10:
                 escape_chance = 0.5
+            if player_level >= 5:
+                escape_chance = 0.20
+            else:
+                escape_chance = 0.45
         # the chance should go down by 0.15 every 4 levels
         # ensure it does not go bellow the minimum chance
         else:
-            escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.15 * ((player_level-1) // 4))
+            escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.10 * ((player_level) // 5))
         # returns true escape_chance% of the time
         return random.random() <= escape_chance
 

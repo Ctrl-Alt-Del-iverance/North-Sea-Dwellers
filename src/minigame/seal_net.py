@@ -124,46 +124,52 @@ class SealNetGame:
             pygame.display.flip()
             self.handle_events()    
         
-        pygame.time.delay(2000)
+        pygame.time.delay(1200)
 
-        self.show_seal_fun_fact()  
+        self.show_seal_fun_fact(success)  
 
         pygame.time.delay(1000)
 
         return success # lets the main game know if the player won
         
     
-    def show_seal_fun_fact(self):
+    def show_seal_fun_fact(self, success):
         overlay = pygame.Surface((self.display.width, self.display.height))
         overlay.set_alpha(220)
         overlay.fill((0, 0, 0))
         self.display.screen.blit(overlay, (0, 0))
-        
+        title_colour = (100, 255, 100) if success else (255, 100, 100)
+
+        title = "Congratulations! You saved the seal!" if success else "You Lost! The seal is sad.."
         fact_lines = [
             "Fun Fact: Seals in Aberdeen!",
             "",
             "Newburgh Seal Beach is home to one of the largest colonies of seals in Scotland.",
-            "At certain times of the year, over 400 seals can be seen basking on the sands.",
-            "Seals are very curious creatures and often swim close to the shore to observe humans!",
-            "Seals can hold their breath for 40-45 minutes"
+            "At certain times of the year, over 400 seals can be seen basking on the",
+            "sands. Seals are very curious creatures and often swim close to the shore to",
+            "observe humans! Seals can hold their breath for 40-45 minutes"
         ]
         
-        title_font = pygame.font.SysFont('Arial', 36)
-        body_font = pygame.font.SysFont('Arial', 24)
+        title_font = pygame.font.SysFont('Arial', 36, bold = True)
+        body_font = self.display.font
         
         # Render seal image
         if self.seal_image:
             scaled_seal = pygame.transform.scale(self.seal_image, (200, 200))
             seal_rect = scaled_seal.get_rect(center=(self.display.width // 2, self.display.height // 2 - 140))
             self.display.screen.blit(scaled_seal, seal_rect)
+
+        text = title_font.render(title, True, title_colour)
+        title_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 - 20))
+        self.display.screen.blit(text, title_rect)
         
         for i, line in enumerate(fact_lines):
             text = body_font.render(line, True, (255, 255, 255))
-            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + i * 30))
+            text_rect = text.get_rect(center=(self.display.width // 2, self.display.height // 2 + (i+1) * 30))
             self.display.screen.blit(text, text_rect)
         
         continue_text = body_font.render("Press any key to continue", True, (255, 255, 255))
-        continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 50))
+        continue_rect = continue_text.get_rect(center=(self.display.width // 2, self.display.height - 40))
         self.display.screen.blit(continue_text, continue_rect)
         
         pygame.display.flip()

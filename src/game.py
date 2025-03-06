@@ -309,14 +309,11 @@ class Game:
 
     def run(self):
         clock = pygame.time.Clock()
-        pygame.mixer.music.load("src/music.mp3")
         pygame.mixer.music.play(loops=-1)
-        pygame.mixer.music.play()
-        
         while self.running:
             self.handle_events()
             self.set_display()
-            clock.tick(60)  
+            clock.tick(25)  
 
 
 class Transition:
@@ -410,10 +407,11 @@ class Transition:
             screen.blit(self.fade_surface, (0, 0))
 
 
-def main():  
+def main():
+    pygame.mixer.pre_init(48000, -16, 2, 1024*2)
     pygame.init()
-    pygame.mixer.init()
-    pygame.mixer.music.set_volume(0.25)
+    pygame.mixer.music.load("src/music.wav")
+    pygame.mixer.music.set_volume(0.2)
     game = Game()
     game.run()
     pygame.quit()

@@ -185,12 +185,12 @@ class PuffinMaze:
         self.screen.blit(overlay, (0, 0))
         
         # Prepare fun fact text about puffins in Aberdeen
+        title = "Congratulations! The puffin made it back to their family."
         fact_lines = [
             "Fun Fact: Puffins in Aberdeen!",
             "",
             "The Troup Head nature reserve near Aberdeen is home to one of the largest",
             "gannet colonies in the world, and also hosts a significant population of puffins.",
-            "  ",
             "Over 1,500 puffin pairs nest on the rocky cliffs, making it a prime location", 
             "for these charming seabirds in Scotland."
         ]
@@ -201,23 +201,23 @@ class PuffinMaze:
         self.screen.blit(scaled_puffin, puffin_rect)
         
         # Render fact text with improved positioning
-        title_font = pygame.font.SysFont('Arial', 36)
-        body_font = pygame.font.SysFont('Arial', 24)
+        title_font = pygame.font.SysFont('Arial', 36, bold = True)
+        body_font = self.display.font
         
         # Render title separately
-        title = title_font.render(fact_lines[0], True, (100, 255, 100))
+        title = title_font.render(title, True, (100, 255, 100))
         title_rect = title.get_rect(center=(self.width // 2, self.height // 2))
         self.screen.blit(title, title_rect)
         
         # Render body text
-        for i, line in enumerate(fact_lines[2:], start=1):
+        for i, line in enumerate(fact_lines):
             text = body_font.render(line, True, self.WHITE)
-            text_rect = text.get_rect(center=(self.width // 2, self.height // 2 + i * 30+10))
+            text_rect = text.get_rect(center=(self.width // 2, self.height // 2 + (i+1) * 30))
             self.screen.blit(text, text_rect)
         
         # Render continue instruction
         continue_text = body_font.render("Press any key to continue", True, self.WHITE)
-        continue_rect = continue_text.get_rect(center=(self.width // 2, self.height - 30))
+        continue_rect = continue_text.get_rect(center=(self.width // 2, self.height - 40))
         self.screen.blit(continue_text, continue_rect)
         
         pygame.display.flip()
@@ -293,6 +293,8 @@ class PuffinMaze:
                         # Check if puffin found family
                         if puffin.x == family_x and puffin.y == family_y:
                             level_complete = True
+                    if event.type == pygame.VIDEORESIZE:
+                        pygame.display.set_mode((self.display.width, self.display.height))
                 
                 # Draw background image
                 self.screen.blit(self.background_image, (0, 0))
@@ -343,15 +345,12 @@ class PuffinMaze:
                         running = False
                     else:
                         # Game complete - show fun fact before ending
-                        if self.show_puffin_fun_fact():
-                            return True
-                        else:
-                            return False
+                        self.show_puffin_fun_fact()
+                        return True
                 
                 pygame.display.flip()
                 self.clock.tick(60)
-        
-        return False
+
 
 def main():
     from test_display import TestDisplay

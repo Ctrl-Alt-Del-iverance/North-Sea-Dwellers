@@ -27,7 +27,7 @@ class DolphinGame:
         self.clock = pygame.time.Clock()
 
         # Fonts
-        self.font = pygame.font.Font(None, 36)
+        self.font = display.font
         self.small_font = pygame.font.Font(None, 28)
 
         # Game state variables
@@ -147,14 +147,7 @@ class DolphinGame:
                         (cell['rect'].x + cell['offset'][0], 
                          cell['rect'].y + cell['offset'][1]))
         
-        if self.show_game_over:
-            game_over_text = self.font.render(f"Game Over! Level: {self.level}", True, (255, 0, 0))
-            self.screen.blit(game_over_text, (self.WIDTH//2 - game_over_text.get_width()//2, self.HEIGHT//2))
-
-        if self.show_win_message:
-            win_text = self.font.render("You Win!", True, (0, 255, 0))
-            self.screen.blit(win_text, (self.WIDTH//2 - win_text.get_width()//2, self.HEIGHT//2))
-        
+        self.display.draw_text("Echo the dolphin's movements!", (self.WIDTH//2-190, self.HEIGHT-40))
         pygame.display.flip()
 
     def handle_click(self, pos):
@@ -238,6 +231,8 @@ class DolphinGame:
                     return False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_click(pygame.mouse.get_pos())
+                if event.type == pygame.VIDEORESIZE:
+                    pygame.display.set_mode((self.display.width, self.display.height))
             
             if self.playing_sequence:
                 self.play_sequence_step()
