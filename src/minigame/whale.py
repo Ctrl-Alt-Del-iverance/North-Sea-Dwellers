@@ -61,8 +61,9 @@ class Fish(pygame.sprite.Sprite):
             self.kill() #byebye
 
 class HungryMinkeWhale:
-    def __init__(self, display):
+    def __init__(self, display, difficulty):
         self.running = True
+        self.state = "playing"
         self.display = display
         self.score = 0
         self.target_score = 20
@@ -82,11 +83,9 @@ class HungryMinkeWhale:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                
+                self.running = False
             elif event.type == self.SPAWN_FISH:
                 self.spawn_fish()
-
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Check if a fish was clicked
                 pos = pygame.mouse.get_pos()
@@ -102,10 +101,78 @@ class HungryMinkeWhale:
                         fish.kill()  # Remove the clicked fish
             if event.type == pygame.VIDEORESIZE:
                 pygame.display.set_mode((self.display.width, self.display.height))
+            
+            if self.state == "facts":
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                    self.state = "input_recieved"
 
     def whale_full(self):
         return self.score >= self.target_score
     
+    def spawn_fish(self):
+        fish_type = random.choice(self.all_fish)
+        new_fish = Fish(fish_type, self.display)
+        self.all_sprites.add(new_fish)
+        self.fish_sprites.add(new_fish)
+
+    def run(self):
+        pygame.display.set_caption("Hungry Minke Whale")
+        clock = pygame.time.Clock()
+        pygame.time.set_timer(self.SPAWN_FISH, 500)  # Spawn a fish every 500ms
+        self.all_sprites.add(self.whale)
+        success = False
+        time_left = 60
+
+        while self.running:
+            self.handle_events()
+
+            if self.state == "playing":
+                self.display.screen.blit(self.display.location_bg["Deep Sea"], (0, 0))
+                time_left = max(0, 60 - int((time.time() - self.start_time)))
+                self.all_sprites.update()
+                
+                # Update weight status based on score
+                if self.score < self.target_score // 3:
+                    self.whale.weight_status = "Severely Underweight"
+                    weight_status_color = (255, 0, 0)
+                elif self.score < self.target_score // 3 * 2:
+                    self.whale.weight_status = "Underweight"
+                    weight_status_color = (225, 115, 0)  # Orange
+                elif self.score < self.target_score:
+                    self.whale.weight_status = "Almost Healthy"
+                    weight_status_color = (220, 220, 0)  # Yellow
+                else:
+                    self.whale.weight_status = "Healthy Weight"
+                    weight_status_color = (0, 180, 0)
+                
+                # Draw all the fish
+                self.all_sprites.draw(self.display.screen)
+                self.display.draw_text(f"Fish Eaten: {self.score}/{self.target_score}", (10, 10), (0, 0, 150))
+                self.display.draw_text(f"Time: {time_left}s", (230, 10), (0, 0, 150))
+                self.display.draw_text(f"Status: {self.whale.weight_status}", (367, 10), weight_status_color)
+                
+                # Game over or game won screen
+                if time_left == 0:
+                    self.state = "facts" 
+                elif self.whale_full():
+                    self.state = "facts"
+                    success = True
+                # Draw instructions at the bottom
+                else:
+                    inst_text = self.display.font.render("Click on the correct fish to eat : krill and mackerel", True, (0, 0, 0))
+                    self.display.screen.blit(inst_text, (self.display.width // 2 - inst_text.get_width() // 2, self.display.height - 40))
+                
+                pygame.display.flip() # Update the display
+                clock.tick(60) # Cap the frame rate
+                if self.state == "facts": # game is over
+                    self.show_popup(success)
+                    pygame.time.delay(700) # prevent accidental exit
+
+            elif self.state == "input_recieved":       
+                pygame.time.delay(700)
+                return success # lets the main game know if the player won
+
+        pygame.quit()
 
     def show_popup(self, success):
         # Create a semi-transparent overlay
@@ -160,80 +227,6 @@ class HungryMinkeWhale:
         self.display.screen.blit(continue_text, continue_rect)
 
         pygame.display.flip()
-
-        # Wait for key press
-        waiting = True
-        while waiting:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return False
-                if event.type == pygame.KEYDOWN:
-                    waiting = False
-
-        return
-
-    def run(self):
-        pygame.display.set_caption("Hungry Minke Whale")
-        clock = pygame.time.Clock()
-        pygame.time.set_timer(self.SPAWN_FISH, 500)  # Spawn a fish every 500ms
-        self.all_sprites.add(self.whale)
-        success = False
-        time_left = 60
-
-        while self.running:
-            self.display.screen.blit(self.display.location_bg["Deep Sea"], (0, 0))
-            time_left = max(0, 60 - int((time.time() - self.start_time)))
-            self.handle_events()
-            self.all_sprites.update()
-            
-            # Update weight status based on score
-            if self.score < self.target_score // 3:
-                self.whale.weight_status = "Severely Underweight"
-                weight_status_color = (255, 0, 0)
-            elif self.score < self.target_score // 3 * 2:
-                self.whale.weight_status = "Underweight"
-                weight_status_color = (225, 115, 0)  # Orange
-            elif self.score < self.target_score:
-                self.whale.weight_status = "Almost Healthy"
-                weight_status_color = (220, 220, 0)  # Yellow
-            else:
-                self.whale.weight_status = "Healthy Weight"
-                weight_status_color = (0, 180, 0)
-            
-            # Draw all the fish
-            self.all_sprites.draw(self.display.screen)
-            self.display.draw_text(f"Fish Eaten: {self.score}/{self.target_score}", (10, 10), (0, 0, 150))
-            self.display.draw_text(f"Time: {time_left}s", (230, 10), (0, 0, 150))
-            self.display.draw_text(f"Status: {self.whale.weight_status}", (367, 10), weight_status_color)
-            
-            # Game over or game won screen
-            if time_left == 0:
-                self.running = False  
-            elif self.whale_full():
-                self.running = False
-                success = True
-            # Draw instructions at the bottom
-            else:
-                inst_text = self.display.font.render("Click on the correct fish to eat : krill and mackerel", True, (0, 0, 0))
-                self.display.screen.blit(inst_text, (self.display.width // 2 - inst_text.get_width() // 2, self.display.height - 40))
-            
-            # Update the display
-            pygame.display.flip()
-            # Cap the frame rate
-            clock.tick(60)
-
-        self.show_popup(success)
-        return success
-
-
-        pygame.time.delay(2000)
-        return success
-            
-    def spawn_fish(self):
-        fish_type = random.choice(self.all_fish)
-        new_fish = Fish(fish_type, self.display)
-        self.all_sprites.add(new_fish)
-        self.fish_sprites.add(new_fish)
 
 def main():
     from test_display import TestDisplay

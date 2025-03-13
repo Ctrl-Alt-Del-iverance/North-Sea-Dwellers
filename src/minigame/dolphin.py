@@ -4,7 +4,7 @@ import sys
 import os
 
 class DolphinGame:
-    def __init__(self, display):
+    def __init__(self, display, difficulty):
         self.display = display
         pygame.display.set_caption("Dolphin Memory Game")
         

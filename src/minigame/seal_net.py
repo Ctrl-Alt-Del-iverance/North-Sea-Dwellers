@@ -147,7 +147,7 @@ class SealNetGame:
                     pygame.time.delay(1100) # pause after winning, we dont want to give anyone whiplash let them bask in the win
                     self.show_seal_fun_fact(success) # display facts overlay but dont refresh
 
-            if self.state == "input_recieved":       
+            elif self.state == "input_recieved":       
                 pygame.time.delay(700)
                 return success # lets the main game know if the player won
             

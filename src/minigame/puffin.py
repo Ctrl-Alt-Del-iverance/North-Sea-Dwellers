@@ -3,7 +3,7 @@ import random
 import sys
 
 class PuffinMaze:
-    def __init__(self, display):
+    def __init__(self, display, difficulty):
         pygame.init()
         
         # Use display parameters
