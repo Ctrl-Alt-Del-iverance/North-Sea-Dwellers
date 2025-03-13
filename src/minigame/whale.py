@@ -82,7 +82,7 @@ class HungryMinkeWhale:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                pygame.quit()
                 
             elif event.type == self.SPAWN_FISH:
                 self.spawn_fish()

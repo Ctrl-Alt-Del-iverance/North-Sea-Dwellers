@@ -274,7 +274,7 @@ class PuffinMaze:
             while running:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        return False
+                        pygame.quit()
                     
                     if event.type == pygame.KEYDOWN and not level_complete:
                         if event.key == pygame.K_UP:

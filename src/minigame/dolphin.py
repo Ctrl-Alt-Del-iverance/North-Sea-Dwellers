@@ -147,7 +147,7 @@ class DolphinGame:
                         (cell['rect'].x + cell['offset'][0], 
                          cell['rect'].y + cell['offset'][1]))
         
-        self.display.draw_text("Echo the dolphin's movements!", (self.WIDTH//2-190, self.HEIGHT-40))
+        self.display.draw_text("Echo the dolphin's movements!", (self.WIDTH//2-187, self.HEIGHT-40), (0, 0, 0))
         pygame.display.flip()
 
     def handle_click(self, pos):
@@ -228,7 +228,7 @@ class DolphinGame:
         while not self.show_game_over and not self.show_win_message:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    return False
+                    pygame.quit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_click(pygame.mouse.get_pos())
                 if event.type == pygame.VIDEORESIZE:

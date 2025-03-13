@@ -15,8 +15,8 @@ class Animal:
         self.sprite = sprite
         self.minigame = minigame
 
-    def run(self, display):
-        game = self.minigame(display)
+    def run(self, display, level):
+        game = self.minigame(display, level)
         return game.run()
 
     def get_game_exp(self):
@@ -28,22 +28,13 @@ class Animal:
         return shells.get(self.rarity)
 
     def escapes(self, player_level):
-        base_chances = {3: 0.55, 4: 0.70, 5: 0.99} # starting chance of animal escaping for each level
-        min_chances = {3:0.05, 4:0.10, 5:0.30} # minimum chance of it escaping
+        # based on endangered status
+        base_chances = {2: 0.45, 3: 0.60, 4: 0.75, 5: 0.90} # starting chance of animal escaping for each level
+        min_chances = {2: 0, 3:0.05, 4:0.15, 5:0.30} # minimum chance of it escaping
 
-        if self.rarity == 2:
-            if player_level >=15:
-                return False # rarity 2 animals will no longer escape
-            if player_level >= 10:
-                escape_chance = 0.5
-            if player_level >= 5:
-                escape_chance = 0.20
-            else:
-                escape_chance = 0.45
-        # the chance should go down by 0.15 every 4 levels
+        # the chance should go down by 0.10 every 5 levels
         # ensure it does not go bellow the minimum chance
-        else:
-            escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.10 * ((player_level) // 5))
+        escape_chance = max(min_chances[self.rarity], base_chances[self.rarity] - 0.10 * ((player_level) // 5))
         # returns true escape_chance% of the time
         return random.random() <= escape_chance
 

@@ -58,6 +58,7 @@ class Game:
         click = pygame.mixer.Sound("src/click.wav")
         expup = pygame.mixer.Sound("src/expup.mp3")
         save = "src/save_files/save.pkl"
+        click.set_volume(0.5)
 
         if self.state == "start":
             if self.new_game_button_rect.collidepoint(pos):
@@ -122,7 +123,7 @@ class Game:
             if self.begin_rect.collidepoint(pos):
                 click.play()
                 try:
-                    success = self.cur_animal.run(self.display)
+                    success = self.cur_animal.run(self.display, self.player.level)
                     self.state = "lost"
                     if success:
                         LevelUpManager.add_exp(self.player, self.cur_animal.get_game_exp())
@@ -158,7 +159,6 @@ class Game:
                     self.pending_action = None
                     self.transitioning.start_fade_in()
                     
-
         self.display.screen.fill((0, 0, 0))  # Clear screen
         # while you are searching/encountering an animal:
         if self.state not in ["map", "start", "information"]:
@@ -253,7 +253,7 @@ class Game:
         self.display.screen.blit(self.display.location_bg[self.location], (0,0))
         self.display.screen.blit(self.display.back_button, (10, 10))
         self.display.draw_text(f"Player Level: {self.player.level}", (420, 10))
-        self.display.draw_text(f"Exp: {self.player.exp}", (605, 10))
+        self.display.draw_text(f"Exp: {self.player.exp}", (613, 10))
         self.display.draw_text(f"{self.location}", (115, 10))
 
     def render_animal_information(self, animal_pos = (390, 130)):
@@ -277,10 +277,10 @@ class Game:
 
         # chance of each animal at each location
         # in order of none, harbour seal, dolphin, whale, puffin, grey seal
-        weights = {"Newburgh Seal Beach": [10, 43, 20, 10, 0, 17], 
-                "Puffin Cave, Fowlsheugh": [10, 25, 20, 10, 30, 5],
-                "Aberdeen Lighthouse": [10, 35, 30, 20, 0, 5],
-                "Deep Sea": [10, 35, 25, 15, 10, 5]}
+        weights = {"Newburgh Seal Beach": [10, 30, 20, 10, 0, 30], 
+                "Puffin Cave, Fowlsheugh": [10, 20, 20, 10, 30, 10],
+                "Aberdeen Lighthouse": [10, 35, 25, 15, 0, 15],
+                "Deep Sea": [10, 15, 30, 20, 10, 15]}
         # 0 is associated with no animal at all
         rarities = [0, 1, 2, 3, 4, 5]
 
@@ -313,7 +313,7 @@ class Game:
         while self.running:
             self.handle_events()
             self.set_display()
-            clock.tick(25)  
+            clock.tick(60)  
 
 
 class Transition:
@@ -410,8 +410,9 @@ class Transition:
 def main():
     pygame.mixer.pre_init(48000, -16, 2, 1024*2)
     pygame.init()
+    pygame.mixer.init()
     pygame.mixer.music.load("src/music.wav")
-    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.set_volume(0.25)
     game = Game()
     game.run()
     pygame.quit()
