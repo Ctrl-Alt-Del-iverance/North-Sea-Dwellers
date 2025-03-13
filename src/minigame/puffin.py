@@ -355,7 +355,7 @@ class PuffinMaze:
 def main():
     from test_display import TestDisplay
     pygame.init()
-    game = PuffinMaze(TestDisplay())
+    game = PuffinMaze(TestDisplay(), 1)
     game.run()
     pygame.quit()
 

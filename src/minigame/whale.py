@@ -231,7 +231,7 @@ class HungryMinkeWhale:
 def main():
     from test_display import TestDisplay
     pygame.init()
-    game = HungryMinkeWhale(TestDisplay())
+    game = HungryMinkeWhale(TestDisplay(), 1)
     game.run()
     pygame.quit()
 

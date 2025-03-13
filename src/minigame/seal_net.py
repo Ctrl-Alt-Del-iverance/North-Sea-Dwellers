@@ -108,6 +108,8 @@ class SealNetGame:
 
         # the game should end either upon winning or time running out
         while self.running:
+            self.handle_events()
+            
             if self.state == "playing":
                 self.screen.blit(self.background, (0, 0))
                 
@@ -151,7 +153,6 @@ class SealNetGame:
                 pygame.time.delay(700)
                 return success # lets the main game know if the player won
             
-            self.handle_events()
         pygame.quit()
     
     def show_seal_fun_fact(self, success):
